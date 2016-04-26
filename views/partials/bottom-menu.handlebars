@@ -1,0 +1,28 @@
+<div class="navbar-default navbar-fixed-bottom">
+  <div class="weui_tabbar">
+      <a href="/extractflow/" class="weui_tabbar_item">
+          <div class="weui_tabbar_icon">
+              <span class="glyphicon glyphicon-shopping-cart fixer-container" aria-hidden="true"></span>
+          </div>
+          <p class="weui_tabbar_label"></p>
+      </a>
+      <a href="{{#if customer }}/myticket/{{ toHex customer.id }}{{else}}#{{/if}}" class="weui_tabbar_item">
+          <div class="weui_tabbar_icon">
+              <span class="glyphicon glyphicon-qrcode fixer-container" aria-hidden="true"></span>
+          </div>
+          <p class="weui_tabbar_label"></p>
+      </a>
+      <a href="/lofter/" class="weui_tabbar_item">
+          <div class="weui_tabbar_icon">
+              <span class="glyphicon glyphicon-film fixer-container" aria-hidden="true"></span>
+          </div>
+          <p class="weui_tabbar_label"></p>
+      </a>
+      <a href="/myaccount" class="weui_tabbar_item">
+          <div class="weui_tabbar_icon">
+              <span class="glyphicon glyphicon-user fixer-container" aria-hidden="true"></span>
+          </div>
+          <p class="weui_tabbar_label"></p>
+      </a>
+  </div>
+</div>

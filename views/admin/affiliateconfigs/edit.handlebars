@@ -1,0 +1,50 @@
+<div class='container-fluid'>
+  <div class="row">
+      <div class="col-lg-12">
+          <h1 class="page-header">分销配置</h1>
+      </div>
+  </div>
+
+  <div class='row'>
+    <div class="col-lg-6">
+      <div class="form-group">
+          <label>套餐</label>
+          <input class="form-control" disabled value="{{ trafficPlan.name }}">
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+          <label>价格</label>
+          <input class="form-control" disabled value="{{ trafficPlan.cost }}">
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="form-group">
+          <label>cost</label>
+          <input class="form-control" disabled value="{{ trafficPlan.value }}">
+      </div>
+    </div>
+  </div>
+
+<form role="form" accept-charset="UTF-8" action="/admin/affiliateconfig/trafficplan/{{ trafficPlan.id }}" method="POST">
+  <div class='row'>
+    {{#each result }}
+      <div class="col-lg-6">
+        <div class="form-group">
+            <label>等级： {{ level }}  百分比（%）0 表示不启用</label>
+            <input class="form-control" placeholder="input percent" name="percent[{{level}}]" type="number" min='0' max='100' value="{{ percent }}">
+        </div>
+      </div>
+    {{/each}}
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-lg-1">
+      <button type="submit" class="pull-right btn btn-primary">保 存</button>
+    </div>
+  </div>
+
+</form>
+
+</div>

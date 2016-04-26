@@ -1,0 +1,42 @@
+<div class='container-fluid'>
+  <div class="row">
+      <div class="col-lg-12">
+          <h1 class="page-header">充值套餐</h1>
+      </div>
+  </div>
+
+
+<form role="form" accept-charset="UTF-8" action="{{path}}" method="{{method}}">
+  <div class='row'>
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label>名字</label>
+        <input class="form-control" placeholder="input name" name="name" value="{{ dataplan.name }}">
+      </div>
+      <div class="form-group">
+        <label>价格（元）</label>
+        <input class="form-control" placeholder="input price" name="price" type='number' min="0" step='1' value="{{ dataplan.price }}">
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label>E 币</label>
+        <input class="form-control" placeholder="input value" name="value" type='number' min="0" step='1' value="{{ dataplan.value }}">
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-11">
+      <button type="submit" class="pull-right btn btn-primary">提  交</button>
+    </div>
+  </div>
+
+</form>
+
+</div>
+<div class="row">
+  <div class="col-lg-2">
+    <a style="margin-left: 10px" href="/admin/affiliateconfig/dataplan/{{dataplan.id}}/edit">分销奖励配置</a>
+  </div>
+</div>

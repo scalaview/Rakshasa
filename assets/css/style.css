@@ -1,0 +1,226 @@
+body {
+  padding-top: 70px;
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+  margin-right: -21px; /* 20px padding + 1px border */
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+
+.llb .weui_cells_title{
+    font-size: 16px;
+    color: blue;
+}
+
+.space-1 {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.myaccount-title {
+
+  background-color: #6F6565;
+  padding: 10px;
+}
+.myaccount-title span {
+  margin-left: 20px;
+}
+.myaccount-title span {
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.aline {
+  font-size: x-large;
+  margin: 10px;
+}
+.aicon {
+  margin-top: 18px;
+  margin-right: 10px;
+}
+.menu-link li a{
+  margin-left: 35px;
+}
+
+.menu-link a{
+  margin-right: 25px;
+}
+
+.menu-link i {
+  color: #D86949;
+  padding-right: 20px
+}
+
+.orange-bg {
+  background-color: #f0ad4e;
+}
+
+.slaves li {
+  margin-left: 20px;
+  background-color: #ffffff;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.coll-link div {
+  border: 1px solid #eee;
+}
+
+.panel-pl {
+  background-color: #ffffff;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.panel-pl .collapse {
+  margin-bottom: 10px
+}
+
+.slave-detail {
+  border-bottom: 1px solid #eee;
+  background-color: #ffffff;
+  margin-left: 15px;
+  margin-right: 40px;
+  margin-bottom: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.dtb_distribution{
+ margin: 0;
+ background: #ffffff;
+ padding-bottom: 100px;
+ padding-top: 10px;
+ padding-right: 0;
+ padding-left: 0;
+ }
+ .dtb_distribution .item{
+ background: #ffffff;
+ margin-top: 10px;
+ border-top: 1px solid #dadada;
+ border-bottom: 1px solid #dadada;
+ }
+ .dtb_distribution .item.uinfo{
+ height: auto;
+ margin-top: 0px;
+ }
+ .dtb_distribution .item.uinfo img{
+ display: block;
+ width: 80px;
+ height: 80px;
+ margin: 10px;
+ float: left;
+ }
+ .dtb_distribution .item.uinfo.info{
+ padding-left: 100px;
+ height: auto;
+ padding: 10px;
+ }
+ .dtb_distribution .item.total{
+ height: 40px;
+ line-height: 40px;
+ font-size: 12px;
+ }
+ .dtb_distribution .item.total div{
+ float: left;
+ text-align:center;
+ }
+ .dtb_distribution .item h3{
+ margin: 0;
+ height: 50px;
+ line-height: 50px;
+ font-size: 15px;
+ color: #000000;
+ border-bottom: 1px solid #dadada;
+ padding-left: 20px;
+ background-size: 18px 18px;
+ background-position: 25px;
+ position: relative;
+ }
+
+ .dtb_distribution .item em{
+ width: auto;
+ height: 24px;
+ line-height: 24px;
+ font-size: 14px;
+ background: #f95e49;
+ color: #ffffff;
+ padding-left: 10px;
+ padding-right: 10px;
+ position: absolute;
+ right: 10px;
+ top: 13px;
+ border-radius: 15px;
+ margin-right: 15px;
+ margin-top: 10px;
+ }
+ .dtb_distribution .item ul{
+ margin: 0;
+ margin-left: 40px;
+ overflow: hidden;
+ height: 0px;
+ }
+ .dtb_distribution .item ul li{
+ margin: 0;
+ height: 40px;
+ line-height: 40px;
+ position: relative;
+ border-bottom: 1px solid #dadada;
+ padding-left: 50px;
+ background: url('../images/user.png') no-repeat left;
+ background-position: 20px;
+ background-size: 13px 13px;
+ color: #000000;
+ }
+ .weui_cell_bd p {
+    margin: 0;
+ }
+
+ .panel-body .weui_cell_ft:after {
+    display: none;
+ }
+
+ a:focus, a:hover {
+  text-decoration: initial;
+}
+
+.icon-left {
+  width: 20px;
+  margin-right: 15px;
+  margin-left: 5px;
+  display: block;
+  font-size: 21px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+#mcover-share {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0, 0, 0, 0.7);
+    display:none;
+    z-index:20000;} #mcover-share img {
+    position:fixed;
+    right:18px;
+    top:5px;
+    width:260px;
+    height:180px;
+    z-index:999;
+}

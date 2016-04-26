@@ -1,0 +1,19 @@
+<div class='row'>
+ <div class="item uinfo col-xs-12">
+    <img src="{{ customer.headimgurl }}" onError="this.src='http://placehold.it/380x380';" class="img-rounded img-responsive">
+    <div class="info">
+       <h5>{{ customer.username }}</h5>
+       <p><small>关注时间： {{ strftime customer.subscribeTime "YYYY-MM-DD" }}</small></p>
+       <p><small>推荐人： {{#if parent.username }} {{ parent.username }} {{else}} 星客万维 {{/if}}</small></p>
+       {{#if customer.isAffiliate }}<p><small style='color:red'>恭喜你已经成为供应商</small></p>{{/if}}
+    </div>
+ </div>
+</div>
+<div class='row'>
+ <div class="item total col-xs-12">
+    <div style="width:100%;">
+       <div style="width:50%;">消费总额：￥{{ customer.orderTotal }}</div>
+       <div style="width:50%;">分销收入：￥{{ customer.salary }}</div>
+    </div>
+ </div>
+</div>

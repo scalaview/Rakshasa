@@ -1,0 +1,155 @@
+<div class='container-fluid'>
+  <div class="row">
+      <div class="col-lg-12">
+          <h1 class="page-header">Apk</h1>
+      </div>
+  </div>
+
+<form role="form" accept-charset="UTF-8" enctype="multipart/form-data" action="{{path}}" method="{{method}}">
+  <div class='row'>
+    <div class="col-lg-6">
+
+        <div class="form-group">
+            <label>名字</label>
+            <input class="form-control" placeholder="input title" name="name" value="{{ apk.name }}">
+        </div>
+        <div class='row'>
+          <div class="col-lg-6">
+            <div class="form-group">
+                <label>version</label>
+                <input class="form-control" placeholder="input version" name="version" value="{{ apk.version }}">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="checkbox" style="padding-top: 20px;">
+              <label>
+                  <input type="checkbox" name="isActive" {{ isChecked apk.isActive }}>is active
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+           <label>顶部广告图</label>
+          <input class="form-control" placeholder="input adimage" type="file" name="adimage" value="{{ apk.adimage }}">
+          <input type="checkbox" name="removeAdimage" class='hide' id='removeAdimage'>
+          {{#if apk.adimage}}
+              <div class='row help-block'>
+                <img class="col-lg-8 col-lg-offset-2 img-responsive" src="{{ apk.adimage }}">
+                <button type="button" data-el='Adimage' class="remove btn btn-danger btn-circle pull-right">
+                  <i class="glyphicon glyphicon-remove"></i>
+                </button>
+              </div>
+          {{/if}}
+        </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label>商家</label>
+        {{ selectTag sellerOptions sellerCollection apk.sellerId }}
+      </div>
+      <div class="form-group">
+        <label>奖励（流量币）</label>
+        <input class="form-control" placeholder="input reward" name="reward" value="{{ apk.reward }}">
+      </div>
+      <div class="form-group">
+        <label>摘要</label>
+        <input class="form-control" placeholder="input digest" name="digest" value="{{ apk.digest }}">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label>排序</label>
+        <input class="form-control" placeholder="input sor num" type='number' name="sortNum" value="{{ apk.sortNum }}">
+      </div>
+      <div class="form-group">
+        <label>Apk (.apk)</label>
+        <input class="form-control" placeholder="input Apk" type="file" name="apk" value="{{ apk.apk }}">
+        <input type="checkbox" name="removeApk" class='hide' id='removeApk'>
+        {{#if apk.apk }}
+          <div class='row help-block'>
+            <a href="{{ apk.apkPath }}">{{ apk.apk }}</a>
+            <button type="button" data-el='Apk' class="remove btn btn-danger btn-circle pull-right" id= >
+              <i class="glyphicon glyphicon-remove"></i>
+            </button>
+          </div>
+        {{/if}}
+      </div>
+      <div class="form-group">
+        <label>图标</label>
+        <input class="form-control" placeholder="input Icon" type="file" name="icon" value="{{ apk.icon }}">
+        <input type="checkbox" name="removeIcon" class='hide' id='removeIcon'>
+        {{#if apk.icon}}
+            <div class='row help-block'>
+              <img class="col-lg-8 col-lg-offset-2 img-responsive" src="{{ apk.icon }}">
+              <button type="button" data-el='Icon' class="remove btn btn-danger btn-circle pull-right" id= >
+                <i class="glyphicon glyphicon-remove"></i>
+              </button>
+            </div>
+        {{/if}}
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label>截图 01</label>
+        <input class="form-control" placeholder="input screenshort" type="file" name="image01" value="{{ apk.image01 }}">
+        <input type="checkbox" name="removeImage01" class='hide' id='removeImage01'>
+        {{#if apk.image01}}
+            <div class='row help-block'>
+              <img class="col-lg-8 col-lg-offset-2 img-responsive" src="{{ apk.image01 }}">
+              <button type="button" data-el='Image01' class="remove btn btn-danger btn-circle pull-right" id= >
+                <i class="glyphicon glyphicon-remove"></i>
+              </button>
+            </div>
+        {{/if}}
+      </div>
+       <div class="form-group">
+        <label>截图 02</label>
+        <input class="form-control" placeholder="input screenshort" type="file" name="image02" value="{{ apk.image02 }}">
+        <input type="checkbox" name="removeImage02" class='hide' id='removeImage02'>
+        {{#if apk.image02}}
+            <div class='row help-block'>
+              <img class="col-lg-8 col-lg-offset-2 img-responsive" src="{{ apk.image02 }}">
+              <button type="button" data-el='Image02' class="remove btn btn-danger btn-circle pull-right" id= >
+                <i class="glyphicon glyphicon-remove"></i>
+              </button>
+            </div>
+        {{/if}}
+      </div>
+      <div class="form-group">
+        <label>截图 03</label>
+        <input class="form-control" placeholder="input screenshort" type="file" name="image03" value="{{ apk.image03 }}">
+        <input type="checkbox" name="removeImage03" class='hide' id='removeImage03'>
+        {{#if apk.image03}}
+            <div class='row help-block'>
+              <img class="col-lg-8 col-lg-offset-2 img-responsive" src="{{ apk.image03 }}">
+              <button type="button" data-el='Image03' class="remove btn btn-danger btn-circle pull-right" id= >
+                <i class="glyphicon glyphicon-remove"></i>
+              </button>
+            </div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="form-group">
+          <label>描述</label>
+          <textarea class="form-control kindeditor" id="description" name="description" rows="3">{{apk.description}}</textarea>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-11">
+      <button type="submit" class="pull-right btn btn-primary">提  交</button>
+    </div>
+  </div>
+
+</form>
+
+</div>

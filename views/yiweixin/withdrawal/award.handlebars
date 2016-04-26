@@ -1,0 +1,67 @@
+<div class="hd">
+    <h4 class="page_title">分销奖励参考</h4>
+</div>
+
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation" class="active nopadding col-xs-6 col-lg-6"><a class="text-center" href="#main" aria-controls="main" role="tab" data-toggle="tab">分销奖励参考</a></li>
+  <li role="presentation" class="nopadding col-xs-6 col-lg-6"><a class="text-center" href="#content" aria-controls="content" role="tab" data-toggle="tab">分销说明</a>
+  </li>
+</ul>
+
+
+<div class="tab-content">
+  <div id="main" role="tabpanel" class="tab-pane active fade in container-fluid">
+    {{#each trafficgroups}}
+      <div class="weui_cells_title">{{name}}</div>
+      <div class="weui_cells">
+        {{#each trafficplans}}
+          <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+              <div class="row">
+                <span class="weui_btn weui_btn_plain_primary col-lg-12 col-xs-12 weui_btn_mini exchanger">
+                  {{#iflt cost withOutDiscount }}
+                    {{name}} <strike>{{withOutDiscount}}元</strike> <font size="3" color="red"><b>{{cost}}元</b></font>
+                  {{else}}
+                    {{name}} <b>{{cost}}元</b>
+                  {{/iflt}}
+                </span>
+              </div>
+              <div class="row" style="margin-top: 10px; font-size: 11px;">
+                <div class="col-xs-3 col-lg-12">提成:</div>
+                {{#each awards}}
+                  <div class="col-xs-3 col-lg-12">{{name}} {{value}}</div>
+                {{/each}}
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      </div>
+    {{/each}}
+  </div>
+
+  <div id="content" role="tabpanel" class="bd tab-pane fade">
+    <article class="weui_article">
+      <section>
+        <h2 class="title" style="color:blue;">分销奖励说明</h2>
+        <section>
+          <h3 style="color:HotPink;">分享得奖励</h3>
+          <p>只要分享您的专属二维码，通过这个二维码进入平台的微信用户均成为您的下级代理，此后这个用户在平台中充值流量，您可获得相应提成；</p>
+        </section>
+        <section>
+          <h3 style="color:HotPink;">提现方式</h3>
+          <p>总提成满<span style="color:orange;">100</span>元起，可在平台中申请提现；</p>
+        </section>
+        <section>
+          <h3 style="color:HotPink;">充值记录</h3>
+          <p>客户充值历史纪录、下级代理记录以及所获的提成均可在平台可供查看；</p>
+        </section>
+        <section>
+          <h3 style="color:HotPink;">提成规则</h3>
+          <p>A级提成：甲推荐乙成功充值流量，甲将得到<span style="color:orange;">A</span>级提成；</p>
+          <p>B级提成：甲推荐乙，乙推荐丙成功充值流量，则乙得到<span style="color:orange;">A</span>级提成，甲得到<span style="color:orange;">B</span>级提成；</p>
+          <p>C级提成：甲推荐乙，乙推荐丙，丙推荐丁成功充值流量，则丙得到<span style="color:orange;">A</span>级提成，乙得到<span style="color:orange;">B</span>级提成，甲得到<span style="color:orange;">C</span>级提成；</p>
+        </section>
+      </section>
+    </article>
+  </div>
+</div>

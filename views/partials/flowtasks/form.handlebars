@@ -1,0 +1,100 @@
+<div class='container-fluid'>
+  <div class="row">
+    <div class="col-lg-12 col-xs-12">
+        <h1 class="page-header">流量任务</h1>
+    </div>
+  </div>
+
+<form role="form" accept-charset="UTF-8" enctype="multipart/form-data" action="{{action}}" method="{{method}}">
+{{#unless flowtask.isNewRecord }}
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="form-group">
+        <label>商家回调url</label>
+        <input class="form-control" disabled value="http://yiliuliang.net/taskconfirm/{{flowtask.id}}?token={{flowtask.seller.accessToken}}">
+      </div>
+    </div>
+  </div>
+{{/unless}}
+  <div class='row'>
+    <div class="col-lg-6">
+
+        <div class="form-group">
+            <label>标题</label>
+            <input class="form-control" placeholder="请输入标题" name="title" value="{{ flowtask.title }}">
+        </div>
+        <div class="form-group">
+            <label>摘要</label>
+            <input class="form-control" placeholder="请输入摘要" name="digest" value="{{ flowtask.digest }}">
+        </div>
+        <div class='row'>
+          <div class="col-lg-6">
+            <div class="form-group">
+                <label>过期时间</label>
+                <input class="form-control" placeholder="input expired at" id="expired_at" name="expired_at" value="{{ strftime flowtask.expiredAt 'YYYY-MM-DD' }}">
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="checkbox" style="padding-top: 20px;">
+              <label>
+                  <input type="checkbox" name="is_active" {{ isChecked flowtask.isActive  }} >is active
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+            <label>跳转链接</label>
+            <input class="form-control" placeholder="input sort action url" name="actionUrl" value="{{ flowtask.actionUrl }}">
+        </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+            <label>商家</label>
+            {{ selectTag sellerOptions sellerCollection flowtask.seller_id }}
+      </div>
+
+      <div class="form-group">
+        <label>流量套餐</label>
+            {{ selectTag trafficPlanOptions trafficPlanCollection flowtask.trafficPlanId }}
+
+      </div>
+
+      <div class="form-group">
+            <label>排序</label>
+            <input class="form-control" placeholder="input sort num" type='number' name="sortNum" value="{{ flowtask.sortNum }}">
+      </div>
+      <div class="form-group">
+          <label>封面</label>
+          <input class="form-control" placeholder="input cover" type="file" name="cover" value="{{ flowtask.cover }}">
+          <input type="checkbox" name="removeCover" class='hide' id='removeCover'>
+          {{#if flowtask.cover }}
+            <div class='row help-block'>
+              <img class="col-lg-8 col-lg-offset-2 img-responsive" src="{{ flowtask.cover }}">
+              <button type="button" data-el='Cover' class="remove btn btn-danger btn-circle pull-right" id= >
+                <i class="glyphicon glyphicon-remove"></i>
+              </button>
+            </div>
+          {{/if}}
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-12">
+
+      <div class="form-group">
+          <label>内容</label>
+          <textarea class="form-control kindeditor" id="content" name="content" rows="3">{{ flowtask.content }}</textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-11">
+      <button type="submit" class="pull-right btn btn-primary">提  交</button>
+    </div>
+  </div>
+</form>
+
+</div>

@@ -1,0 +1,88 @@
+<div class="row">
+  <form role="form" accept-charset="UTF-8" action="/admin/orders" method="GET">
+    <div class="col-lg-3">
+      <div class="form-group">
+        <label>手机号码</label>
+        <input class="form-control" placeholder="input phone" name="phone" value="{{ query.phone }}">
+      </div>
+    </div>
+    <div class="col-lg-2">
+      <div class="form-group">
+        <label>状态</label>
+        {{ selectTag stateOptions stateCollection query.state }}
+      </div>
+    </div>
+    <div class="col-lg-2">
+      <div class="form-group">
+        <label>套餐类型</label>
+        {{ selectTag dataPlanOptions dataPlanCollection query.dataPlanId }}
+      </div>
+    </div>
+    <div class="col-lg-2">
+      <div class="form-group">
+        <label>支付方式</label>
+        {{ selectTag paymentMethodOptions paymentMethodCollection query.paymentMethodId }}
+      </div>
+    </div>
+    <div class="col-lg-3" style="padding-top: 19px;">
+      <div class="form-group">
+        <button type='submit' class="btn btn-info col-lg-8 pull-right">搜索</button>
+      </div>
+    </div>
+  </form>
+</div>
+<hr>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          充值管理
+      </div>
+      <!-- /.panel-heading -->
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>电话</th>
+                <th>状态</th>
+                <th>获得</th>
+                <th>支付方式</th>
+                <th>金额</th>
+                <th>创建时间</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each orders.rows }}
+                <tr>
+                    <td>{{ customer.phone }}</td>
+                    <td>{{ stateName }}</td>
+                    <td>
+                      {{ dataPlan.name }}
+                    </td>
+                    <td>{{ paymentMethod.name }}</td>
+                    <td>{{ total }}</td>
+                    <td>{{ strftime createdAt }}</td>
+                    <td>
+                      <a href="/admin/orders/{{id}}" class="list-group-item">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                      </a>
+                    </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.table-responsive -->
+
+      </div>
+
+      <div class="panel-footer">
+          {{pagination orders (addParams '/admin/orders' query )}}
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+</div>

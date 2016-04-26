@@ -1,0 +1,62 @@
+<div class="row">
+  <div class='col-lg-2 pull-right'>
+    <a href="/admin/coupons/new">
+      <button class="btn btn-primary col-lg-12 btn-large">
+        <i class="glyphicon glyphicon-plus"></i> 新建
+      </button>
+    </a>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          Coupons
+      </div>
+      <!-- /.panel-heading -->
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                  <th>名称</th>
+                  <th>套餐</th>
+                  <th>折扣</th>
+                  <th>附加</th>
+                  <th>忽略等级</th>
+                  <th>激活</th>
+                  <th>过期时间</th>
+                  <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each coupons.rows}}
+                <tr>
+                  <td>{{ name }}</td>
+                  <td>{{#if trafficPlanId }} {{ selectTag ../../trafficPlanOptions ../../trafficPlanCollection trafficPlanId }} {{/if}}</td>
+                  <td>{{ this.discount }}</td>
+                  <td>{{ extend }}</td>
+                  <td>{{ ignoreLevel }}</td>
+                  <td>{{ isActive }}</td>
+                  <td>{{ strftime expiredAt }}</td>
+                  <td>
+                    <a href="/admin/coupons/{{id}}/edit" class="list-group-item">
+                      <i class="glyphicon glyphicon-pencil"></i>
+                    </a>
+                  </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.table-responsive -->
+      </div>
+      <!-- /.panel-body -->
+      <div class="panel-footer">
+          {{pagination coupons '/admin/coupons' }}
+      </div>
+    </div>
+      <!-- /.panel -->
+  </div>
+</div>

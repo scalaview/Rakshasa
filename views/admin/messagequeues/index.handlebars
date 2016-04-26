@@ -1,0 +1,76 @@
+<div class="row">
+  <form role="form" accept-charset="UTF-8" action="/admin/messagequeues" method="GET">
+    <div class="col-lg-3">
+      <div class="form-group">
+        <label>手机号码</label>
+        <input class="form-control" placeholder="input phone" name="phone" value="{{ query.phone }}">
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="form-group">
+        <label>状态</label>
+        {{ selectTag stateTypeOptions stateTypeCollections query.state }}
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="form-group">
+        <label>类型</label>
+        {{ selectTag messageTypeOptions messageTypeCollections query.type }}
+      </div>
+    </div>
+    <div class="col-lg-3" style="padding-top: 19px;">
+      <div class="form-group">
+        <button type='submit' class="btn btn-info col-lg-8 pull-right">搜索</button>
+      </div>
+    </div>
+  </form>
+</div>
+<hr>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          短信列表
+      </div>
+      <!-- /.panel-heading -->
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr class="row">
+                  <th class="col-lg-2">手机号码</th>
+                  <th class="col-lg-4">短信摘要</th>
+                  <th class="col-lg-1">类型</th>
+                  <th class="col-lg-1">状态</th>
+                  <th class="col-lg-1">验证码</th>
+                  <th class="col-lg-1">重试次数</th>
+                  <th class="col-lg-2">发送时间</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each messagequeues.rows }}
+                <tr class="row">
+                    <td class="col-lg-2">{{ phone }}</td>
+                    <td class="col-lg-4">{{ content }}</td>
+                    <td class="col-lg-1">{{ typeName }}</td>
+                    <td class="col-lg-1">{{ stateName }}</td>
+                    <td class="col-lg-1">{{ verificationCode }}</td>
+                    <td class="col-lg-1">{{ retryTime }}</td>
+                    <td class="col-lg-2">{{ strftime sendAt }}</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.table-responsive -->
+
+      </div>
+
+      <div class="panel-footer">
+          {{pagination messagequeues (addParams '/admin/messagequeues' query)}}
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+</div>

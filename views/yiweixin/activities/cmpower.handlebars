@@ -1,0 +1,136 @@
+{{{css "cmpower"}}}
+{{{js "cmpower"}}}
+{{> share }}
+
+<div ontouchstart="" class="open-body" style="display:none">
+  <div class="wrapper">
+
+    <div class="bg rotate"></div>
+    <div class="open-has ">
+      <h3 class="title-close"><span class="user">您</span>获得一个宝箱</h3>
+      <h3 class="title-open"></h3>
+
+      <div class="mod-chest">
+
+        <div class="chest-close show ">
+          <div class="gift">
+            <div class="icon"></div>
+          </div>
+          <div class="tips">
+            <i class="arrow"></i>
+          </div>
+        </div>
+        <div class="chest-open">
+          <div class="mod-chest-cont open-cont">
+            <div class="content">
+              <div class="gift">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+
+  $(".chest-close").click(function(){
+
+    $(this).addClass("shake");
+    var that=this;
+
+    this.addEventListener("webkitAnimationEnd", function(){
+
+      $(that).closest(".open-has").addClass("opened");
+      setTimeout(function(){
+        $(that).removeClass("show");
+        $(that).closest(".mod-chest").find(".chest-open").addClass("show");
+        setTimeout(function(){
+          $(".chest-open").addClass("blur");
+        },500)
+      },200)
+    }, false);
+  })
+</script>
+</div>
+
+<div id="input-page" class="page cell">
+  <div class="hd">
+    <h1 class="page_title">广州移动专属</h1>
+    <p class="page_desc">100M/1G免费流量等你拿</p>
+  </div>
+  <div class="ml">
+    <div class="weui_cells_title" style="text-align: center;"><strong>广州移动用户有机会获得</strong></div>
+    <div class="weui_cells_title">
+      <p class="center-text"><span style="color:blue;">100M/1G免费流量</span></p>
+      <p class="center-text"><span style="color:blue;">半年期南方都市报</span></p>
+      <p class="center-text"><span style="color:blue;">中兴天机MAX手机</span></p>
+      <p><br></p>
+      <p class="center-text"><span style="color:blue;">此次活动由广州移动官方提供，活动截止日期4月30号，奖品逾期兑换，将自动作废。
+</span></p>
+    </div>
+  </div>
+  <div class="bd">
+    <div class="weui_cells_title"></div>
+    <div class="weui_cells weui_cells_form">
+      <div class="weui_cell">
+          <div class="weui_cell_hd"><label class="weui_label">手机号</label></div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <input class="weui_input" type="tel" placeholder="请输入手机号" id="cmpower-mobile" maxlength="11">
+          </div>
+      </div>
+    </div>
+    <a href="javascript:;" id="award" class="weui_btn weui_btn_primary">抽 奖</a>
+    <hr>
+    <div class="llb">
+    </div>
+    <div class="ml">
+      <div class="weui_cells_title desc"><strong>兑换说明</strong></div>
+      <div class="weui_cells_title desc">
+        <p>1、输入手机号码，点击抽奖(已经抽过奖的直接进入步骤（2）)</p>
+        <p>2、抽取奖品后，搜索“cmccgz”,关注"广州移动"官方公众号</p>
+        <p>3、“广州移动”菜单中输入"兑奖"</p>
+        <p>4、根据提示，完成奖品领取</p>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<br>
+<script type="text/javascript">
+$(function(){
+  $("#award").click(function(){
+    var phone = $("#cmpower-mobile").val()
+    if(!isMobile(phone)){
+      showDialog("请输入正确的手机号码")
+      return
+    }
+    showLoadingToast()
+    $.ajax({
+      url: "/cmpower",
+      data: { phone: phone},
+      method: "POST"
+    }).then(function(data){
+      hideLoadingToast()
+      if(data.code === 1){
+        $(".title-open").html("恭喜你，</br>成功领取<span style='color:Red;'>"+data.msg+"</span>, 搜索<span style='color:Red;'>'cmccgz'</span>,关注<span style='color:Red;'>'广州移动'</span>官方公众号兑换")
+        $(".chest-open .gift").html(data.msg)
+        $("#input-page").hide()
+        $(".open-body").show()
+        $(".chest-close").trigger("click")
+        $("body").scrollTop(0)
+        setTimeout(function(){
+          showShare()
+        }, 4000)
+      }else if(data.code === 3){
+        showDialog("您已经抽过奖, 请查看兑换说明")
+      }else{
+        showDialog(data.msg)
+      }
+    }).fail(function(err){
+      console.log(err)
+      showDialog("服务器错误")
+    })
+  })
+})
+</script>
+{{> alertmodal }}

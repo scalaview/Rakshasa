@@ -1,0 +1,32 @@
+{{#if withdrawals }}
+  <div class="container-fluid" style="padding-top: 10px;">
+    {{#each withdrawals}}
+      <div class="row">
+        <div class="col-lg-10 col-lg-offset-1 col-sm-8">
+          <div class="panel {{ bgcolor ../Withdrawal state }}">
+            <div class="panel-heading">
+              <small class="pull-right text-muted">
+                 <i class="glyphicon glyphicon-dashboard"></i> {{ strftime createdAt 'YYYY-MM-DD HH:mm' }}
+              </small>
+              状态： {{ withdrawalState ../Withdrawal state }}
+            </div>
+            <div class="panel-body">
+                <p>
+                  {{ account }}<br>
+                  {{ name }}<br>
+                  {{ remark }}<br>
+                </p>
+                <p>
+                  金额: ￥{{ amount }}， 花费: ￥{{cost}}
+                </p>
+            </div>
+            <div class="panel-footer">
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  {{> no_data_found }}
+{{/if}}

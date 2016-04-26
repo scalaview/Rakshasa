@@ -1,0 +1,28 @@
+<div class="content">
+
+  <div class="form-group">
+    <p style='color:red'>
+      E币获得者必须拥有本公众号账户
+    </p>
+      <div class="tel-name">转赠号码：</div>
+      <div class="tel-input">
+          <input type="number" class="form-control" placeholder="请输入转赠方手机号码" id="mobile" maxlength="11">
+      </div>
+      <div id="phone-detail" class="correct" style="display: none" >   </div>
+  </div>
+  <div class="form-group">
+    <div style='color:red' class="tel-name">转赠数量必须是10的倍数</div>
+    <div class="tel-input">
+      <input type="number" min='0' class="form-control" placeholder="输入赠送的数量" id="amount">
+    </div>
+    <div class="tel-name" id="balance" data-amount="{{customer.remainingTraffic}}">您当前可转赠流量<span style="color:orange;"> {{customer.remainingTraffic}}  </span>E币）</div>
+    <hr>
+  </div>
+</div>
+
+<div class="ml">
+  <div class="btn-submit" id="givento"><a href="javascript:void(0);">确定转赠</a></div>
+</div>
+
+{{> alertmodal }}
+{{> extractConfirm }}

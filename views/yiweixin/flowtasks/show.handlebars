@@ -1,0 +1,35 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12 col-md-12 col-lg-8 col-lg-offset-2">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="page-header">{{ task.title }}</h3>
+        </div>
+        <!-- /.panel-heading -->
+        <div class="panel-body">
+            <div class="row">
+              <div class="col-xs-6 col-md-3 pull-left">
+                {{ strftime task.createdAt 'YYYY-MM-DD' }}
+              </div>
+              <div class="col-xs-3 col-md-3 col-lg-1 pull-right">
+                <a href=" {{hostUrl}} ">孚云网络</a>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-12 col-xs-12">
+                 <img class="img-responsive" src="{{task.cover}}">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12 col-xs-12 fulltext">
+                {{ htmlSafe task.content }}
+              </div>
+            </div>
+
+        </div>
+        <!-- /.panel-body -->
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<div class="container">
+  <div class="row">
+    <img class="img-responsive" src="/images/banner.png">
+  </div>
+
+  <div class="space-6"></div>
+  <div class="row">
+    <div class="col-xs-3 col-md-3">
+      <img class="img-responsive" src="http://img.wdjimg.com/mms/icon/v1/6/2a/4764bbc6717fe399db4eb2e5e41342a6_68_68.png">
+    </div>
+    <div class="col-xs-8 col-md-8">
+        <div class="row">
+          <p class="col-xs-12">apk.name </p>
+         <small class="col-xs-6  text-muted">
+            <img src="/images/coin.png" > <span class='orange'>+ 30流量币</span>
+          </small>
+        </div>
+      </div>
+  </div>
+  <div class="row">
+    <small class="col-xs-3 col-xs-offset-3 text-muted">
+     10 次安装
+    </small>
+    <small class="col-xs-3 col-xs-offset-2 text-muted">
+    50 M
+    </small>
+  </div>
+
+  <hr>
+  <div class="row">
+    {{ apkImages apk }}
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-md-12 fulltext">
+      <p>
+        简介：
+      </p>
+      <p>
+        {{ htmlSafe apk.description }}
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <a class="download" href="/apkcenter/download/{{apk.id}}?c={{customer.id}}">
+        <button type="button" class="btn btn btn-success btn-lg btn-block">
+          <i class="glyphicon glyphicon-download-alt"></i>
+          下载
+        </button>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+

@@ -1,0 +1,82 @@
+<div class="row">
+  <div class='col-lg-2 pull-right'>
+    <a href="/admin/sellers/new">
+      <button class="btn btn-primary col-lg-12 btn-large">
+        <i class="glyphicon glyphicon-plus"></i> 新商家入驻
+      </button>
+    </a>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <form role="form" accept-charset="UTF-8" action="/admin/sellers" method="GET">
+    <div class="col-lg-3">
+      <div class="form-group">
+        <label>名字</label>
+        <input class="form-control" name="name" value="{{ query.name }}">
+      </div>
+    </div>
+    <div class="col-lg-3 col-lg-offset-6" style="padding-top: 19px;">
+      <div class="form-group">
+        <button type='submit' class="btn btn-info col-lg-8 pull-right">搜索</button>
+      </div>
+    </div>
+  </form>
+</div>
+<hr>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+          商家
+      </div>
+      <!-- /.panel-heading -->
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                  <th>名字</th>
+                  <th>联系电话</th>
+                  <th>主页</th>
+                  <th>QQ</th>
+                  <th>AccessToken</th>
+                  <th>入驻时间</th>
+                  <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each sellers.rows }}
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>{{ phone }}</td>
+                    <td>
+                      {{#if homepage}}
+                        <a href="http://{{homepage}}">{{homepage}}</a>
+                      {{/if}}
+                    </td>
+                    <td>{{ qq }}</td>
+                    <td>{{ accessToken }}</td>
+                    <td>{{ strftime createdAt }}</td>
+                    <td>
+                      <a href="/admin/sellers/{{id}}/edit" class="list-group-item">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                      </a>
+                    </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.table-responsive -->
+
+      </div>
+
+      <div class="panel-footer">
+          {{pagination sellers '/admin/flowtasks'}}
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+</div>

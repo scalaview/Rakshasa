@@ -1,0 +1,45 @@
+<div class='container-fluid'>
+  <div class="row">
+      <div class="col-lg-12">
+          <h1 class="page-header">充值信息</h1>
+      </div>
+  </div>
+
+  <div class='row'>
+    <div class="col-lg-6">
+
+        <div class="form-group">
+          <label>手机</label>
+          <input class="form-control" disabled value="{{ order.customer.phone }}">
+        </div>
+        <div class="form-group">
+          <label>流量包</label>
+          <input class="form-control" disabled value="{{ order.dataPlan.name }}">
+        </div>
+        <div class="form-group">
+          <label>支付方式</label>
+          <input class="disabled form-control" disabled value="{{ order.paymentMethod.name }}">
+        </div>
+    </div>
+    <div class="col-lg-6">
+
+      <div class="form-group">
+        <label>总数</label>
+        <input class="form-control" disabled value="￥ {{ order.total }}">
+      </div>
+
+      <div class="form-group">
+        <label>状态</label>
+        <input class="form-control" disabled value="{{ order.stateName }}">
+      </div>
+
+      <div class="form-group">
+        <label>折扣</label>
+        <input class="form-control" disabled value="{{ order.discount }}">
+      </div>
+    </div>
+
+  </div>
+
+
+</div>

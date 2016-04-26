@@ -1,0 +1,24 @@
+{{> "sellers/form" action=path method="POST" }}
+
+
+<script type="text/javascript">
+$(function() {
+  $("#reset_token").click(function(){
+    var $this = $(this),
+        id = $this.data("id")
+    if(confirm("重置token，旧链接将失效，是否重置access token？")){
+      $.ajax({
+        url: "/admin/sellers/"+id+"/reset",
+      }).done(function(data){
+        if(data.err === 0){
+          $("#access_token").val(data.token)
+        }
+        alert(data.msg)
+      }).fail(function(err){
+        console.log(err)
+        alert("服务器错误")
+      })
+    }
+  })
+})
+</script>

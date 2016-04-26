@@ -1,0 +1,30 @@
+{{#if flowhistories }}
+  <div class="container-fluid" style="padding-top: 10px;">
+    {{#each flowhistories}}
+      <div class="row">
+        <div class="col-lg-10 col-lg-offset-1 col-sm-8">
+          <div class="panel {{#if state }} panel-info {{else}} panel-danger {{/if}}">
+            <div class="panel-heading">
+              <small class="pull-right text-muted">
+                 <i class="glyphicon glyphicon-dashboard"></i> {{ strftime createdAt 'YYYY-MM-DD HH:mm' }}
+              </small>
+              分销{{#if state }}收入 {{else}}支出 {{/if}}
+            </div>
+            <div class="panel-body">
+                <p>
+                  {{ comment }}
+                </p>
+                <p>
+                  数量: ￥{{ amount }}
+                </p>
+            </div>
+            <div class="panel-footer">
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  {{> no_data_found }}
+{{/if}}

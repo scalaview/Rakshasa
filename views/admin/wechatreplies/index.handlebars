@@ -1,0 +1,56 @@
+<div class="row">
+  <div class='col-lg-2 pull-right'>
+    <a href="/admin/wechatreplies/new">
+      <button class="btn btn-primary col-lg-12 btn-large">
+        <i class="glyphicon glyphicon-plus"></i> 新建
+      </button>
+    </a>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        微信回复
+      </div>
+      <!-- /.panel-heading -->
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                  <th>关键字</th>
+                  <th>内容</th>
+                  <th>是否使用</th>
+                  <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each wechatreplies.rows }}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ content }}</td>
+                    <td>{{ isActive }}</td>
+                    <td>
+                    <a href="/admin/wechatreplies/{{id}}/edit" class="list-group-item">
+                      <i class="glyphicon glyphicon-pencil"></i>
+                    </a>
+                  </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.table-responsive -->
+
+      </div>
+
+      <div class="panel-footer">
+          {{pagination wechatreplies '/admin/wechatreplies'}}
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+</div>

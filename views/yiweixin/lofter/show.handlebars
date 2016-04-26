@@ -1,0 +1,102 @@
+<div class="page slideIn panel">
+    <div class="hd">
+    </hd>
+    <div class="bd">
+        <div class="weui_panel weui_panel_access">
+            <div class="weui_panel_bd">
+                <a href="javascript:void(0);" class="weui_media_box weui_media_appmsg">
+                  <video id="really-cool-video" class="video-js col-xs-12 vjs-default-skin" controls
+                   preload="auto" width="640" height="280" poster="{{#each movie.images}}{{#if @first}}{{medium}}{{/if}}{{/each}}"
+                   data-setup='{"language":"zh"}'>
+                    <source src="{{bilibiliMovie.download_url}}" type="video/mp4">
+                  </video>
+                </a>
+            </div>
+            <a class="weui_panel_ft" href="javascript:void(0);">内容介绍</a>
+        </div>
+
+        <div class="weui_media_box weui_media_text min_padding ">
+          <ul class="weui_media_info">
+            <i class="weui_media_info_meta glyphicon glyphicon-tags" ></i>
+            {{#each movie.genres}}
+              <li class="weui_media_info_meta">#{{name}}</li>
+            {{/each}}
+          </ul>
+        </div>
+
+        <div class="weui_panel weui_panel_access">
+            <div class="weui_panel_hd">视频列表</div>
+            <div class="weui_panel_bd">
+              <div class="container">
+                <div class="row weui_media_box weui_media_text">
+                  {{#each medias}}
+                    <a href="/lofter/{{ ../bilibiliMovie.id }}?media_id={{id}}" class="movie-link weui_btn weui_btn_mini {{#if_eq ../bilibiliMovie.select_index @index }}weui_btn_plain_primary{{else}}weui_btn_primary{{/if_eq}}">{{ inc @index }}</a>
+                  {{/each}}
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="weui_panel weui_panel_access">
+            <article class="weui_article">
+              <div class="title"><font size="6">{{movie.title}}</font></div>
+              <section style="margin-bottom: 0px;">
+                <section>
+                    <h1>影片信息</h1>
+                    <p>
+                      导演：{{#each movie.directors}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                      主演：{{#each movie.casts}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                      类型：{{#each movie.genres}}#{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                      原名：{{movie.original_title}}<br>
+                      上映：{{movie.year}}<br>
+                      地区：{{#each movie.countries}}{{name}}{{#unless @last}}/ {{/unless}}{{/each}}<br>
+                      评分：{{movie.rate}}<br>
+                    </p>
+                </section>
+                <section>
+                  <h1>影片简介</h1>
+                  <p>{{movie.summary}}</p>
+                </section>
+              </section>
+            </article>
+        </div>
+
+        <div class="weui_panel weui_panel_access">
+          <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+              <div class="weui_uploader">
+                <div class="weui_uploader_hd weui_cell">
+                  <div class="weui_cell_bd weui_cell_primary">演员</div>
+                </div>
+                <div class="weui_uploader_bd">
+                  <ul class="weui_uploader_files">
+                    {{#each movie.casts}}
+                      <li class="weui_uploader_file" style="background-image:url({{ image.medium }})"></li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="weui_panel weui_panel_access">
+          <div class="weui_cell">
+            <div class="weui_cell_bd weui_cell_primary">
+              <div class="weui_uploader">
+                <div class="weui_uploader_hd weui_cell">
+                  <div class="weui_cell_bd weui_cell_primary">导演</div>
+                </div>
+                <div class="weui_uploader_bd">
+                  <ul class="weui_uploader_files">
+                    {{#each movie.directors}}
+                      <li class="weui_uploader_file" style="background-image:url({{ image.medium }})"></li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</div>

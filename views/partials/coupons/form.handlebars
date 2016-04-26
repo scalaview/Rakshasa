@@ -1,0 +1,62 @@
+<div class='container-fluid'>
+  <div class="row">
+      <div class="col-lg-12">
+          <h1 class="page-header">Coupons</h1>
+      </div>
+  </div>
+
+<form role="form" accept-charset="UTF-8" action="{{path}}" method="{{method}}">
+  <div class='row'>
+    <div class="col-lg-6">
+      <div class="form-group">
+          <label>名字</label>
+          <input class="form-control" placeholder="input name" name="name" value="{{ coupon.name }}">
+      </div>
+
+      <div class="form-group">
+        <label>折扣</label>
+        <input class="form-control" placeholder="input discount" name="discount" type='number'  min="0"  step='0.01' value="{{ coupon.discount }}">
+      </div>
+
+      <div class='row'>
+        <div class="col-lg-6">
+          <div class="checkbox" style="padding-top: 20px;">
+            <label>
+                <input type="checkbox" name="isActive" {{ isChecked coupon.isActive }}>激活
+            </label>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="checkbox" style="padding-top: 20px;">
+            <label>
+                <input type="checkbox" name="ignoreLevel" {{ isChecked coupon.ignoreLevel }}>忽略用户等级
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label>套餐</label>
+        {{ selectTag trafficPlanOptions trafficPlanCollection coupon.trafficPlanId }}
+      </div>
+      <div class="form-group">
+        <label>附加</label>
+        <input class="form-control" placeholder="input extend" name="extend" value="{{ coupon.extend }}">
+      </div>
+      <div class="form-group">
+        <label>过期时间</label>
+        <input class="form-control" placeholder="input expiredAt" id="expired_at" name="expiredAt" value="{{ strftime coupon.expiredAt 'YYYY-MM-DD' }}">
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-11">
+      <button type="submit" class="pull-right btn btn-primary">提  交</button>
+    </div>
+  </div>
+
+</form>
+
+</div>

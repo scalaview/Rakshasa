@@ -1,0 +1,19 @@
+{{> "apks/form" action=path method="POST" }}
+
+
+{{#section 'javascript'}}
+  <script type="text/javascript">
+  $(document).ready(function(){
+    KindEditor.ready(function(K) {
+        return K.create("#description", {
+            "class": ["kindeditor", "optional"],
+            width: "100%",
+            height: 300,
+            allowFileManager: true,
+            uploadJson: '/admin/kindeditor/uploads',
+            fileManagerJson: '/admin/kindeditor/filemanager'
+        });
+    });
+  })
+  </script>
+{{/section}}

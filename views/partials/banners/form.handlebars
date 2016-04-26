@@ -1,0 +1,68 @@
+<div class='container-fluid'>
+  <div class="row">
+      <div class="col-lg-12">
+          <h1 class="page-header">顶部广告栏</h1>
+      </div>
+  </div>
+
+<form role="form" accept-charset="UTF-8" enctype="multipart/form-data" action="{{path}}" method="{{method}}">
+  <div class='row'>
+    <div class="col-lg-6">
+      <div class="form-group">
+          <label>名字</label>
+          <input class="form-control" placeholder="input name" name="name" value="{{ banner.name }}">
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label>顶部广告图</label>
+        <input class="form-control" placeholder="input adimage" type="file" name="image" value="{{ banner.image }}">
+        <input type="checkbox" name="removeImage" class='hide' id='removeImage'>
+        {{#if banner.image }}
+            <div class='row help-block'>
+              <img class="col-lg-4 col-lg-offset-2 img-responsive" src="{{ banner.image }}">
+              <button type="button" data-el='Image' class="remove btn btn-danger btn-circle pull-right">
+                <i class="glyphicon glyphicon-remove"></i>
+              </button>
+            </div>
+        {{/if}}
+      </div>
+    </div>
+  </div>
+  <div class='row'>
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label>跳转链接</label>
+        <input class="form-control" placeholder="input url" name="url" value="{{ banner.url }}">
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+          <div class="form-group">
+            <div class="checkbox" style="padding-top: 20px;">
+                <label>
+                    <input type="checkbox" name="active" {{ isChecked banner.active  }} >显示
+                </label>
+              </div>
+            </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+        <label>排序</label>
+        <input class="form-control" placeholder="input sort number" name="sortNum" type='number' min="0" step='1' value="{{ banner.sortNum }}">
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="row">
+    <div class="col-lg-11">
+      <button type="submit" class="pull-right btn btn-primary">提  交</button>
+    </div>
+  </div>
+</form>
+
+
+</div>

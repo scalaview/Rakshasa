@@ -1,0 +1,28 @@
+{{#if customers.rows }}
+  <div class="space-1"></div>
+
+  <div class="container">
+    {{#each customers.rows}}
+    <div class="row">
+      <a href="/slave?id={{id}}">
+        <div class="col-xs-12">
+          <div class="well well-sm">
+            <div class="row">
+              <div class="col-xs-4">
+                <img src="{{ headimgurl }}" onError="this.src='http://placehold.it/380x380';" class="img-rounded img-responsive">
+              </div>
+              <div class="col-xs-8">
+                <h5>{{ username }}</h5>
+                <p><small>关注时间： {{ strftime subscribeTime "YYYY-MM-DD" }}</small></p>
+                <p><small>推荐人： {{ ../customer.username }}</small></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+    {{/each}}
+  </div>
+{{else}}
+  {{> no_data_found }}
+{{/if}}

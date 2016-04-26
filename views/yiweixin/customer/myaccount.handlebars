@@ -1,0 +1,93 @@
+<div class="container dtb_distribution">
+  {{> yiweixin/myaccount-header  }}
+   <div class="page cell">
+    <div class="bd">
+      <div class="weui_cells weui_cells_access">
+        <a class="weui_cell" href="/myticket/{{ toHex customer.id }}">
+          <div class="weui_cell_hd">
+            <i style="color: brown;" class="icon-left glyphicon glyphicon-qrcode"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>我的二维码</p>
+          </div>
+          <div class="weui_cell_ft"></div>
+        </a>
+        <a class="weui_cell" href="/orders">
+          <div class="weui_cell_hd">
+            <i style="color: blueviolet;" class="icon-left glyphicon glyphicon-gift"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>我的订单</p>
+          </div>
+          <div class="weui_cell_ft"></div>
+        </a>
+        <a class="weui_cell" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+          <div class="weui_cell_hd">
+            <i style="color: green;" class="icon-left glyphicon glyphicon-user"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>我的会员</p>
+          </div>
+          <div class="weui_cell_ft item customer"><em>{{ sum }}人</em></div>
+        </a>
+        <div id="collapseOne" class="col-xs-12 panel-collapse collapse">
+          <div class="panel-body" style="padding: 10px; background-color: #ffffff;">
+            {{#each result }}
+              <a href="/myslaves?depth={{ @index }}">
+                <div class="weui_cell">
+                  <div class="weui_cell_hd">
+                    <i class="icon-left glyphicon glyphicon-user" ></i>
+                  </div>
+                  <div class="weui_cell_bd weui_cell_primary">
+                      <p>{{ name }}</p>
+                  </div>
+                  <div class="weui_cell_ft">
+                    <span class="badge pull-right orange-bg">{{ count }}</span>
+                  </div>
+                </div>
+              </a>
+            {{/each}}
+          </div>
+        </div>
+        <a class="weui_cell" href="/salary">
+          <div class="weui_cell_hd">
+            <i style="color: orange;" class="icon-left glyphicon glyphicon-usd"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>我的收入</p>
+          </div>
+          <div class="weui_cell_ft"></div>
+        </a>
+        <a {{ applylimit customer.salary "weui_cell" }}>
+          <div class="weui_cell_hd">
+            <i style="color: blue;" class="icon-left glyphicon glyphicon-log-out"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>佣金提现</p>
+          </div>
+          <div class="weui_cell_ft"></div>
+        </a>
+        <a class="weui_cell" href="/withdrawals">
+          <div class="weui_cell_hd">
+            <i style="color: red;" class="icon-left glyphicon glyphicon-duplicate"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>提现记录</p>
+          </div>
+          <div class="weui_cell_ft"></div>
+        </a>
+        <a class="weui_cell" href="/awards">
+          <div class="weui_cell_hd">
+            <i style="color: orange;" class="icon-left glyphicon glyphicon-eye-open"></i>
+          </div>
+          <div class="weui_cell_bd weui_cell_primary">
+              <p>奖励参考</p>
+          </div>
+          <div class="weui_cell_ft"></div>
+        </a>
+      </div>
+    </div>
+   </div>
+</div>
+
+{{> alertmodal }}

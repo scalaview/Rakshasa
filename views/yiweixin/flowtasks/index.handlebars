@@ -1,0 +1,22 @@
+<div class="row">
+ <p class="bg-primary text-center" style='padding: 15px'>
+  <a href="" style='color: #FFF'>免费领流量</a>
+ </p>
+</div>
+<div style="padding-top: 10px;">
+  {{#each tasks}}
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-xs-12">
+        <a href="{{ taskLink this }}">
+          <div class="col-lg-12 col-xs-12">
+              <img class="img-responsive" src="{{cover}}">
+          </div>
+          <div class="col-lg-12 col-xs-12">
+            <h4 class="pull-left">{{digest}}  {{{expiredStr expiredAt}}}</h4>
+          </div>
+        </a>
+      </div>
+    </div>
+    <div class='space-6'></div>
+  {{/each}}
+</div>

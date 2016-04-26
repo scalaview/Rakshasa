@@ -1,0 +1,24 @@
+{{> "flowtasks/form" action='/admin/flowtask' method="POST" }}
+
+
+{{#section 'javascript'}}
+    <script type="text/javascript">
+    $(document).ready(function(){
+
+      $('#expired_at').datepicker({
+        startDate: new Date(),
+        format: "yyyy-mm-dd"
+      });
+      KindEditor.ready(function(K) {
+          return K.create("#content", {
+              "class": ["kindeditor", "optional"],
+              width: "100%",
+              height: 300,
+              allowFileManager: true,
+              uploadJson: '/public/kindeditor/uploads',
+              fileManagerJson: '/public/kindeditor/filemanager'
+          });
+      });
+    })
+  </script>
+{{/section}}

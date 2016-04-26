@@ -1,0 +1,30 @@
+<div class='container-fluid'>
+  <div class="row">
+      <div class="col-lg-12">
+          <h1 class="page-header">分销配置</h1>
+      </div>
+  </div>
+
+<form role="form" accept-charset="UTF-8" action="/admin/affiliateconfig/{{ aConfig.id }}" method="POST">
+  <div class='row'>
+    <div class="col-lg-6">
+      <div class="form-group">
+          <label>等级： {{ aConfig.level }}  百分比（%）</label>
+          <input class="form-control" placeholder="input percent" name="percent" type="number" min='0' max='100' value="{{ aConfig.percent }}">
+      </div>
+    </div>
+    <div class="col-lg-6">
+
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-1">
+      <button type="submit" class="pull-right btn btn-primary">保 存</button>
+    </div>
+  </div>
+
+</form>
+
+</div>

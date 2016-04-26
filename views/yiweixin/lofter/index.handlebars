@@ -1,0 +1,67 @@
+<div class="g-detail"></div>
+<div class="g-body">
+  <div id="lazy-loading" class="row" style="margin-top: 10px">
+    <button class="btn btn-lg col-xs-12">
+      <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate" style="font-size: 60px;"></span>
+    </button>
+  </div>
+</div>
+<a id="nextUrl" class="hide" href="{{next_url}}"></a>
+<script id="movies-template" type="text/x-handlebars-template">
+\{{#each movies }}
+  <div id="douban-\{{douban_id}}" class="g-mdl" >
+    <div class="g-bd">
+      <div class="g-bdc">
+        <div class="g-bdcc">
+          <div class="g-bdc">
+            <a class="movie-link" href="\{{#if bilibiliMovie.id}}/lofter/\{{bilibiliMovie.id}}\{{else}}/movie/\{{id}}\{{/if}}">
+              <div class="g-bdcc">
+                <div class="m-photo m-photo-full img-responsive">
+                  <div class="photo">
+                    <img src="\{{cover.large}}" onerror="this.src='http://www.lofter.com/mobile/src/images/defaultphoto.png';">
+                  </div>
+                </div>
+                <div class="m-cnt">
+                  <div class="author">
+                    豆瓣评分: <font color="green">\{{rate}}</font>
+                  </div>
+                  <h2 class="title">\{{title}}</h2>
+                  <div class="text">
+                     <div class="ztag">
+                        <blockquote>
+                           <p>\{{ subSummary summary 100}}</p>
+                        </blockquote>
+                     </div>
+                  </div>
+                </div>
+                <div class="m-oprt">
+                  <div class="tags">
+                    <span class="w-icn w-icn-bq">标签：</span>
+                    \{{#each genres }}
+                      <a href="#">\{{name}}</a>
+                    \{{/each}}
+                  </div>
+                  <div class="oprt">
+                    <div class="oprta">
+                      <em>
+                        <a>热度(\{{ ratings_count }})</a>
+                      </em>
+                    </div>
+                    <div class="oprtb">
+                      <a class="movie-link" href="\{{#if bilibiliMovie.id}}/lofter/\{{bilibiliMovie.id}}\{{else}}/movie/\{{id}}\{{/if}}">
+                        <em>
+                          <span class="glyphicon glyphicon-play-circle" aria-hidden="true"></span>播放
+                        </em>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+\{{/each}}
+</script>

@@ -1,0 +1,13 @@
+{{> "coupons/form" action=path method="POST" }}
+
+
+{{#section 'javascript'}}
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $('#expired_at').datepicker({
+        startDate: new Date(),
+        format: "yyyy-mm-dd"
+    });
+  })
+  </script>
+{{/section}}

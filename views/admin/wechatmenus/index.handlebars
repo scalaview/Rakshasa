@@ -1,0 +1,22 @@
+<form role="form" accept-charset="UTF-8" action="/admin/wechatmenus" method="POST">
+  <div style="background-color: #ffffff">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+       {{#each wechatmenus}}
+        <li role="presentation" {{#if @first }}class="active" {{/if}}><a href="#{{top.key}}" aria-controls="{{top.key}}" role="tab" data-toggle="tab">{{top.name}}</a></li>
+      {{/each}}
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      {{#each wechatmenus}}
+      <div role="tabpanel" class="tab-pane {{#if @first }}active{{/if}}" id="{{top.key}}">
+        {{ wechatMenus top menus @index }}
+      </div>
+      {{/each}}
+    </div>
+
+  </div>
+  <button type="submit" class="pull-right btn btn-primary">保存</button>
+</form>

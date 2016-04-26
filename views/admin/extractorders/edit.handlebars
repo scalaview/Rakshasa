@@ -1,0 +1,11 @@
+{{> "extractorders/form" action=path method="POST" }}
+
+{{#if_eq extractOrder.state failState }}
+<div class='row'>
+  <div class="col-lg-4 col-xs-12">
+    <a href="" data-id="{{extractOrder.id}}"  class="cry">
+      <button type="button" class="btn btn-warning btn-lg btn-block">cry</button>
+    </a>
+  </div>
+</div>
+{{/if_eq}}

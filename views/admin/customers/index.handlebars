@@ -1,0 +1,65 @@
+<div class="row">
+  <form role="form" accept-charset="UTF-8" action="/admin/customers" method="GET">
+    <div class="col-lg-3">
+      <div class="form-group">
+        <label>手机</label>
+        <input class="form-control" name="phone" value="{{ query.phone }}">
+      </div>
+    </div>
+    <div class="col-lg-3 col-lg-offset-6" style="padding-top: 19px;">
+      <div class="form-group">
+        <button type='submit' class="btn btn-info col-lg-8 pull-right">搜索</button>
+      </div>
+    </div>
+  </form>
+</div>
+<hr>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        用户管理
+      </div>
+      <!-- /.panel-heading -->
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                  <th>手机</th>
+                  <th>名称</th>
+                  <th>剩余流量币</th>
+                  <th>消费总额</th>
+                  <th>最近一次登录</th>
+                  <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each customers.rows}}
+                <tr>
+                    <td>{{ phone }}</td>
+                    <td><img src="{{headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ username }}</td>
+                    <td>{{ remainingTraffic }}</td>
+                    <td>{{ orderTotal }}</td>
+                    <td>{{ strftime updatedAt }}</td>
+                    <td>
+                      <a href="/admin/customers/{{id}}" class="list-group-item">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                      </a>
+                    </td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.table-responsive -->
+      </div>
+
+      <div class="panel-footer">
+          {{pagination customers (addParams '/admin/customers' query)}}
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+</div>

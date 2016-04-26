@@ -1,0 +1,23 @@
+.no_data_found_h {
+	text-align:center;
+}
+.dtb_distribution .customer {
+	border-top: 0;
+    border-bottom: 0;
+    margin-top: 0px;
+}
+.dtb_distribution .customer em {
+    margin-top: 0px;
+}
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+.fixer-container {
+  position: relative;
+  left: 22%;
+}
+.min_padding {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
