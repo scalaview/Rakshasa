@@ -129,7 +129,6 @@ admin.post("/extractorder", function(req, res) {
         res.redirect("/admin/extractorders/new")
         return
       },
-
       json: function(){
         res.json({
           code: 1,
@@ -137,7 +136,6 @@ admin.post("/extractorder", function(req, res) {
         });
         return
       },
-
       default: function() {
         res.status(406).send('Not Acceptable');
         return
@@ -163,6 +161,8 @@ admin.post("/extractorder", function(req, res) {
       cost: req.body.cost,
       value: trafficPlan.value,
       bid: trafficPlan.bid,
+      type: trafficPlan.type,
+      chargeType: "terminal",
       extend: req.body.extend
     }).save().then(function(extractOrder) {
       next(null, extractOrder, trafficPlan)
@@ -178,7 +178,6 @@ admin.post("/extractorder", function(req, res) {
           res.redirect("/admin/extractorders/new")
           return
         },
-
         json: function(){
           res.json({
             code: 1,
@@ -186,7 +185,6 @@ admin.post("/extractorder", function(req, res) {
           });
           return
         },
-
         default: function() {
           res.status(406).send('Not Acceptable');
           return
@@ -199,7 +197,6 @@ admin.post("/extractorder", function(req, res) {
           res.redirect("/admin/extractorders/" + extractOrder.id + "/edit")
           return
         },
-
         json: function(){
           res.json({
             code: 0,
@@ -207,7 +204,6 @@ admin.post("/extractorder", function(req, res) {
           });
           return
         },
-
         default: function() {
           res.status(406).send('Not Acceptable');
           return
