@@ -928,6 +928,10 @@ function autoCharge(extractOrder, trafficPlan, next){
     }).do()
 }
 
+function chargeType(){
+
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -982,3 +986,4 @@ exports.nextUrl = nextUrl;
 exports.if_eq = if_eq;
 exports.ip = ip;
 exports.autoCharge = autoCharge;
+exports.chargeType = chargeType;
