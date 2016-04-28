@@ -115,6 +115,12 @@ module.exports = function(sequelize, DataTypes) {
     FINISH: 6
   }
 
+  ExtractOrder.CHARGETYPE = {
+    balance: "微信支付",
+    salary: "分销奖励",
+    terminal: "终端人工"
+  }
+
   ExtractOrder.STATEARRAY = Object.keys(ExtractOrder.STATE).map(function(k) { return [ExtractOrder.STATE[k], k] });
 
   return ExtractOrder;

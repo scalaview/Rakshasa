@@ -928,8 +928,8 @@ function autoCharge(extractOrder, trafficPlan, next){
     }).do()
 }
 
-function chargeType(){
-
+function chargeTypeTran(chargeType){
+  return models.ExtractOrder.CHARGETYPE[chargeType]
 }
 
 exports.applylimit = applylimit;
