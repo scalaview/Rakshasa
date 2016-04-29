@@ -12,7 +12,7 @@ var _ = require('lodash')
 var autoCharge = helpers.autoCharge
 
 app.get('/extractflow', requireLogin, function(req, res){
-  res.render('yiweixin/orders/extractflow', { customer: req.customer })
+  res.render('yiweixin/orders/order', { customer: req.customer })
 })
 
 app.post('/pay', requireLogin, function(req, res) {

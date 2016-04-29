@@ -986,4 +986,4 @@ exports.nextUrl = nextUrl;
 exports.if_eq = if_eq;
 exports.ip = ip;
 exports.autoCharge = autoCharge;
-exports.chargeType = chargeType;
+exports.chargeTypeTran = chargeTypeTran;
