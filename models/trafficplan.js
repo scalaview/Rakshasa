@@ -68,9 +68,6 @@ module.exports = function(sequelize, DataTypes) {
     trafficGroupId: { type: DataTypes.INTEGER, allowNull: true },
     purchasePrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0.0 },
     integral: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
-    firstRewards: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
-    secondRewards: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
-    thirdRewards: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
     withOutDiscount: { type: DataTypes.VIRTUAL }
   }, {
     classMethods: {
