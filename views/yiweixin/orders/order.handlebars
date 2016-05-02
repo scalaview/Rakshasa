@@ -1,91 +1,147 @@
-<div class="page cell">
-  <div class="bd">
-    <div class="row">
-      <div class="col-xs-5 nopadding">------------------</div>
-      <div class="col-xs-2 nopadding">提示：选择运营商</div>
-      <div class="col-xs-5 nopadding">------------------</div>
+<div class="easyui-navpanel">
+  <div class="banner">
+    <ul>
+      <li>
+        <img src="http://czdl.xinhaoba.com/weixin/img/banner_new1.png">
+      </li>
+      <!--
+        <li>
+        <img src="/weixin/img/banner.png"></li>
+        <li>
+        <img src="/weixin/img/banner.png"></li>
+        -->
+    </ul>
+  </div>
+  <!-- <div class="container" style="background:#00FFFF">
+    -->
+  <div class="container">
+    <div class="yunying">
+      <div class="line-goodsInfo">
+        <div class="line-content">
+          <p>提示：请选择运营商</p>
+        </div>
+      </div>
+      <ul class="bottonYun">
+        <li data-id='yd' class="current">
+          <span>
+          <img src="/images/yidogn.png"></span> <b>移动</b>
+        </li>
+        <li data-id='lt'>
+          <span>
+          <img src="/images/liantong.png"></span> <b>联通</b>
+        </li>
+        <li data-id='dx'>
+          <span>
+          <img src="/images/dianxin.png"></span>
+          <b>电信</b>
+        </li>
+      </ul>
     </div>
-    <div class="row">
-      <div class="col-xs-1">
+    <div class="leixing">
+      <div class="line-goodsInfo">
+        <div class="line-content">
+          <!-- <p style="background:#00FFFF">提示：请选择流量类型</p>
+            -->
+          <p>提示：请选择流量类型</p>
+        </div>
       </div>
-      <div class="col-xs-3 nopadding">
-        <a href="#" class="radio-button bg-green">移 动</a>
+      <ul class="bottonStyle">
+        {{#each CMCCtrafficGroups}}
+          <li id='CMCC-{{id}}' {{#if @first}}class="current"{{/if}}>
+            {{ cmccGroupName name }}
+          </li>
+        {{/each}}
+      </ul>
+    </div>
+    <div class="phoneCon">
+      <input id="nbr" class="number" type="text" placeholder="请输入手机号码：" maxlength="11" style="ime-mode:disabled" onkeydown="if(event.keyCode==13)event.keyCode=9" />
+      <div class =" tips alltextright">
+        <span id="tips" style="font-size:40px;">广东号码国内流量认准《五一惠价》购买，流量有效期5.1至5.31</span>
       </div>
-      <div class="col-xs-3 nopadding">
-        <a href="#" class="radio-button bg-green">联 通</a>
+      <div class =" tips alltextright">
+        <span id="error_div" style="color:red;font-size:40px;"/>
       </div>
-      <div class="col-xs-3 nopadding">
-        <a href="#" class="radio-button bg-green">电 信</a>
+      <div class="tips alltextright">
+        <span id="success_div"/>
       </div>
     </div>
-    <div class="row">
-      <div class="col-xs-1">
-      </div>
-      <div class="col-xs-3 nopadding">
-        <a href="#" class="radio-button bg-green">移 动</a>
-      </div>
-      <div class="col-xs-3 nopadding">
-        <a href="#" class="radio-button bg-green">联 通</a>
-      </div>
-      <div class="col-xs-3 nopadding">
-        <a href="#" class="radio-button bg-green">电 信</a>
-      </div>
-    </div>
-    <div class="weui_cells weui_cells_form">
-      <div class="weui_cell">
-          <div class="weui_cell_hd"></div>
-          <div class="weui_cell_bd weui_cell_primary">
-              <input class="weui_input" type="tel" placeholder="请输入手机号" id="mobile" maxlength="11">
+    <div id="payInfo" class="paycontianer">
+      <ul>
+        <li>
+          <div class="type1">
+            <span>500M(20天有效</span>
+            <span></span>
           </div>
-      </div>
+          <div class="type2">
+            <span onclick="openit()">详情</span>
+          </div>
+          <div class="type3">
+            <b>21元</b>
+          </div>
+          <div class="type4">
+            <b onclick="submit(1237)">购买</b>
+          </div>
+        </li>
+        <li>
+          <div class="type1">
+            <span>1000M(20天有效</span>
+            <span></span>
+          </div>
+          <div class="type2">
+            <span onclick="openit()">详情</span>
+          </div>
+          <div class="type3">
+            <b>35元</b>
+          </div>
+          <div class="type4">
+            <b onclick="submit(1239)">购买</b>
+          </div>
+        </li>
+      </ul>
     </div>
-    <div class="ll4b">
-      <div class="row">
-        <div class="col-xs-3 nopadding">
-          <a href="javascript:;" class="weui_btn weui_btn weui_btn_default">按钮按钮按钮按钮按钮按钮按钮</a>
-        </div>
-        <div class="col-xs-3 nopadding">
-          <a href="#" class="radio-button min bg-green">详情</a>
-        </div>
-        <div class="col-xs-3 nopadding">
-          <a href="#" class="radio-button min bg-green">3.8$</a>
-        </div>
-        <div class="col-xs-3 nopadding">
-          <a href="javascript:;" class="weui_btn weui_btn weui_btn_default">购买</a>
-        </div>
-      </div>
-      <hr>
-      <div class="row">
-        <div class="col-xs-3 nopadding">
-          <a href="javascript:;" class="weui_btn weui_btn weui_btn_default">按钮按钮按钮按钮按钮按钮按钮</a>
-        </div>
-        <div class="col-xs-3 nopadding">
-          <a href="#" class="radio-button min bg-green">详情</a>
-        </div>
-        <div class="col-xs-3 nopadding">
-          <a href="#" class="radio-button min bg-green">3.8$</a>
-        </div>
-        <div class="col-xs-3 nopadding">
-          <a href="javascript:;" class="weui_btn weui_btn weui_btn_default">购买</a>
-        </div>
-      </div>
-      <hr>
-      <div class="row">
-        <div class="col-xs-3 nopadding">
-          <a href="javascript:;" class="weui_btn weui_btn weui_btn_default">按钮按钮按钮按钮按钮按钮按钮</a>
-        </div>
-        <div class="col-xs-3 nopadding">
-          <a href="#" class="radio-button min bg-green">详情</a>
-        </div>
-        <div class="col-xs-3 nopadding">
-          <a href="#" class="radio-button min bg-green">3.8$</a>
-        </div>
-        <div class="col-xs-3 nopadding">
-          <a href="javascript:;" class="weui_btn weui_btn weui_btn_default">购买</a>
-        </div>
-      </div>
-      <hr>
+  </div>
+</div>
+<div id="p2" class="easyui-navpanel">
+  <header>
+    <div class="m-toolbar">
+      <br/>
+      <span class="m-title" style="font-size:50px;">业务详情介绍</span>
     </div>
+  </header>
+  <div style="margin:10px 0 0;text-align:center">
+    <span id="p2-title" style="margin:0 20px 20px 20px;text-align:left">
+      <ul class="m-list">
+        <li>
+          <span style="color:#000000;font-size:40px; display: none;">
+          广东移动省内流量介绍
+          <br>
+          1.【充值对象】：限广东移动用户，其他省份用户无法充值；
+          <br>
+          2.【有效期限】：自充值成功起算20天（月结不清零，可跨月使用）；
+          <br>
+          3.【流量类型】：4G、3G、2G通用网络流量；
+          <br>
+          4.【使用范围】：省内使用，全天24小时，不分时段（本流量红包是优先使用的,即使在夜间也是优先于您的闲时流量使用）；
+          <br>
+          5.【充值限制】：可无限次充值；
+          <br>
+          6.【注意事项】：流量充值无法进行冲正，请务必填写正确的手机号码，如填写错误损失自行负责；
+          <br>
+          7.【特殊情况】：欠费停机或转套餐未生效的号码、移动4G随心王，无法进行流量充值
+          <br>
+          8.【到帐时间】：正常1-10分钟到账。
+          <br>
+          9.【查询方式】：发送cxll到10086查询；
+          <br>
+          10.【其他问题】: 流量到帐一般有短信通知，特殊时段（如夜间22:00-08:00或移动繁忙时段）可能会没有短信通知，不过流量会正常到帐的（流量查询）；您的4G流量一用完移动就会默认关闭您的4G功能，建议在没用完您的4G流量前来充值，若移动关闭了您的4G功能可以让10086客服帮您重新开通。
+          <br>11.最终解释权归本公司所有</span>
+        </li>
+        <li></li>
+      </ul>
+    </span>
+    <a href="javascript:void(0)" class="easyui-linkbutton" style="width:100px;height:30px" onclick="$.mobile.back()">
+    <span style="font-size:40px;">返回充值界面</span>
+    </a>
   </div>
 </div>
 
@@ -95,72 +151,31 @@
     <div class="weui_cells_title">\{{name}}</div>
     <div class="weui_cells">
       \{{#each trafficplans}}
-        <div class="weui_cell">
-          <div class="weui_cell_bd weui_cell_primary">
-              <a class="weui_btn weui_btn_plain_primary exchanger" data-name="\{{name}}" style="font-size: 16px;" data-value="\{{id}}" data-cost="\{{cost}}">
-                \{{#if-lt cost withOutDiscount }}
-                  \{{name}} <strike>\{{withOutDiscount}}元</strike> <font size="3" color="red"><b>\{{cost}}元</b></font>
-                \{{else}}
-                  \{{name}} <b>\{{cost}}元</b>
-                \{{/if-lt}}
-              </a>
+        <li>
+          <div class="type1">
+            <span>\{{name}}</span>
+            <span></span>
           </div>
-        </div>
+          <div class="type2">
+            <span onclick="openit()">详情</span>
+          </div>
+          <div class="type3">
+            <b>\{{cost}}元</b>
+          </div>
+          <div class="type4">
+            <b data-name="\{{name}}" data-value="\{{id}}" data-cost="\{{cost}}" onclick="submit(1237)">购买</b>
+          </div>
+        </li>
       \{{/each}}
     </div>
   </div>
 \{{/each}}
 </script>
 
-<style type="text/css">
-.bg-green {
-    color: #3e5706;
-    background: #a5cd4e; /* Old browsers */
-    background: -moz-linear-gradient(top,  #a5cd4e 0%, #6b8f1a 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a5cd4e), color-stop(100%,#6b8f1a)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%); /* IE10+ */
-    background: linear-gradient(top,  #a5cd4e 0%,#6b8f1a 100%); /* W3C */
 
-}
-.radio-button {
-    display: inline-block;
-    position: relative;
-    margin: 10px;
-    padding: 0 20px;
-    text-align: center;
-    text-decoration: none;
-    font: bold 22px/40px Arial, sans-serif;
 
-    text-shadow: 1px 1px 1px rgba(255,255,255, .22);
+<script type="text/javascript">
+$(function(){
 
-    -webkit-border-radius: 30px;
-    -moz-border-radius: 30px;
-    border-radius: 30px;
-
-    -webkit-box-shadow: 1px 1px 1px rgba(0,0,0, .29), inset 1px 1px 1px rgba(255,255,255, .44);
-    -moz-box-shadow: 1px 1px 1px rgba(0,0,0, .29), inset 1px 1px 1px rgba(255,255,255, .44);
-    box-shadow: 1px 1px 1px rgba(0,0,0, .29), inset 1px 1px 1px rgba(255,255,255, .44);
-
-    -webkit-transition: all 0.15s ease;
-    -moz-transition: all 0.15s ease;
-    -o-transition: all 0.15s ease;
-    -ms-transition: all 0.15s ease;
-    transition: all 0.15s ease;
-}
-
-.radio-button.min {
-  font: bold 18px/35px Arial, sans-serif;
-}
-.radio-button:hover {
-    -webkit-box-shadow: 1px 1px 1px rgba(0,0,0,.29), inset 0px 0px 2px rgba(0,0,0, .5);
-    -moz-box-shadow: 1px 1px 1px rgba(0,0,0,.29), inset 0px 0px 2px rgba(0,0,0, .5);
-    box-shadow: 1px 1px 1px rgba(0,0,0,.29), inset 0px 0px 2px rgba(0,0,0, .5);
-}
-.radio-button:active {
-    -webkit-box-shadow: inset 0px 0px 3px rgba(0,0,0, .8);
-    -moz-box-shadow: inset 0px 0px 3px rgba(0,0,0, .8);
-    box-shadow: inset 0px 0px 3px rgba(0,0,0, .8);
-}
-</style>
+})
+</script>

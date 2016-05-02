@@ -932,6 +932,14 @@ function chargeTypeTran(chargeType){
   return models.ExtractOrder.CHARGETYPE[chargeType]
 }
 
+function cmccGroupName(name){
+  var array = []
+  _.forEach(name.split(" "), function(v){
+    array.push("<b>{{v}}</b>".format({ v: v }))
+  })
+  return array.join("<br>").htmlSafe()
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -987,3 +995,4 @@ exports.if_eq = if_eq;
 exports.ip = ip;
 exports.autoCharge = autoCharge;
 exports.chargeTypeTran = chargeTypeTran;
+exports.cmccGroupName = cmccGroupName;

@@ -12,7 +12,20 @@ var _ = require('lodash')
 var autoCharge = helpers.autoCharge
 
 app.get('/extractflow', requireLogin, function(req, res){
-  res.render('yiweixin/orders/order', { customer: req.customer })
+  async.waterfall([function(next){
+    models.TrafficGroup.findAll({
+      where: {
+        providerId: models.TrafficGroup.Provider["中国移动"],
+        display: true
+      }
+    }).then(function(CMCCtrafficGroups){
+      next(null, CMCCtrafficGroups)
+    }).catch(function(err){
+      next(err)
+    })
+  }], function(err, CMCCtrafficGroups){
+    res.render('yiweixin/orders/order', { customer: req.customer, CMCCtrafficGroups: CMCCtrafficGroups , layout: 'recharge'  })
+  })
 })
 
 app.post('/pay', requireLogin, function(req, res) {
