@@ -24,7 +24,7 @@ app.get('/extractflow', requireLogin, function(req, res){
       next(err)
     })
   }], function(err, CMCCtrafficGroups){
-    res.render('yiweixin/orders/order', { customer: req.customer, CMCCtrafficGroups: CMCCtrafficGroups , layout: 'recharge'  })
+    res.render('yiweixin/orders/order', { customer: req.customer, CMCCtrafficGroups: CMCCtrafficGroups, providers: models.TrafficGroup.Provider, layout: 'recharge'  })
   })
 })
 

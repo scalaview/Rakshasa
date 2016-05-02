@@ -302,7 +302,7 @@ app.get("/awards", requireLogin, function(req, res) {
       next(err)
     })
   }, function(coupons, next) {
-    models.TrafficPlan.getTrafficPlanByGroup(models, Object.keys(models.TrafficPlan.ProviderName), customer, coupons, next)
+    models.TrafficPlan.getTrafficPlanByGroup(models, Object.keys(models.TrafficPlan.ProviderName), null, customer, coupons, next)
   }, function(data, next) {
     models.AffiliateConfig.loadConfig(models, null, function(configs){
       next(null, data, configs)

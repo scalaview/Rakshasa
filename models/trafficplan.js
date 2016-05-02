@@ -77,7 +77,8 @@ module.exports = function(sequelize, DataTypes) {
       syncDataSource: function(phone) {
         return new DataSource(phone)
       },
-      getTrafficPlanByGroup: function(models, providerId, customer, coupons, pass){
+      getTrafficPlanByGroup: function(models, providerId, groupId, customer, coupons, pass){
+
         models.TrafficGroup.findAll({
           where: {
             providerId: providerId,
@@ -88,11 +89,15 @@ module.exports = function(sequelize, DataTypes) {
             ['id', 'ASC']
            ]
         }).then(function(trafficgroups) {
+          var params = {
+              display: true
+            }
+            if(groupId){
+              params['trafficGroupId'] = groupId
+            }
           async.map(trafficgroups, function(trafficgroup, next) {
             trafficgroup.getTrafficPlans({
-              where: {
-                display: true
-              },
+              where: params,
               order: [
                 ['sortNum', 'ASC'],
                 ['id', 'ASC']

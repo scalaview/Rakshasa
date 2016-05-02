@@ -19,6 +19,7 @@ Handlebars.registerHelper('subSummary', function(text, size) {
 $(document).ready(function () {
   applylimit()
   extractConfirm()
+  bindTrafficplan()
   givenTo()
   withdrawal()
   $(".correct").html("");
@@ -31,11 +32,7 @@ $(document).ready(function () {
     var cost = $this.data("cost");
     $("#needmyflow").html(cost);
   })
-  var source   = $("#trafficplans-template").html();
-  if(source !== undefined && source !== ''){
-    getTrafficplan(source, "all")
-    submitIsEnable(true);
-  }
+  initTrafficplan()
   if($("#movies-template").html() !== undefined && $("#movies-template").html() !== ''){
     popstateBack()
     loadMore()
@@ -188,16 +185,33 @@ function getCarrier(phone, successCallback){
   })
 }
 
-function getTrafficplan(source, catName){
+function initTrafficplan(){
+  var source   = $("#trafficplans-template").html();
+  if(source !== undefined && source !== ''){
+    var $this = $(".bottonYun li.current"),
+        id = $this.data('id'),
+        provider = $this.data("provider")
+    if(id == 'yd'){
+      var groupId = $(".bottonStyle li.current").data('id')
+    }
+    getTrafficplan(source, provider, groupId)
+  }
+}
+
+function getTrafficplan(source, catName, groupId){
   if(!source) return
-  var template = Handlebars.compile(source);
+  var template = Handlebars.compile(source),
+      params = {
+                  catName: catName
+                };
+  if(groupId){
+    params["groupId"] = groupId
+  }
   showLoadingToast();
   $.ajax({
     url: '/getTrafficplans',
     dataType: 'JSON',
-    data: {
-      catName: catName
-    },
+    data: params,
     method: "GET"
   }).done(function(data){
     if(data.err == 4){  //服务器维护中
@@ -212,9 +226,6 @@ function getTrafficplan(source, catName){
     }else{
       $(".no_data").hide()
       var html = template({trafficgroups: data})
-      if(catName == "all"){
-        window.plans = html
-      }
       $(".llb").html(html)
       hideLoadingToast();
     }
@@ -224,10 +235,9 @@ function getTrafficplan(source, catName){
     showDialog("服务器错误")
   })
 }
-
 function extractConfirm(){
 
-  $(".llb").on('click', 'a.exchanger', function() {
+  $(".llb").on('click', '.exchanger', function() {
     var mobile = $.trim($("#mobile").val());
     if (!isMobile(mobile)){
       showDialog("请输入正确的手机号码")
@@ -476,3 +486,19 @@ function bindScroll(){
     loadMore();
   }
 }
+
+function bindTrafficplan(){
+  $(".bottonYun li").on("click", function(){
+    var $this = $(this);
+    $(".bottonYun li.current").removeClass("current")
+    $this.addClass("current")
+    initTrafficplan()
+  })
+  $(".bottonStyle li").on("click", function(){
+    var $this = $(this);
+    $(".bottonStyle li.current").removeClass("current")
+    $this.addClass("current")
+    initTrafficplan()
+  })
+}
+

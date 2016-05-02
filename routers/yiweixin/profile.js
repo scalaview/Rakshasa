@@ -8,7 +8,8 @@ var requireLogin = helpers.requireLogin
 var _ = require('lodash')
 
 app.get('/getTrafficplans', requireLogin, function(req, res){
-  var customer = req.customer
+  var customer = req.customer,
+      groupId = req.query.groupId
   if(models.TrafficPlan.Provider[req.query.catName] !== undefined || req.query.catName == "all"){
     var providerId = req.query.catName == "all" ?  Object.keys(models.TrafficPlan.ProviderName) : models.TrafficPlan.Provider[req.query.catName]
     async.waterfall([function(next) {
@@ -47,7 +48,7 @@ app.get('/getTrafficplans', requireLogin, function(req, res){
         outnext(err)
       })
     }, function(coupons, outnext) {
-      models.TrafficPlan.getTrafficPlanByGroup(models, providerId, customer, coupons, outnext)
+      models.TrafficPlan.getTrafficPlanByGroup(models, providerId, groupId, customer, coupons, outnext)
     }], function(err, result) {
       if(err){
         console.log(err)

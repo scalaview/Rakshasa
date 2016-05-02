@@ -4,16 +4,8 @@
       <li>
         <img src="http://czdl.xinhaoba.com/weixin/img/banner_new1.png">
       </li>
-      <!--
-        <li>
-        <img src="/weixin/img/banner.png"></li>
-        <li>
-        <img src="/weixin/img/banner.png"></li>
-        -->
     </ul>
   </div>
-  <!-- <div class="container" style="background:#00FFFF">
-    -->
   <div class="container">
     <div class="yunying">
       <div class="line-goodsInfo">
@@ -22,15 +14,15 @@
         </div>
       </div>
       <ul class="bottonYun">
-        <li data-id='yd' class="current">
+        <li data-id='yd' data-provider="中国移动" class="current">
           <span>
           <img src="/images/yidogn.png"></span> <b>移动</b>
         </li>
-        <li data-id='lt'>
+        <li data-id='lt' data-provider="中国联通">
           <span>
           <img src="/images/liantong.png"></span> <b>联通</b>
         </li>
-        <li data-id='dx'>
+        <li data-id='dx' data-provider="中国电信">
           <span>
           <img src="/images/dianxin.png"></span>
           <b>电信</b>
@@ -40,22 +32,20 @@
     <div class="leixing">
       <div class="line-goodsInfo">
         <div class="line-content">
-          <!-- <p style="background:#00FFFF">提示：请选择流量类型</p>
-            -->
           <p>提示：请选择流量类型</p>
         </div>
       </div>
       <ul class="bottonStyle">
         {{#each CMCCtrafficGroups}}
-          <li id='CMCC-{{id}}' {{#if @first}}class="current"{{/if}}>
+          <li data-id='{{id}}' {{#if @first}}class="current"{{/if}}>
             {{ cmccGroupName name }}
           </li>
         {{/each}}
       </ul>
     </div>
     <div class="phoneCon">
-      <input id="nbr" class="number" type="text" placeholder="请输入手机号码：" maxlength="11" style="ime-mode:disabled" onkeydown="if(event.keyCode==13)event.keyCode=9" />
-      <div class =" tips alltextright">
+      <input id="mobile" class="number" type="text" placeholder="请输入手机号码：" maxlength="11" style="ime-mode:disabled"/>
+      <div class ="tips alltextright">
         <span id="tips" style="font-size:40px;">广东号码国内流量认准《五一惠价》购买，流量有效期5.1至5.31</span>
       </div>
       <div class =" tips alltextright">
@@ -65,40 +55,9 @@
         <span id="success_div"/>
       </div>
     </div>
-    <div id="payInfo" class="paycontianer">
-      <ul>
-        <li>
-          <div class="type1">
-            <span>500M(20天有效</span>
-            <span></span>
-          </div>
-          <div class="type2">
-            <span onclick="openit()">详情</span>
-          </div>
-          <div class="type3">
-            <b>21元</b>
-          </div>
-          <div class="type4">
-            <b onclick="submit(1237)">购买</b>
-          </div>
-        </li>
-        <li>
-          <div class="type1">
-            <span>1000M(20天有效</span>
-            <span></span>
-          </div>
-          <div class="type2">
-            <span onclick="openit()">详情</span>
-          </div>
-          <div class="type3">
-            <b>35元</b>
-          </div>
-          <div class="type4">
-            <b onclick="submit(1239)">购买</b>
-          </div>
-        </li>
-      </ul>
+    <div class="llb paycontianer">
     </div>
+    <div class="no_data" style="display: none"></div>
   </div>
 </div>
 <div id="p2" class="easyui-navpanel">
@@ -145,37 +104,29 @@
   </div>
 </div>
 
+{{> alertmodal }}
+{{> extractConfirm }}
+{{> loading }}
+
 <script id="trafficplans-template" type="text/x-handlebars-template">
 \{{#each trafficgroups}}
-  <div>
-    <div class="weui_cells_title">\{{name}}</div>
-    <div class="weui_cells">
-      \{{#each trafficplans}}
-        <li>
-          <div class="type1">
-            <span>\{{name}}</span>
-            <span></span>
-          </div>
-          <div class="type2">
-            <span onclick="openit()">详情</span>
-          </div>
-          <div class="type3">
-            <b>\{{cost}}元</b>
-          </div>
-          <div class="type4">
-            <b data-name="\{{name}}" data-value="\{{id}}" data-cost="\{{cost}}" onclick="submit(1237)">购买</b>
-          </div>
-        </li>
-      \{{/each}}
-    </div>
-  </div>
+  <ul>
+    \{{#each trafficplans}}
+      <li>
+        <div class="type1">
+          <span>\{{name}}</span>
+          <span></span>
+        </div>
+        <div class="type2">
+          <span onclick="openit()">详情</span>
+        </div>
+        <div class="type3">
+          <b>\{{cost}}元</b>
+        </div>
+        <div class="type4">
+          <b class="exchanger" data-name="\{{name}}" data-value="\{{id}}" data-cost="\{{cost}}">购买</b>
+        </div>
+      </li>
+    \{{/each}}
+  </ul>
 \{{/each}}
-</script>
-
-
-
-<script type="text/javascript">
-$(function(){
-
-})
-</script>
