@@ -38,13 +38,13 @@ $(document).ready(function () {
     loadMore()
     $(window).scroll(bindScroll);
   }
-  mobileBlur(function(result) {
-    var source   = $("#trafficplans-template").html();
-    if(source !== undefined && source !== ''){
-      getTrafficplan(source, result.catName)
-      submitIsEnable(true);
-    }
-  });
+  // mobileBlur(function(result) {
+  //   var source   = $("#trafficplans-template").html();
+  //   if(source !== undefined && source !== ''){
+  //     getTrafficplan(source, result.catName)
+  //     submitIsEnable(true);
+  //   }
+  // });
   changePayment()
 });
 
@@ -269,7 +269,7 @@ function extractConfirm(){
 }
 
 function paymentConfirm(){
-  var selectedFlow = $(".llb a.exchanger.choose")
+  var selectedFlow = $(".llb .exchanger.choose")
         phone = $.trim($("#mobile").val()),
         flowId = selectedFlow.data("value"),
         source   = $("#trafficplans-template").html(),
