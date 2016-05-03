@@ -241,7 +241,7 @@ zoom:1;
   font-size: 34px;
 }
 
-#mask .weui_dialog_title, #mask .tit, #mask #maskmobile, #mask #maskflow, #mask #maskcost, #mask .pl15 {
+#mask .weui_dialog_title, #mask .tit, #mask #maskmobile, #mask #maskflow, #mask #maskcost, #mask .pl15, #mask #integral {
   font-size: 35px;
 }
 
@@ -261,4 +261,41 @@ zoom:1;
 
 .weui_dialog #popup_message {
   font-size: 35px;
+}
+
+.weui_switch {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    position: relative;
+    width: 90px;
+    height: 45px;
+    border: 1px solid #dfdfdf;
+    outline: 0;
+    border-radius: 16px;
+    box-sizing: border-box;
+    background: #dfdfdf;
+}
+
+.weui_switch:after, .weui_switch:before {
+    content: " ";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 45px;
+    border-radius: 25px;
+    -webkit-transition: -webkit-transform .3s;
+    transition: -webkit-transform .3s;
+    transition: transform .3s;
+    transition: transform .3s,-webkit-transform .3s;
+}
+
+.weui_switch:checked:after {
+  transform: translateX(40px);
+}
+
+.weui_switch:after {
+  width: 50px;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,.4);
 }

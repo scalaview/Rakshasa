@@ -85,6 +85,11 @@ module.exports = function(sequelize, DataTypes) {
     myticket: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    totalIntegral:{
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0
     }
   }, {
     classMethods: _.merge(concern.classMethods, {
@@ -320,7 +325,8 @@ module.exports = function(sequelize, DataTypes) {
 
   Customer.CHARGETYPE = {
     BALANCE: "balance",
-    SALARY: "salary"
+    SALARY: "salary",
+    REMAININGTRAFFIC: "remainingTraffic"
   }
 
   return Customer;

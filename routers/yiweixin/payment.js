@@ -23,14 +23,36 @@ app.get('/extractflow', requireLogin, function(req, res){
     }).catch(function(err){
       next(err)
     })
-  }], function(err, CMCCtrafficGroups){
-    res.render('yiweixin/orders/order', { customer: req.customer, CMCCtrafficGroups: CMCCtrafficGroups, providers: models.TrafficGroup.Provider, layout: 'recharge'  })
+  }, function(CMCCtrafficGroups, next){
+    models.DConfig.findOne({
+      where: {
+        name: "exchangeRate"
+      }
+    }).then(function(dConfig){
+      next(null, CMCCtrafficGroups, dConfig)
+    }).catch(function(err){
+      next(err)
+    })
+  }], function(err, CMCCtrafficGroups, dConfig){
+    res.render('yiweixin/orders/order', { customer: req.customer, CMCCtrafficGroups: CMCCtrafficGroups, exchangeRate: dConfig.value || 1, providers: models.TrafficGroup.Provider, layout: 'recharge'  })
   })
 })
 
 app.post('/pay', requireLogin, function(req, res) {
     var customer = req.customer,
-        chargetype = (req.body.chargetype == "balance" ) ? models.Customer.CHARGETYPE.BALANCE : models.Customer.CHARGETYPE.SALARY
+        useIntegral = req.body.useIntegral == 'true' ? true : false
+        console.log(req.body)
+    switch(req.body.chargetype ){
+      case  "remainingTraffic":
+        var chargetype = models.Customer.CHARGETYPE.REMAININGTRAFFIC
+        break;
+      case  "salary":
+        var chargetype = models.Customer.CHARGETYPE.SALARY
+        break;
+      default:
+        var chargetype = models.Customer.CHARGETYPE.BALANCE
+        break;
+    }
 
     async.waterfall([function(next){
       if(customer.levelId !== undefined){
@@ -78,11 +100,38 @@ app.post('/pay', requireLogin, function(req, res) {
         next(err)
       })
     }, function(paymentMethod, trafficPlan, next){
+      models.DConfig.findOne({
+        where: {
+          name: "exchangeRate"
+        }
+      }).then(function(dConfig){
+        next(null, paymentMethod, trafficPlan, dConfig.value || 1)
+      }).catch(function(err){
+        next(err)
+      })
+    }, function(paymentMethod, trafficPlan, exchangeRate, next){
 
-      var total = helpers.discount(customer, trafficPlan)
-
+      var total = helpers.discount(customer, trafficPlan),
+          deductible = 0.00
+      if(useIntegral){
+        deductible = (customer.totalIntegral / exchangeRate).toFixed(2)
+      }
+      if(useIntegral && deductible > 0.00){
+        if((total - deductible) < 0.00 ){
+          deductible = total
+          total = 0.00
+        }else{
+          total = total - deductible
+        }
+        customer.totalIntegral = customer.totalIntegral - deductible * exchangeRate
+      }
       if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < total){
         res.json({ err: 1, msg: "分销奖励不足" })
+        return
+      }
+
+      if(chargetype == models.Customer.CHARGETYPE.REMAININGTRAFFIC && customer.remainingTraffic < total){
+        res.json({ err: 1, msg: "充值余额不足" })
         return
       }
 
@@ -94,7 +143,7 @@ app.post('/pay', requireLogin, function(req, res) {
           phone: req.body.phone,
           customerId: customer.id,
           chargeType: chargetype,
-          paymentMethodId: paymentMethod.id
+          paymentMethodId: paymentMethod.id,
         }
       }).then(function(extractOrder) {
         if(extractOrder){
@@ -102,7 +151,8 @@ app.post('/pay', requireLogin, function(req, res) {
             cost: trafficPlan.purchasePrice,
             value: trafficPlan.value,
             bid: trafficPlan.bid,
-            total: total
+            total: total,
+            totalIntegral: parseInt(deductible * exchangeRate)
           }).then(function(extractOrder){
             next(null, paymentMethod, trafficPlan, extractOrder)
           }).catch(function(err){
@@ -119,7 +169,8 @@ app.post('/pay', requireLogin, function(req, res) {
             customerId: customer.id,
             chargeType: chargetype,
             paymentMethodId: paymentMethod.id,
-            total: total
+            total: total,
+            totalIntegral: parseInt(deductible * exchangeRate)
           }).save().then(function(extractOrder) {
             next(null, paymentMethod, trafficPlan, extractOrder)
           }).catch(function(err) {
@@ -159,7 +210,7 @@ app.post('/pay', requireLogin, function(req, res) {
               res.json(payargs);
             }
           });
-        }else{
+        }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.SALARY){
           // charge by salary
           customer.reduceTraffic(models, extractOrder, function(){
             res.json({err: 0, msg: '付款成功'})
@@ -184,6 +235,8 @@ app.post('/pay', requireLogin, function(req, res) {
             console.log(err)
             res.json({err: 1, msg: '付款失败'})
           })
+        }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.REMAININGTRAFFIC){
+
         }
       }
     })

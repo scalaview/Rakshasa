@@ -257,11 +257,28 @@ function extractConfirm(){
       return
     }
     $this.addClass('choose')
-
+    var cost = parseFloat($this.data('cost')),
+        discount = 0.00
+    if($("#use-integral").prop("checked")){
+      var exchangeRate = $("#use-integral").data("exchangerate"),
+          totalIntegral = $("#use-integral").data("totalintegral"),
+          discount = parseFloat( parseFloat(totalIntegral) /  parseFloat(exchangeRate) ),
+          cost = parseFloat($this.data('cost')) - discount
+      if(cost < 0.00){
+        discount = parseFloat($this.data('cost'))
+        cost = 0
+      }
+    }
     phone = $.trim($("#mobile").val())
     $("#maskflow").html($this.data('name'))
     $("#maskmobile").html(phone)
-    $("#maskcost").html($this.data('cost'))
+    $("#integral").html(discount.toFixed(2))
+    $("#maskcost").html(cost.toFixed(2))
+    if($("#use-integral").prop("checked") && discount > 0.00 ){
+      $("#integral").parent().show()
+    }else{
+      $("#integral").parent().hide()
+    }
     $("#mask").show()
   })
 
@@ -305,6 +322,7 @@ function wechatPayment(phone, flowId, opt){
           flowId: flowId,
           paymentMethod: 'WechatPay',
           chargetype: choose.data('id'),
+          useIntegral: $("#use-integral").prop("checked"),
           phone: phone
         }
       }).done(function(payargs) {

@@ -266,7 +266,10 @@ function taskLink(task) {
 
 
 function discount(customer, trafficPlan){
-  var discount = 1.00
+  var discount = 1.00,
+      useIntegral = useIntegral || false,
+      exchangeRate = exchangeRate || 1,
+      deductible = 0.00
   if(trafficPlan.coupon && trafficPlan.coupon.ignoreLevel && trafficPlan.coupon.discount > 0){
     discount = trafficPlan.coupon.discount
   }else if(customer.level != undefined && customer.level.discount > 0 && trafficPlan.coupon && !trafficPlan.coupon.ignoreLevel && trafficPlan.coupon.discount > 0){
@@ -277,11 +280,26 @@ function discount(customer, trafficPlan){
     discount = customer.level.discount
   }
 
-  if(discount >= (config.mindiscount || 0.60) ){
-    return (trafficPlan.cost * discount).toFixed(2)
-  }else{
-    return trafficPlan.cost
+  if(useIntegral){
+    deductible = (customer.totalIntegral / exchangeRate).toFixed(2)
   }
+
+  if(discount >= (config.mindiscount || 0.60) ){
+    var cost = trafficPlan.cost * discount
+  }else{
+    var cost = trafficPlan.cost
+  }
+
+  if(useIntegral && deductible > 0.00){
+    if((cost - deductible) < 0.00 ){
+      deductible = cost
+      cost = 0.00
+    }else{
+      cost = cost - deductible
+    }
+    customer.totalIntegral = customer.totalIntegral - deductible * exchangeRate
+  }
+  return cost.toFixed(2)
 }
 
 function selectTag(options, collection, selected) {

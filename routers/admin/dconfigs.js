@@ -44,7 +44,7 @@ admin.get('/configs', initDConfig, function(req, res) {
 
       if(dconfigs[i].name == 'exchangeRate'){
         result['exchangeRate'] = {
-          name: '兑换汇率(1元等于多少E币)',
+          name: '兑换汇率(1元等于多少积分)',
           key: 'exchangeRate',
           value: dconfigs[i].value
         }

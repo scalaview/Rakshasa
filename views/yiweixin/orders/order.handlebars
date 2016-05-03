@@ -47,6 +47,14 @@
       <input id="mobile" class="number" type="text" style="margin-bottom: 10px" placeholder="请输入手机号码：" maxlength="11" style="ime-mode:disabled"/>
       <div class="page cell">
         <div class="bd">
+        <div class="weui_cells weui_cells_form" style="width: 98%;padding-top: 10px;padding-bottom: 10px;">
+          <div class="weui_cell weui_cell_switch">
+            <div class="weui_cell_hd weui_cell_primary" style="font-size: 35px;">积  分: {{ customer.totalIntegral }}</div>
+            <div class="weui_cell_ft">
+              <input class="weui_switch" type="checkbox" id="use-integral" data-exchangerate={{ exchangeRate }} data-totalintegral="{{ customer.totalIntegral  }}">
+            </div>
+          </div>
+        </div>
           <div class="container">
             <div class="row" id="chooseMoney">
               <span data-id="balance" href="javascript:;" class="weui_btn weui_btn_primary selected">微信支付</span>

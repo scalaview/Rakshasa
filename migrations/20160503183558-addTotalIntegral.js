@@ -3,8 +3,8 @@
 module.exports = {
   up: function (queryInterface, Sequelize) {
     return queryInterface.addColumn(
-      'TrafficPlans',
-      'integral',
+      'ExtractOrders',
+      'totalIntegral',
       {
         type: Sequelize.INTEGER,
         allowNull: true,
@@ -14,6 +14,6 @@ module.exports = {
   },
 
   down: function (queryInterface, Sequelize) {
-    return queryInterface.removeColumn('TrafficPlans', 'integral');
+    return queryInterface.removeColumn('ExtractOrder', 'totalIntegral');
   }
 };
