@@ -132,6 +132,7 @@ module.exports = function(sequelize, DataTypes) {
   };
 
   FlowHistory.TRAFFICTYPE = {
+    BALANCE: 'balance',
     REMAININGTRAFFIC: 'remainingTraffic',
     SALARY: 'salary'
   };

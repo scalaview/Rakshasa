@@ -143,7 +143,7 @@ app.post('/pay', requireLogin, function(req, res) {
           phone: req.body.phone,
           customerId: customer.id,
           chargeType: chargetype,
-          paymentMethodId: paymentMethod.id,
+          paymentMethodId: paymentMethod.id
         }
       }).then(function(extractOrder) {
         if(extractOrder){
@@ -152,7 +152,8 @@ app.post('/pay', requireLogin, function(req, res) {
             value: trafficPlan.value,
             bid: trafficPlan.bid,
             total: total,
-            totalIntegral: parseInt(deductible * exchangeRate)
+            totalIntegral: parseInt(deductible * exchangeRate),
+            exchangeIntegral: deductible
           }).then(function(extractOrder){
             next(null, paymentMethod, trafficPlan, extractOrder)
           }).catch(function(err){
@@ -170,7 +171,8 @@ app.post('/pay', requireLogin, function(req, res) {
             chargeType: chargetype,
             paymentMethodId: paymentMethod.id,
             total: total,
-            totalIntegral: parseInt(deductible * exchangeRate)
+            totalIntegral: parseInt(deductible * exchangeRate),
+            exchangeIntegral: deductible
           }).save().then(function(extractOrder) {
             next(null, paymentMethod, trafficPlan, extractOrder)
           }).catch(function(err) {
@@ -186,7 +188,7 @@ app.post('/pay', requireLogin, function(req, res) {
         res.json({ err: 1, msg: "server error" })
       }else{
         //TODO salary
-        if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
+        if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE && extractOrder.total > 0){
           var ip = helpers.ip(req),
               total_amount = Math.round(extractOrder.total * 100).toFixed(0)
           var orderParams = {
@@ -210,8 +212,8 @@ app.post('/pay', requireLogin, function(req, res) {
               res.json(payargs);
             }
           });
-        }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.SALARY){
-          // charge by salary
+        }else{
+          // charge by salary or remainingTraffic or wechat payment total equal 0
           customer.reduceTraffic(models, extractOrder, function(){
             res.json({err: 0, msg: '付款成功'})
 
@@ -235,8 +237,6 @@ app.post('/pay', requireLogin, function(req, res) {
             console.log(err)
             res.json({err: 1, msg: '付款失败'})
           })
-        }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.REMAININGTRAFFIC){
-
         }
       }
     })

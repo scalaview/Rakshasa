@@ -115,15 +115,17 @@ module.exports = function(sequelize, DataTypes) {
         }, function(extractOrder, trafficPlan, next){
 
           if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
-            var enough = (extractOrder.state == models.ExtractOrder.STATE.PAID)
-          }else{
+            var enough = (extractOrder.state == models.ExtractOrder.STATE.PAID || extractOrder.total <= 0)
+          }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.SALARY){
             var enough = (customer.salary > extractOrder.total)
+          }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.REMAININGTRAFFIC){
+            var enough = (customer.remainingTraffic > extractOrder.total)
           }
 
           if(enough){
             if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
               next(null, customer, extractOrder, trafficPlan)
-            }else{
+            }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.SALARY){
               customer.updateAttributes({
                   salary: customer.salary - extractOrder.total
                 }).then(function(customer){
@@ -131,16 +133,30 @@ module.exports = function(sequelize, DataTypes) {
                 }).catch(function(err) {
                   next(err)
                 })
+            }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.REMAININGTRAFFIC){
+              customer.updateAttributes({
+                  remainingTraffic: customer.remainingTraffic - extractOrder.total
+                }).then(function(customer){
+                  next(null, customer, extractOrder, trafficPlan)
+                }).catch(function(err) {
+                  next(err)
+                })
             }
           }else{
-            next(new Error("剩余流量币不足"))
+            if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
+              next(new Error("支付失败"))
+            }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.SALARY){
+              next(new Error("分销奖励不足"))
+            }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.REMAININGTRAFFIC){
+              next(new Error("充值余额不足"))
+            }
           }
         }, function(customer, extractOrder, trafficPlan, next){
           customer.takeFlowHistory(models, extractOrder, extractOrder.total, "购买流量" + trafficPlan.name + "至" + extractOrder.phone + " 支付成功", models.FlowHistory.STATE.REDUCE, function(flowHistory){
               next(null, customer, extractOrder, trafficPlan, flowHistory)
             }, function(err){
               next(err)
-            }, (extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE) ? models.FlowHistory.TRAFFICTYPE.REMAININGTRAFFIC : models.FlowHistory.TRAFFICTYPE.SALARY)
+            }, extractOrder.chargeType)
         }], function(err, customer, extractOrder, trafficPlan, flowHistory){
           if(err){
             errCallBack(err)
@@ -174,14 +190,16 @@ module.exports = function(sequelize, DataTypes) {
         },function(customer, extractOrder, trafficPlan, next) {
           if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
             var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。对你造成的不便我们万分抱歉"
-          }else{
+          }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.SALARY){
             var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。分销奖励已经退还账户，对你造成的不便我们万分抱歉"
+          }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.REMAININGTRAFFIC){
+            var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。充值余额已经退还账户，对你造成的不便我们万分抱歉"
           }
           customer.takeFlowHistory(models, extractOrder, extractOrder.cost, msg, models.FlowHistory.STATE.ADD, function(flowHistory){
               next(null, customer, extractOrder, flowHistory)
             }, function(err) {
               next(err)
-            }, (extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE) ? models.FlowHistory.TRAFFICTYPE.REMAININGTRAFFIC : models.FlowHistory.TRAFFICTYPE.SALARY)
+            }, extractOrder.chargeType)
         }], function(err, customer, extractOrder, flowHistory) {
           if(err){
             errCallBack(err)

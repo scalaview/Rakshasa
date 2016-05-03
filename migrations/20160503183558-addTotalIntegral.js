@@ -2,7 +2,7 @@
 
 module.exports = {
   up: function (queryInterface, Sequelize) {
-    return queryInterface.addColumn(
+    queryInterface.addColumn(
       'ExtractOrders',
       'totalIntegral',
       {
@@ -11,9 +11,19 @@ module.exports = {
         defaultValue: 0
       }
     );
+    return queryInterface.addColumn(
+      'ExtractOrders',
+      'exchangeIntegral',
+      {
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: true,
+        defaultValue: 0.0
+      }
+    );
   },
 
   down: function (queryInterface, Sequelize) {
-    return queryInterface.removeColumn('ExtractOrder', 'totalIntegral');
+    queryInterface.removeColumn('ExtractOrder', 'totalIntegral');
+    return queryInterface.removeColumn('ExtractOrder', 'exchangeIntegral');
   }
 };
