@@ -1,0 +1,40 @@
+<div class="content">
+  <div class="buy-red">
+      <div class="zd-list"><a href="/income">账单</a></div>
+      <div class="name-img">
+          <a href="#">
+              <img id="userhead" src="{{ customer.headimgurl }}"></a>
+      </div>
+      <div class="name-con"><span class="orange" id="username"> {{ customer.username }} </span></div>
+  </div>
+  <div class="form-group">
+      <div class="tel-name">充值余额：</div>
+      <div class="llb" id="buylist">
+        {{#each dataPlans }}
+          <a href="javascript:void(0);" data-price="{{ price }}" data-id="{{ id }}" data-discount="{{ discount ../customer this }}"  data-value="{{ value }}">{{ name }}</a>
+        {{/each}}
+      </div>
+      <input type="hidden" id="txtFlowCount" value="">
+  </div>
+  <div class="sale-price">
+      <div class="right">
+        <div class="row">
+          <div class="col-xs-12">
+            售价：<span class="orange" id="txtPayMoney" >1.00</span>元
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="ml">
+      <div id='pay-now' class="btn-submit"><a href="javascript:void(0);">立即支付</a></div>
+  </div>
+    <div class="zw-tips"><a href="#">购买规则说明</a></div>
+</div>
+{{> alertmodal }}
+{{> paymentConfirm }}
+<script type="text/javascript">
+$(function() {
+  RegistEvent()
+  orderConfirm()
+})
+</script>

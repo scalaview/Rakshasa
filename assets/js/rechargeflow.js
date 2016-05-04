@@ -371,16 +371,63 @@ function RegistEvent() {
           flowCount = $(target).data("price");
           flowDiscount = $(target).data('discount');
       $("#txtFlowCount").val(flowId);
-      if(flowDiscount != ''){
-        $("#txtPayMoneyDiscount").html(flowDiscount.toFixed(2)).parent().removeClass('hide');
-        $("#txtPayMoney").attr('style', 'text-decoration: line-through;')
-      }else{
-        $("#txtPayMoney").removeAttr('style')
-        $("#txtPayMoneyDiscount").parent().addClass('hide');
-      }
       $("#txtPayMoney").html(parseFloat(flowCount).toFixed(2));
   });
   $("#buylist a:eq(0)").click()
+}
+
+function orderConfirm(){
+
+  $("#pay-now").click(function() {
+    var selectedFlow = $(".llb a.selected");
+    var flowId = selectedFlow.data("id");
+    if (!flowId || flowId == "") {
+        showDialog("请选择流量包");
+        return;
+    }
+
+    var flow = selectedFlow.data("value"),
+        price = selectedFlow.data("price"),
+        flowDiscount = selectedFlow.data('discount');
+    $("#maskmoney").html(price.toFixed(2))
+    $("#maskflow").html(flow)
+    $("#mask").show()
+  });
+
+  $(".sure").click(function(){
+    var $this = $(this),
+        dataPlanId = $("#txtFlowCount").val()
+    if(dataPlanId !== undefined && dataPlanId !== ''){
+      $.ajax({
+        url: '/wechat-order',
+        method: "GET",
+        dataType: "JSON",
+        data: {
+          dataPlanId: dataPlanId,
+          paymentMethod: 'WechatPay'
+        }
+      }).done(function(payargs) {
+        if(payargs.err){
+          showDialog(payargs.msg)
+        }else{
+          WeixinJSBridge.invoke('getBrandWCPayRequest', payargs, function(res){
+            if(res.err_msg == "get_brand_wcpay_request:ok"){
+              alert("支付成功");
+              // 这里可以跳转到订单完成页面向用户展示
+              window.location.href = '/profile'
+            }else{
+              alert("支付失败，请重试");
+            }
+          });
+        }
+      }).fail(function(err) {
+        console.log(err)
+        showDialog("服务器繁忙")
+      })
+    }else{
+      showDialog("请输入电话和选择正确的套餐")
+    }
+  })
 }
 
 function withdrawal(){
