@@ -390,7 +390,7 @@ function orderConfirm(){
         price = selectedFlow.data("price"),
         flowDiscount = selectedFlow.data('discount');
     $("#maskmoney").html(price.toFixed(2))
-    $("#maskflow").html(flow)
+    $("#maskflow").html(flow.toFixed(2))
     $("#mask").show()
   });
 

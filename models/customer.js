@@ -103,6 +103,31 @@ module.exports = function(sequelize, DataTypes) {
       className: function(){
         return 'Customer'
       },
+      addTraffic: function(models, order, successCallBack, errCallBack) {
+        var customer = this
+        async.waterfall([function(next){
+          if(order.isPaid()){
+            order.getDataPlan().then(function(dataPlan) {
+              order.dataPlan = dataPlan
+              next(null, order)
+            })
+          }else{
+            errCallBack()
+          }
+        }, function(order, next){
+          customer.updateAttributes({
+              remainingTraffic: customer.remainingTraffic + order.dataPlan.value
+            }).then(function(customer){
+              next(null, customer, order)
+            }).catch(errCallBack)
+        }, function(customer, order, next){
+          customer.takeFlowHistory(models, order, order.dataPlan.value, "充值成功", models.FlowHistory.STATE.ADD, function(flowHistory){
+              successCallBack(customer, order, flowHistory)
+            }, errCallBack)
+        }], function(err){
+          errCallBack(err)
+        })
+      },
       reduceTraffic: function(models, extractOrder, successCallBack, errCallBack) {
         var customer = this
         async.waterfall([function(next){
