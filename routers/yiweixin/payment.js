@@ -123,7 +123,6 @@ app.post('/pay', requireLogin, function(req, res) {
         }else{
           total = total - deductible
         }
-        customer.totalIntegral = customer.totalIntegral - deductible * exchangeRate
       }
       if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < total){
         res.json({ err: 1, msg: "分销奖励不足" })
@@ -215,8 +214,11 @@ app.post('/pay', requireLogin, function(req, res) {
         }else{
           // charge by salary or remainingTraffic or wechat payment total equal 0
           customer.reduceTraffic(models, extractOrder, function(){
-            res.json({err: 0, msg: '付款成功'})
-
+            customer.reduceIntegral(models, extractOrder).then(function(customer, extractOrder, trafficPlan, flowHistory){
+              res.json({err: 0, msg: '付款成功', totalIntegral: customer.totalIntegral })
+            }).catch(function(err){
+              console.log(err)
+            })
             extractOrder.updateAttributes({
               state: models.ExtractOrder.STATE.PAID
             }).then(function(extractOrder){
@@ -225,6 +227,7 @@ app.post('/pay', requireLogin, function(req, res) {
                   console.log(err)
                   // refund
                   customer.refundTraffic(models, extractOrder, err, function(customer, extractOrder, flowHistory){
+                    customer.refundIntegral(models, extractOrder, err)
                   }, function(err){
                     console.log(err)
                   })
@@ -284,11 +287,12 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
     //do history
     customer.reduceTraffic(models, extractOrder, function(){
       next(null, extractOrder, customer)
-
+      customer.reduceIntegral(models, extractOrder)
       autoCharge(extractOrder, trafficPlan, function(err, trafficPlan, extractOrder){
         if(err){
           console.log(err)
           // refund
+          customer.refundIntegral(models, extractOrder, err)
         }else{
           console.log("充值成功")
         }

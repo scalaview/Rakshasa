@@ -337,8 +337,9 @@ function wechatPayment(phone, flowId, opt){
             if(res.err_msg == "get_brand_wcpay_request:ok"){
               $("#mask").hide();
               showDialog("支付成功")
-              // 这里可以跳转到订单完成页面向用户展示
-              // window.location.href = '/profile'
+              doDelay(function(){
+                window.location.reload()
+              },2)
             }else{
               showDialog("支付失败，请重试")
             }

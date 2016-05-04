@@ -168,12 +168,19 @@ module.exports = function(sequelize, DataTypes) {
       refundTraffic: function(models, extractOrder, message, successCallBack, errCallBack) {
         var customer = this
         async.waterfall([function(next) {
-
           if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE){
             next(null, customer, extractOrder)
-          }else{
+          }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.SALARY){
             customer.updateAttributes({
               salary: customer.salary + extractOrder.cost
+            }).then(function(customer) {
+              next(null, customer, extractOrder)
+            }).catch(function(err) {
+              next(err)
+            })
+          }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.REMAININGTRAFFIC){
+            customer.updateAttributes({
+              remainingTraffic: customer.remainingTraffic + extractOrder.cost
             }).then(function(customer) {
               next(null, customer, extractOrder)
             }).catch(function(err) {
@@ -206,6 +213,78 @@ module.exports = function(sequelize, DataTypes) {
           }else{
             successCallBack(customer, extractOrder, flowHistory)
           }
+        })
+      },
+      reduceIntegral: function(models, extractOrder) {
+        var customer = this
+        return new Promise(function (resolve, reject) {
+          async.waterfall([function(next){
+            extractOrder.getTrafficPlan().then(function(trafficPlan) {
+              extractOrder.trafficPlan = trafficPlan
+              next(null, extractOrder, trafficPlan)
+            }).catch(function(err) {
+              next(err)
+            })
+          }, function(extractOrder, trafficPlan, next){
+            var enough = extractOrder.totalIntegral <= customer.totalIntegral
+            if(enough){
+              customer.updateAttributes({
+                  totalIntegral: customer.totalIntegral - extractOrder.totalIntegral
+                }).then(function(customer){
+                  next(null, customer, extractOrder, trafficPlan)
+                }).catch(function(err) {
+                  next(err)
+                })
+            }else{
+              next(new Error("积分不足"))
+            }
+          }, function(customer, extractOrder, trafficPlan, next){
+            customer.takeFlowHistory(models, extractOrder, extractOrder.totalIntegral, "购买流量" + trafficPlan.name + "至" + extractOrder.phone + " 支付成功, 扣除积分： " + extractOrder.totalIntegral, models.FlowHistory.STATE.REDUCE, function(flowHistory){
+                next(null, customer, extractOrder, trafficPlan, flowHistory)
+              }, function(err){
+                next(err)
+              }, extractOrder.chargeType)
+          }], function(err, customer, extractOrder, trafficPlan, flowHistory){
+            if(err){
+              reject(err)
+            }else{
+              resolve(customer, extractOrder, trafficPlan, flowHistory)
+            }
+          })
+        });
+      },
+      refundIntegral: function(models, extractOrder, message) {
+        var customer = this
+        async.waterfall([function(next) {
+            customer.updateAttributes({
+              totalIntegral: customer.totalIntegral + extractOrder.totalIntegral
+            }).then(function(customer) {
+              next(null, customer, extractOrder)
+            }).catch(function(err) {
+              next(err)
+            })
+        }, function(customer, extractOrder, next) {
+          extractOrder.getTrafficPlan().then(function(trafficPlan) {
+            extractOrder.trafficPlan = trafficPlan
+            next(null, customer, extractOrder, trafficPlan)
+          }).catch(function(err) {
+            next(err)
+          })
+        },function(customer, extractOrder, trafficPlan, next) {
+          var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。积分已经退还账户，对你造成的不便我们万分抱歉"
+          customer.takeFlowHistory(models, extractOrder, extractOrder.totalIntegral, msg, models.FlowHistory.STATE.ADD, function(flowHistory){
+              next(null, customer, extractOrder, flowHistory)
+            }, function(err) {
+              next(err)
+            }, extractOrder.chargeType)
+        }], function(err, customer, extractOrder, flowHistory) {
+          return new Promise(function (resolve, reject) {
+            if(err){
+              reject(err)
+            }else{
+              resolve(customer, extractOrder, flowHistory)
+            }
+          });
         })
       },
       takeFlowHistory: function(models, obj, amount, comment, state, successCallBack, errCallBack, from){
