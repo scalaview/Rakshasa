@@ -47,24 +47,15 @@
       <input id="mobile" class="number" type="text" style="margin-bottom: 10px" placeholder="请输入手机号码：" maxlength="11" style="ime-mode:disabled"/>
       <div class="page cell">
         <div class="bd">
-        <div class="weui_cells weui_cells_form" style="width: 98%;padding-top: 10px;padding-bottom: 10px;">
-          <div class="weui_cell weui_cell_switch">
-            <div class="weui_cell_hd weui_cell_primary" style="font-size: 35px;">积  分: {{ customer.totalIntegral }}</div>
-            <div class="weui_cell_ft">
-              <input class="weui_switch" type="checkbox" id="use-integral" data-exchangerate={{ exchangeRate }} data-totalintegral="{{ customer.totalIntegral  }}">
+          <div class="weui_cells weui_cells_form" style="width: 98%;padding-top: 10px;padding-bottom: 10px;">
+            <div class="weui_cell weui_cell_switch">
+              <div class="weui_cell_hd weui_cell_primary" style="font-size: 35px;">积  分: {{ customer.totalIntegral }}</div>
+              <div class="weui_cell_ft">
+                <input class="weui_switch" type="checkbox" id="use-integral" data-exchangerate={{ exchangeRate }} data-totalintegral="{{ customer.totalIntegral  }}">
+              </div>
             </div>
           </div>
-        </div>
-          <div class="container">
-            <div class="row" id="chooseMoney">
-              <span data-id="balance" href="javascript:;" class="weui_btn weui_btn_primary selected">微信支付</span>
-              <span data-id="remainingTraffic" href="javascript:;" class="weui_btn weui_btn_default">余   额</span>
-              <span data-id="salary" href="javascript:;" data-less='{{customer.salary}}' class="weui_btn weui_btn_default" style="margin-top: 0px;">分销奖励</span>
-            </div>
-          </div>
-          <div id="salary" class="weui_cells_title tel-title" style="display: none">选择流量包（您当前可用<span style="color:orange;"> {{customer.salary}}  </span>元）</div>
-          <div id="remainingTraffic" class="weui_cells_title tel-title" style="display: none">选择流量包（您当前可用<span style="color:orange;"> {{customer.remainingTraffic}}  </span>元）</div>
-           <div id="balance" class="weui_cells_title tel-title">选择流量包（<span style="color:orange;">微信安全支付</span>）</div>
+          {{> paymentMethods }}
         </div>
       </div>
 

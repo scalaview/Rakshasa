@@ -1,0 +1,92 @@
+<section class="ui-container">
+  <div class="ui-poptips ui-poptips-warn" id="tips" style="display: none;">
+    <div class="ui-poptips-cnt"><i></i><span id="tips_content"></span></div>
+  </div>
+  <div class="ui-form ui-border-t">
+    <div style="padding:3px;background-color: #d3d3d3;">
+      <div class="ui-form-item ui-form-item-pure ui-border-b" style="background-color: #ffffff;border-radius:5px;">
+        <input type="tel" value="" id="mobile" maxlength="11" placeholder="请输入手机号码">
+        <a href="#" class="ui-icon-close" id="clear_phone"></a>
+      </div>
+    </div>
+    <ul class="ui-list ui-list-text" style="display: none;float: left;z-index: 1000;position: absolute;width: 100%;opacity:0.9;" id="recent_phone">
+    </ul>
+    <div class="ui-form-item ui-form-item-switch ui-border-b">
+      <p class="ui-txt-info">您有{{ customer.totalIntegral }}积分，使用积分</p>
+      <label class="ui-switch"><input type="checkbox" value="1" id="use-integral" data-exchangerate={{ exchangeRate }} data-totalintegral="{{ customer.totalIntegral  }}"></label>
+    </div>
+  </div>
+  <h6 style="padding-left: 10px;color: orangered;">购买扣减积分，若未付款可从订单里取消订单返回积分。</h6>
+  <h6 style="padding-left: 10px;color: orangered;">100积分可抵1元!</h6>
+  <br>
+  {{> paymentMethods }}
+  <div class="ui-tab">
+    <ul class="ui-tab-nav ui-border-b" style="padding-top: 0em;">
+      <li class="current">广东话费</li>
+    </ul>
+    <ul class="ui-tab-content" style="width:300%; margin-top: 0em;">
+      <li>
+        <div style="padding: 5px;">
+          <h6 class="ui-txt-info" style="white-space: pre;">
+            1.只限广东省移动号码充值
+            2.下单后，工作日内24-48内到账。
+            3.到账话费含有基本话费或赠送话费。
+            4.欠费，停机，空号等状态异常的号码不可充值。
+            5.一个号码一个月只可以充值一次，封顶500元。
+            6.额度有限，先充先得，额满为止。
+          </h6>
+          <div style="float: right;margin-right: 5px;">
+            <a class="ui-btn explanation" href="javascript:void(0)">详情</a>
+            <div style="display: none;">【充值对象】 仅限广东移动用户，其他省份用户无法充值
+              【使用范围】 可抵扣移动套餐月租、语音、除梦网外的一切费用
+              【充值次数】 1个号码一个月只可以办理一次
+              【充值渠道】 移动官方正规渠道
+              【到账时间】 下单后，工作日内24-48小时内到账，如遇移动系统故障将顺延
+              【查询方式】 1.本机编辑“ye”发送到10086.2.打电话，拨打移动客服电话1008611
+              【注意事项】 欠费，停机，空号等状态异常的号码不可充值。 到账话费含有基本话费或赠送话费。
+              【产品特点】 活动优惠，额度有限，先到先得，额满截止，一个月只可充值一次，站长推荐一次性充值大面额，    巨省钱。
+              【售后服务】 48小时后，如充值失败，全额退款。
+            </div>
+          </div>
+          <div style="clear: both;"></div>
+        </div>
+        <ul class="ui-list ui-list-function  ui-border-t llb">
+         {{#each trafficPlan}}
+          <li class="ui-border-b">
+            <div class="ui-list-info" style="padding-bottom: 3px;height: 2.5em;padding-right: 5px;">
+              <h3 class="ui-nowrap">{{name}}</h3>
+            </div>
+            <div style="position: absolute;top: 50%;right: 80px;margin-top: -20px;">
+              <h4 class="ui-nowrap">{{cost}}元</h4>
+              <h6 class="ui-txt-info">赠送 <span style="color: orangered;">{{integral}}</span> 积分</h6>
+            </div>
+            <div class="ui-btn exchanger" data-name="{{name}}" data-value="{{id}}" data-cost="{{cost}}">购买</div>
+          </li>
+          {{/each}}
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <div id="my-popup" style="display: none;">
+    <div style="padding: 5px;">
+      <input type="button" class="ui-btn ui-btn-primary pop-close" value="关闭">
+    </div>
+    <div id="explanation_content" style="white-space:pre;-webkit-overflow-scrolling: touch;overflow-y: auto;"></div>
+    <div style="padding: 5px;padding-bottom: 20px;">
+      <input type="button" class="ui-btn ui-btn-primary pop-close" value="关闭">
+    </div>
+  </div>
+  <script>
+    (function() {
+      var tab = new fz.Scroll('.ui-tab', {
+        role: 'tab',
+        duration: 0,
+        bounce: false
+      });
+    })();
+  </script>
+  <br>
+</section>
+{{> alertmodal }}
+{{> extractConfirm }}
+{{> loading }}

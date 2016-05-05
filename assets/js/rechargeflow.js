@@ -292,9 +292,9 @@ function paymentConfirm(){
         source   = $("#trafficplans-template").html(),
         choose = $("#chooseMoney .weui_btn.selected")
 
-  if(source === undefined || source == ''){
-    return
-  }
+  // if(source === undefined || source == ''){
+  //   return
+  // }
 
   if(choose.data('id') === undefined || choose.data('id') == ''){
     return
