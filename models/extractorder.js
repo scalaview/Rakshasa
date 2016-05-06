@@ -108,6 +108,7 @@ module.exports = function(sequelize, DataTypes) {
   ExtractOrder.CHARGETYPE = {
     balance: "微信支付",
     salary: "分销奖励",
+    remainingTraffic: "余额",
     terminal: "终端人工"
   }
 

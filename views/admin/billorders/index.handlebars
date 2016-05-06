@@ -45,7 +45,7 @@
                 <th>成 本</th>
                 <th>微信支付</th>
                 <th>支付手段</th>
-                <th>获得流量</th>
+                <th>获得话费</th>
                 <th>创建时间</th>
                 <th></th>
                 <th></th>
@@ -61,12 +61,12 @@
                     <td>{{ cost }}</td>
                     <td>{{ transactionId }}</td>
                     <td>{{ chargeTypeTran chargeType }}</td>
-                    <td>{{ value }} M</td>
+                    <td>{{ value }} 元</td>
                     <td>
                       {{ strftime createdAt }}
                     </td>
                     <td>
-                      <a href="/admin/extractorders/{{id}}/edit" class="list-group-item">
+                      <a href="/admin/billorders/{{id}}/edit" class="list-group-item">
                         <i class="glyphicon glyphicon-pencil"></i>
                       </a>
                     </td>
@@ -78,7 +78,7 @@
         <!-- /.table-responsive -->
       </div>
       <div class="panel-footer">
-          {{pagination extractOrders (addParams '/admin/extractorders' query)}}
+          {{pagination extractOrders (addParams '/admin/billorders' query)}}
       </div>
       <!-- /.panel-body -->
     </div>

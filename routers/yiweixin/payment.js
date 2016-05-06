@@ -16,7 +16,6 @@ app.get('/extractflow', requireLogin, function(req, res){
     models.TrafficGroup.findAll({
       where: {
         providerId: models.TrafficGroup.Provider["中国移动"],
-        productType: models.TrafficPlan.PRODUCTTYPE["traffic"],
         display: true
       }
     }).then(function(CMCCtrafficGroups){
@@ -218,11 +217,15 @@ app.post('/pay', requireLogin, function(req, res) {
         }else{
           // charge by salary or remainingTraffic or wechat payment total equal 0
           customer.reduceTraffic(models, extractOrder, function(){
-            customer.reduceIntegral(models, extractOrder).then(function(customer, extractOrder, trafficPlan, flowHistory){
+            if(extractOrder.totalIntegral){
+              customer.reduceIntegral(models, extractOrder).then(function(customer, extractOrder, trafficPlan, flowHistory){
+                res.json({err: 0, msg: '付款成功', totalIntegral: customer.totalIntegral })
+              }).catch(function(err){
+                console.log(err)
+              })
+            }else{
               res.json({err: 0, msg: '付款成功', totalIntegral: customer.totalIntegral })
-            }).catch(function(err){
-              console.log(err)
-            })
+            }
             extractOrder.updateAttributes({
               state: models.ExtractOrder.STATE.PAID
             }).then(function(extractOrder){
@@ -231,7 +234,9 @@ app.post('/pay', requireLogin, function(req, res) {
                   console.log(err)
                   // refund
                   customer.refundTraffic(models, extractOrder, err, function(customer, extractOrder, flowHistory){
-                    customer.refundIntegral(models, extractOrder, err)
+                    if(extractOrder.totalIntegral){
+                      customer.refundIntegral(models, extractOrder, err)
+                    }
                   }, function(err){
                     console.log(err)
                   })
@@ -291,12 +296,16 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
     //do history
     customer.reduceTraffic(models, extractOrder, function(){
       next(null, extractOrder, customer)
-      customer.reduceIntegral(models, extractOrder)
+      if(extractOrder.totalIntegral){
+        customer.reduceIntegral(models, extractOrder)
+      }
       autoCharge(extractOrder, trafficPlan, function(err, trafficPlan, extractOrder){
         if(err){
           console.log(err)
           // refund
-          customer.refundIntegral(models, extractOrder, err)
+          if(extractOrder.totalIntegral){
+            customer.refundIntegral(models, extractOrder, err)
+          }
         }else{
           console.log("充值成功")
         }

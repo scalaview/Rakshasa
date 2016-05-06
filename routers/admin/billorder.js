@@ -109,7 +109,7 @@ admin.get("/billorders/:id/edit", function(req, res){
     })
   }, function(extractOrder, next){
     if(extractOrder.exchangerType === "TrafficPlan"){
-      models.TrafficPlan.scope("forSelect").findAll().then(function(trafficPlans) {
+      models.TrafficPlan.scope("forBillSelect").findAll().then(function(trafficPlans) {
         next(null, extractOrder, trafficPlans)
       }).catch(function(err) {
         next(err)

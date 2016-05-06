@@ -27,7 +27,7 @@ module.exports = function(sequelize, DataTypes) {
     wechat: { type: DataTypes.STRING, allowNull: true },
     phone: { type: DataTypes.STRING, allowNull: true },
     lastLoginAt: { type: DataTypes.DATE, allowNull: true },
-    remainingTraffic: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
+    remainingTraffic: { type: DataTypes.DECIMAL(10, 2), allowNull: true, defaultValue: 0.0 },
     sex: { type: DataTypes.STRING, allowNull: true },
     city: { type: DataTypes.STRING, allowNull: true },
     province:  { type: DataTypes.STRING, allowNull: true },
@@ -116,7 +116,7 @@ module.exports = function(sequelize, DataTypes) {
           }
         }, function(order, next){
           customer.updateAttributes({
-              remainingTraffic: customer.remainingTraffic + order.dataPlan.value
+              remainingTraffic: parseFloat(customer.remainingTraffic) + parseFloat(order.dataPlan.value)
             }).then(function(customer){
               next(null, customer, order)
             }).catch(errCallBack)
@@ -152,7 +152,7 @@ module.exports = function(sequelize, DataTypes) {
               next(null, customer, extractOrder, trafficPlan)
             }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.SALARY){
               customer.updateAttributes({
-                  salary: customer.salary - extractOrder.total
+                  salary: parseFloat(customer.salary) - parseFloat(extractOrder.total)
                 }).then(function(customer){
                   next(null, customer, extractOrder, trafficPlan)
                 }).catch(function(err) {
@@ -160,7 +160,7 @@ module.exports = function(sequelize, DataTypes) {
                 })
             }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.REMAININGTRAFFIC){
               customer.updateAttributes({
-                  remainingTraffic: customer.remainingTraffic - extractOrder.total
+                  remainingTraffic: parseFloat(customer.remainingTraffic) - parseFloat(extractOrder.total)
                 }).then(function(customer){
                   next(null, customer, extractOrder, trafficPlan)
                 }).catch(function(err) {
@@ -197,7 +197,7 @@ module.exports = function(sequelize, DataTypes) {
             next(null, customer, extractOrder)
           }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.SALARY){
             customer.updateAttributes({
-              salary: customer.salary + extractOrder.cost
+              salary: customer.salary + extractOrder.total
             }).then(function(customer) {
               next(null, customer, extractOrder)
             }).catch(function(err) {
@@ -205,7 +205,7 @@ module.exports = function(sequelize, DataTypes) {
             })
           }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.REMAININGTRAFFIC){
             customer.updateAttributes({
-              remainingTraffic: customer.remainingTraffic + extractOrder.cost
+              remainingTraffic: parseFloat(customer.remainingTraffic) + parseFloat(extractOrder.total)
             }).then(function(customer) {
               next(null, customer, extractOrder)
             }).catch(function(err) {
@@ -280,37 +280,37 @@ module.exports = function(sequelize, DataTypes) {
       },
       refundIntegral: function(models, extractOrder, message) {
         var customer = this
-        async.waterfall([function(next) {
-            customer.updateAttributes({
-              totalIntegral: customer.totalIntegral + extractOrder.totalIntegral
-            }).then(function(customer) {
-              next(null, customer, extractOrder)
+        return new Promise(function (resolve, reject) {
+          async.waterfall([function(next) {
+              customer.updateAttributes({
+                totalIntegral: customer.totalIntegral + extractOrder.totalIntegral
+              }).then(function(customer) {
+                next(null, customer, extractOrder)
+              }).catch(function(err) {
+                next(err)
+              })
+          }, function(customer, extractOrder, next) {
+            extractOrder.getTrafficPlan().then(function(trafficPlan) {
+              extractOrder.trafficPlan = trafficPlan
+              next(null, customer, extractOrder, trafficPlan)
             }).catch(function(err) {
               next(err)
             })
-        }, function(customer, extractOrder, next) {
-          extractOrder.getTrafficPlan().then(function(trafficPlan) {
-            extractOrder.trafficPlan = trafficPlan
-            next(null, customer, extractOrder, trafficPlan)
-          }).catch(function(err) {
-            next(err)
-          })
-        },function(customer, extractOrder, trafficPlan, next) {
-          var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。积分已经退还账户，对你造成的不便我们万分抱歉"
-          customer.takeFlowHistory(models, extractOrder, extractOrder.totalIntegral, msg, models.FlowHistory.STATE.ADD, function(flowHistory){
-              next(null, customer, extractOrder, flowHistory)
-            }, function(err) {
-              next(err)
-            }, extractOrder.chargeType)
-        }], function(err, customer, extractOrder, flowHistory) {
-          return new Promise(function (resolve, reject) {
+          },function(customer, extractOrder, trafficPlan, next) {
+            var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。积分已经退还账户，对你造成的不便我们万分抱歉"
+            customer.takeFlowHistory(models, extractOrder, extractOrder.totalIntegral, msg, models.FlowHistory.STATE.ADD, function(flowHistory){
+                next(null, customer, extractOrder, flowHistory)
+              }, function(err) {
+                next(err)
+              }, extractOrder.chargeType)
+          }], function(err, customer, extractOrder, flowHistory) {
             if(err){
               reject(err)
             }else{
               resolve(customer, extractOrder, flowHistory)
             }
-          });
-        })
+          })
+        });
       },
       takeFlowHistory: function(models, obj, amount, comment, state, successCallBack, errCallBack, from){
         var customer = this

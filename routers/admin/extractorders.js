@@ -173,6 +173,14 @@ admin.post("/extractorder", function(req, res) {
     }).catch(function(err) {
       next(err)
     })
+  }, function(extractOrder, trafficPlan, next){
+    autoCharge(extractOrder, trafficPlan, function(err){
+      if(err){
+        next(err)
+      }else{
+        next(null, extractOrder, trafficPlan)
+      }
+    })
   }], function(err, extractOrder, trafficPlan) {
     if(err){
       console.log(err)
@@ -214,13 +222,6 @@ admin.post("/extractorder", function(req, res) {
         }
       });
     }
-    autoCharge(extractOrder, trafficPlan, function(err){
-      if(err){
-        console.log(err)
-      }else{
-        console.log("充值成功")
-      }
-    })
   })
 
 })

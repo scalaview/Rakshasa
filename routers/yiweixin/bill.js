@@ -225,11 +225,15 @@ app.post('/wechat-bill', requireLogin, function(req, res) {
         }else{
           // charge by salary or remainingTraffic or wechat payment total equal 0
           customer.reduceTraffic(models, extractOrder, function(){
-            customer.reduceIntegral(models, extractOrder).then(function(customer, extractOrder, trafficPlan, flowHistory){
+            if(extractOrder.totalIntegral){
+              customer.reduceIntegral(models, extractOrder).then(function(customer, extractOrder, trafficPlan, flowHistory){
+                res.json({err: 0, msg: '付款成功', totalIntegral: customer.totalIntegral })
+              }).catch(function(err){
+                console.log(err)
+              })
+            }else{
               res.json({err: 0, msg: '付款成功', totalIntegral: customer.totalIntegral })
-            }).catch(function(err){
-              console.log(err)
-            })
+            }
             extractOrder.updateAttributes({
               state: models.ExtractOrder.STATE.PAID
             }).then(function(extractOrder){
@@ -291,7 +295,9 @@ app.use('/billconfirm', middleware(initConfig).getNotify().done(function(message
         if(err){
           console.log(err)
           // refund
-          customer.refundIntegral(models, extractOrder, err)
+          if(extractOrder.totalIntegral){
+            customer.refundIntegral(models, extractOrder, err)
+          }
         }else{
           console.log("充值成功")
         }

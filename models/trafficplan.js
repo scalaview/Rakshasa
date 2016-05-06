@@ -79,11 +79,9 @@ module.exports = function(sequelize, DataTypes) {
         return new DataSource(phone)
       },
       getTrafficPlanByGroup: function(models, providerId, groupId, customer, coupons, pass){
-
         models.TrafficGroup.findAll({
           where: {
             providerId: providerId,
-            productType: TrafficPlan.PRODUCTTYPE["traffic"],
             display: true
           },
           order: [
@@ -92,6 +90,7 @@ module.exports = function(sequelize, DataTypes) {
            ]
         }).then(function(trafficgroups) {
           var params = {
+              productType: TrafficPlan.PRODUCTTYPE["traffic"],
               display: true
             }
             if(groupId){
@@ -152,6 +151,15 @@ module.exports = function(sequelize, DataTypes) {
         order: [
           ['sortNum']
         ]
+      },
+      forBillSelect: {
+        where: {
+          providerId: 0,
+          productType: 'bill'
+        },
+        order: [
+          ['sortNum']
+        ]
       }
     }
   });
@@ -169,7 +177,7 @@ module.exports = function(sequelize, DataTypes) {
   }
 
   TrafficPlan.TYPE = {
-    "新号吧": 0
+    "新号吧": 1
   }
 
   TrafficPlan.PRODUCTTYPE = {

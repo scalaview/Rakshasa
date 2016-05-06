@@ -248,14 +248,6 @@ function extractConfirm(){
     var choose = $("#chooseMoney .weui_btn.selected")
     var lessE = choose.data('less')
 
-    if( parseFloat(lessE) < parseFloat($this.data('cost')) ){
-      if(choose.data('id') == 'balance'){
-        showDialog("账户剩余余额不足")
-      }else{
-        showDialog("账户返利余额不足")
-      }
-      return
-    }
     $this.addClass('choose')
     var cost = parseFloat($this.data('cost')),
         discount = 0.00
@@ -268,6 +260,14 @@ function extractConfirm(){
         discount = parseFloat($this.data('cost'))
         cost = 0
       }
+    }
+    if( parseFloat(lessE) < parseFloat(cost)){
+      if(choose.data('id') == 'remainingTraffic'){
+        showDialog("账户剩余余额不足")
+      }else if(choose.data('id') == 'salary'){
+        showDialog("账户分销奖励不足")
+      }
+      return
     }
     phone = $.trim($("#mobile").val())
     $("#maskflow").html($this.data('name'))
@@ -332,7 +332,7 @@ function wechatPayment(phone, flowId, opt){
         hideLoadingToast()
         if(payargs.err){
           showDialog(payargs.msg)
-        }else if(choose.data('id') == "balance"){
+        }else if(choose.data('id') == "balance" && !payargs.msg){
           WeixinJSBridge.invoke('getBrandWCPayRequest', payargs, function(res){
             if(res.err_msg == "get_brand_wcpay_request:ok"){
               $("#mask").hide();
@@ -346,6 +346,9 @@ function wechatPayment(phone, flowId, opt){
           });
         }else{
           showDialog(payargs.msg)
+          doDelay(function(){
+            window.location.reload()
+          },2)
         }
       }).fail(function(err) {
         hideLoadingToast()
@@ -581,14 +584,7 @@ function billBinding(){
     var choose = $("#chooseMoney .weui_btn.selected")
     var lessE = choose.data('less')
 
-    if( parseFloat(lessE) < parseFloat($this.data('cost')) ){
-      if(choose.data('id') == 'balance'){
-        showDialog("账户剩余余额不足")
-      }else{
-        showDialog("账户返利余额不足")
-      }
-      return
-    }
+
     $this.addClass('choose')
     var cost = parseFloat($this.data('cost')),
         discount = 0.00
@@ -601,6 +597,14 @@ function billBinding(){
         discount = parseFloat($this.data('cost'))
         cost = 0
       }
+    }
+    if( parseFloat(lessE) < parseFloat(cost)){
+      if(choose.data('id') == 'remainingTraffic'){
+        showDialog("账户剩余余额不足")
+      }else if(choose.data('id') == 'salary'){
+        showDialog("账户分销奖励不足")
+      }
+      return
     }
     phone = $.trim($("#mobile").val())
     $("#maskflow").html($this.data('name'))

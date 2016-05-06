@@ -22,7 +22,6 @@
     "handlebars": "~3.0.3",
     "select2": "~4.0.0",
     "weui": "*",
-    "toastr": "~2.1.2",
-    "video.js": "^5.8.2"
+    "toastr": "~2.1.2"
   }
 }

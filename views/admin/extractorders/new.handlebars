@@ -16,7 +16,7 @@
       <div class="form-group">
         <label for="" class="col-xs-2 control-label">流量套餐：</label>
         <div class="col-xs-10">
-          <div class="products-type-list list-one">
+          <div class="products-type-list list-one row">
             <div id="data" class="bs-glyphicons">
             </div>
           </div>
@@ -41,7 +41,7 @@
 
 <script id="trafficplans-template" type="text/x-handlebars-template">
 \{{#each trafficgroups}}
-  <div>
+  <div class="col-xs-12">
     <label>\{{name}}</label>
     <ul class="bs-glyphicons-list">
       \{{#each trafficplans}}
@@ -86,9 +86,14 @@ function recharge(){
       trafficPlanId: selected.data("value")
     }
   }).done(function(data){
-
-  }).fail(function(){
-
+    if(!data.code){
+      toastr.success(data.msg)
+    }else{
+      toastr.error(data.msg)
+    }
+  }).fail(function(err){
+    console.log(err)
+    toastr.error("服务器出错")
   })
 }
 
