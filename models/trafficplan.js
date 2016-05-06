@@ -169,13 +169,7 @@ module.exports = function(sequelize, DataTypes) {
   }
 
   TrafficPlan.TYPE = {
-    '非正式': 0,
-    '空中平台': 1,
-    '华沃红包': 2,
-    '华沃广东': 3,
-    '华沃全国': 4,
-    '曦和流量': 5,
-    '易流量': 6
+    "新号吧": 0
   }
 
   TrafficPlan.PRODUCTTYPE = {

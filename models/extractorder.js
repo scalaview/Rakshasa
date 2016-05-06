@@ -4,7 +4,7 @@ var request = require("request")
 var async = require("async")
 var helpers = require("../helpers")
 var recharger = require("../recharger")
-var ChongRecharger = recharger.ChongRecharger
+var Xinhaoba = recharger.Xinhaoba
 var DefaultRecharger = recharger.DefaultRecharger
 var Recharger = recharger.Recharger
 var HuawoRecharger = recharger.HuawoRecharger
@@ -54,7 +54,6 @@ module.exports = function(sequelize, DataTypes) {
             exchangerType: 'Customer'
           }
         });
-        models.ExtractOrder.ChongRecharger = new ChongRecharger(models, config.chong[process.env.NODE_ENV || "development"].client_id, config.chong[process.env.NODE_ENV || "development"].client_secret, recharger.storeCallback, recharger.accessCallback)
       }
     },
     instanceMethods: {
@@ -86,20 +85,8 @@ module.exports = function(sequelize, DataTypes) {
       },
       autoRecharge: function(trafficPlan){
         var typeJson = trafficPlan.typeJson()
-        if(trafficPlan.type == typeJson['空中平台']){
-          return new DefaultRecharger(this.phone, this.bid, this.id)
-        }else if(trafficPlan.type == typeJson['华沃广东']){
-          return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_province_account, config.huawo_province_pwd, 1)
-        }else if(trafficPlan.type == typeJson['华沃全国']){
-          return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_account, config.huawo_pwd, 0)
-        }else if(trafficPlan.type == typeJson['华沃红包']){
-          return new HuawoRecharger(this.phone, this.bid, this.id, config.huawo_lucky_account, config.huawo_lucky_pwd, 0)
-        }else if(trafficPlan.type == typeJson['曦和流量']){
-          return ExtractOrder.ChongRecharger.rechargeOrder(this.phone, this.bid, "http://protchar.cn/liuliangshopconfirm")
-        }else if(trafficPlan.type == typeJson['易流量']){
-          return new YiliuliangRecharger(this.phone, this.bid)
-        }else{
-          return new Recharger(this.phone, this.value)
+        if(trafficPlan.type == typeJson['新号吧']){
+          return new Xinhaoba(this.id, this.phone, this.bid, this.value)
         }
       },
       isPaid: function(){

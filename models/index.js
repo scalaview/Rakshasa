@@ -9,7 +9,7 @@ var env       = process.env.NODE_ENV || 'development';
 var config    = require(__dirname + '/../config/config.json')[env];
 
 var sequelize = new Sequelize(config.database, config.username, config.password, config);
-var targets = [__dirname, __dirname + "/movie"]
+var targets = [__dirname]
 var db        = {};
 
 for (var i = 0; i < targets.length; i++) {
