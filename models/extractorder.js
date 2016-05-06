@@ -30,6 +30,7 @@ module.exports = function(sequelize, DataTypes) {
     total: { type: DataTypes.DECIMAL(10, 2), allowNull: true, defaultValue: 0.0 },
     taskid: { type: DataTypes.STRING, allowNull: true },
     totalIntegral:{ type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
+    productType: { type: DataTypes.STRING, allowNull: true, defaultValue: "traffic" },
     exchangeIntegral:{ type: DataTypes.DECIMAL(10, 2), allowNull: true, defaultValue: 0.0 }
   }, {
     classMethods: {

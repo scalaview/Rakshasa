@@ -7,7 +7,7 @@ var _ = require('lodash')
 var config = require(process.env.PWD + "/config")
 var autoCharge = helpers.autoCharge
 
-admin.get("/extractorders", function(req, res) {
+admin.get("/billorders", function(req, res) {
   var result;
   async.waterfall([function(next) {
     var params = {}
@@ -20,7 +20,7 @@ admin.get("/extractorders", function(req, res) {
     if(req.query.exchangerType !== undefined && req.query.exchangerType.present()){
       params = _.merge(params, { exchangerType: req.query.exchangerType })
     }
-    params["productType"] = models.TrafficPlan.PRODUCTTYPE["traffic"]
+    params["productType"] = models.TrafficPlan.PRODUCTTYPE["bill"]
     models.ExtractOrder.findAndCountAll({
       where: params,
       limit: req.query.perPage || 15,
@@ -87,7 +87,7 @@ admin.get("/extractorders", function(req, res) {
 
       result.rows = extractOrders
       result = helpers.setPagination(result, req)
-      res.render('admin/extractorders/index', {
+      res.render('admin/billorders/index', {
         extractOrders: result,
         query: req.query,
         stateOptions: stateOptions,
@@ -100,133 +100,7 @@ admin.get("/extractorders", function(req, res) {
 })
 
 
-admin.get("/extractorders/new", function(req, res) {
-  async.waterfall([function(next){
-    models.TrafficPlan.scope("forSelect").findAll().then(function(trafficPlans) {
-      next(null, trafficPlans)
-    }).catch(function(err) {
-      next(err)
-    })
-  }, function(trafficPlans, outnext) {
-    async.map(trafficPlans, function(trafficPlan, next) {
-      next(null, [trafficPlan.id, trafficPlan.name])
-    }, function(err, trafficPlanCollection) {
-      outnext(null, trafficPlanCollection)
-    })
-  }], function(err, trafficPlanCollection) {
-    var extractOrder = models.ExtractOrder.build({}),
-        trafficPlanOptions = { name: 'trafficPlanId', id: 'trafficPlanId', class: 'select2 col-lg-12 col-xs-12' }
-    res.render("admin/extractorders/new", {
-      extractOrder: extractOrder,
-      trafficPlanOptions: trafficPlanOptions,
-      trafficPlanCollection: trafficPlanCollection,
-      path: '/admin/extractorder'
-    })
-  })
-})
-
-admin.post("/extractorder", function(req, res) {
-  if(!( req.body.phone !== undefined && req.body.phone.present() && req.body.trafficPlanId !== undefined &&  req.body.trafficPlanId.present() )){
-    res.format({
-      html: function(){
-        res.redirect("/admin/extractorders/new")
-        return
-      },
-      json: function(){
-        res.json({
-          code: 1,
-          msg: "参数错误"
-        });
-        return
-      },
-      default: function() {
-        res.status(406).send('Not Acceptable');
-        return
-      }
-    });
-    return
-  }
-  async.waterfall([function(next) {
-    models.TrafficPlan.findById(req.body.trafficPlanId).then(function(trafficPlan) {
-      if(trafficPlan){
-        next(null, trafficPlan)
-      }else{
-        next(new Error("请选择正确的流量包"))
-      }
-    }).catch(function(err) {
-      next(err)
-    })
-  }, function(trafficPlan, next){
-    models.ExtractOrder.build({
-      exchangerType: trafficPlan.className(),
-      exchangerId: trafficPlan.id,
-      phone: req.body.phone,
-      cost: req.body.cost,
-      value: trafficPlan.value,
-      bid: trafficPlan.bid,
-      type: trafficPlan.type,
-      chargeType: "terminal",
-      extend: req.body.extend,
-      productType: models.TrafficPlan.PRODUCTTYPE["traffic"]
-    }).save().then(function(extractOrder) {
-      next(null, extractOrder, trafficPlan)
-    }).catch(function(err) {
-      next(err)
-    })
-  }], function(err, extractOrder, trafficPlan) {
-    if(err){
-      console.log(err)
-      res.format({
-        html: function(){
-          req.flash('err', err.message)
-          res.redirect("/admin/extractorders/new")
-          return
-        },
-        json: function(){
-          res.json({
-            code: 1,
-            msg: err.message
-          });
-          return
-        },
-        default: function() {
-          res.status(406).send('Not Acceptable');
-          return
-        }
-      });
-    }else{
-      res.format({
-        html: function(){
-          req.flash('info', "create success")
-          res.redirect("/admin/extractorders/" + extractOrder.id + "/edit")
-          return
-        },
-        json: function(){
-          res.json({
-            code: 0,
-            msg: "成功"
-          });
-          return
-        },
-        default: function() {
-          res.status(406).send('Not Acceptable');
-          return
-        }
-      });
-    }
-    autoCharge(extractOrder, trafficPlan, function(err){
-      if(err){
-        console.log(err)
-      }else{
-        console.log("充值成功")
-      }
-    })
-  })
-
-})
-
-
-admin.get("/extractorders/:id/edit", function(req, res){
+admin.get("/billorders/:id/edit", function(req, res){
   async.waterfall([function(next) {
     models.ExtractOrder.findById(req.params.id).then(function(extractOrder) {
       next(null, extractOrder)
@@ -258,21 +132,21 @@ admin.get("/extractorders/:id/edit", function(req, res){
   }], function(err, extractOrder, trafficPlanCollection) {
     var trafficPlanOptions = { name: 'trafficPlanId', id: 'trafficPlanId', class: 'select2 col-lg-12 col-xs-12' },
         stateOptions = { name: 'state', id: 'state', class: 'select2 col-lg-12 col-xs-12' }
-    res.render("admin/extractorders/edit", {
+    res.render("admin/billorders/edit", {
       extractOrder: extractOrder,
       trafficPlanOptions: trafficPlanOptions,
       trafficPlanCollection: trafficPlanCollection,
       stateCollection: models.ExtractOrder.STATEARRAY,
       stateOptions: stateOptions,
       failState: models.ExtractOrder.STATE.FAIL,
-      path: '/admin/extractOrder/'+extractOrder.id
+      path: '/admin/billorders/'+extractOrder.id
     })
   })
 })
 
-admin.post("/extractorder/:id", function(req, res) {
+admin.post("/billorder/:id", function(req, res) {
   if(!( req.body.phone !== undefined && req.body.phone.present() && req.body.trafficPlanId !== undefined &&  req.body.trafficPlanId.present() )){
-    res.redirect("/admin/extractorders/" + req.params.id + "/edit")
+    res.redirect("/admin/billorders/" + req.params.id + "/edit")
     return
   }
   async.waterfall([function(next) {
@@ -313,12 +187,12 @@ admin.post("/extractorder/:id", function(req, res) {
     }else{
       req.flash('info', 'update success')
     }
-    res.redirect("/admin/extractorders/" + extractOrder.id + "/edit")
+    res.redirect("/admin/billorders/" + extractOrder.id + "/edit")
   })
 })
 
 
-admin.post("/extractorder/:id/refund", function(req, res){
+admin.post("/billorder/:id/refund", function(req, res){
   async.waterfall([function(next){
     models.ExtractOrder.findById(req.params.id).then(function(extractOrder) {
       next(null, extractOrder)

@@ -11,7 +11,7 @@ var initConfig = {
   partnerKey: config.partnerKey,
   appId: config.appId,
   mchId: config.mchId,
-  notifyUrl: "http://" + config.hostname + "/orderconfirm",
+  notifyUrl: "http://" + config.hostname + "/billconfirm",
   pfx: fs.readFileSync(process.env.PWD + '/cert/apiclient_cert.p12')
 };
 var payment = new Payment(initConfig);
@@ -23,6 +23,7 @@ app.get('/bill', requireLogin, function(req, res) {
     models.TrafficPlan.findAll({
       where: {
         providerId: models.TrafficGroup.Provider["中国移动"],
+        productType: models.TrafficPlan.PRODUCTTYPE["bill"],
         display: true
       }
     }).then(function(trafficPlan){
@@ -45,8 +46,22 @@ app.get('/bill', requireLogin, function(req, res) {
   })
 })
 
-app.get('/wechat-order', requireLogin, function(req, res) {
-    var customer = req.customer
+app.post('/wechat-bill', requireLogin, function(req, res) {
+    var customer = req.customer,
+        useIntegral = req.body.useIntegral == 'true' ? true : false
+        console.log(req.body)
+    switch(req.body.chargetype ){
+      case  "remainingTraffic":
+        var chargetype = models.Customer.CHARGETYPE.REMAININGTRAFFIC
+        break;
+      case  "salary":
+        var chargetype = models.Customer.CHARGETYPE.SALARY
+        break;
+      default:
+        var chargetype = models.Customer.CHARGETYPE.BALANCE
+        break;
+    }
+
     async.waterfall([function(next){
       if(customer.levelId !== undefined){
         models.Level.findById(customer.levelId).then(function(level) {
@@ -55,7 +70,7 @@ app.get('/wechat-order', requireLogin, function(req, res) {
       }
       next(null, customer)
     }, function(customer, next) {
-      models.PaymentMethod.findOne({ where: { code: req.query.paymentMethod.toLowerCase() } }).then(function(paymentMethod) {
+      models.PaymentMethod.findOne({ where: { code: req.body.paymentMethod.toLowerCase() } }).then(function(paymentMethod) {
         if(paymentMethod){
           next(null, paymentMethod);
         }else{
@@ -65,118 +80,227 @@ app.get('/wechat-order', requireLogin, function(req, res) {
         next(err)
       })
     }, function(paymentMethod, next){
-      models.DataPlan.findById(req.query.dataPlanId).then(function(dataPlan){
-        if(dataPlan){
-          next(null, paymentMethod, dataPlan)
+      models.TrafficPlan.findById(req.body.flowId).then(function(trafficPlan){
+        if(trafficPlan){
+          next(null, paymentMethod, trafficPlan)
         }else{
-          res.json({ err: 1, msg: "请选择合适的套餐" })
+          res.json({ err: 1, msg: "请选择正确的话费套餐" })
         }
       }).catch(function(err) {
         next(err)
       })
-    }, function(paymentMethod, dataPlan, next){
-      models.Order.findOne({
+    }, function(paymentMethod, trafficPlan, next){
+      models.Coupon.findAll({
         where: {
-          state: models.Order.STATE.INIT,
-          customerId: customer.id,
-          dataPlanId: dataPlan.id,
-          paymentMethodId: paymentMethod.id,
-          total: dataPlan.price
+          trafficPlanId: trafficPlan.id,
+          isActive: true,
+          expiredAt: {
+            $gt: (new Date()).begingOfDate()
+          }
+        },
+        order: [
+                ['updatedAt', 'DESC']
+               ]
+      }).then(function(coupons) {
+        trafficPlan.coupon = coupons[0]
+        next(null, paymentMethod, trafficPlan)
+      }).catch(function(err) {
+        next(err)
+      })
+    }, function(paymentMethod, trafficPlan, next){
+      models.DConfig.findOne({
+        where: {
+          name: "exchangeRate"
         }
-      }).then(function(order){
-        if(dataPlan){
-          next(null, paymentMethod, dataPlan, order)
+      }).then(function(dConfig){
+        next(null, paymentMethod, trafficPlan, dConfig.value || 1)
+      }).catch(function(err){
+        next(err)
+      })
+    }, function(paymentMethod, trafficPlan, exchangeRate, next){
+
+      var total = helpers.discount(customer, trafficPlan),
+          deductible = 0.00
+      if(useIntegral){
+        deductible = (customer.totalIntegral / exchangeRate).toFixed(2)
+      }
+      if(useIntegral && deductible > 0.00){
+        if((total - deductible) < 0.00 ){
+          deductible = total
+          total = 0.00
         }else{
-          models.Order.build({
-            state: models.Order.STATE.INIT,
-            customerId: customer.id,
-            dataPlanId: dataPlan.id,
-            paymentMethodId: paymentMethod.id,
-            total: dataPlan.price
-          }).save().then(function(order){
-            next(null, paymentMethod, dataPlan, order)
+          total = total - deductible
+        }
+      }
+      if(chargetype == models.Customer.CHARGETYPE.SALARY && customer.salary < total){
+        res.json({ err: 1, msg: "分销奖励不足" })
+        return
+      }
+
+      if(chargetype == models.Customer.CHARGETYPE.REMAININGTRAFFIC && customer.remainingTraffic < total){
+        res.json({ err: 1, msg: "充值余额不足" })
+        return
+      }
+
+      models.ExtractOrder.findOne({
+        where: {
+          state: models.ExtractOrder.STATE.INIT,
+          exchangerType: trafficPlan.className(),
+          exchangerId: trafficPlan.id,
+          phone: req.body.phone,
+          customerId: customer.id,
+          chargeType: chargetype,
+          paymentMethodId: paymentMethod.id,
+          productType: models.TrafficPlan.PRODUCTTYPE["bill"],
+        }
+      }).then(function(extractOrder) {
+        if(extractOrder){
+          extractOrder.updateAttributes({
+            cost: trafficPlan.purchasePrice,
+            value: trafficPlan.value,
+            bid: trafficPlan.bid,
+            total: total,
+            totalIntegral: parseInt(deductible * exchangeRate),
+            exchangeIntegral: deductible,
+            productType: models.TrafficPlan.PRODUCTTYPE["bill"]
+          }).then(function(extractOrder){
+            next(null, paymentMethod, trafficPlan, extractOrder)
           }).catch(function(err){
+            next(err)
+          })
+        }else{
+           models.ExtractOrder.build({
+            exchangerType: trafficPlan.className(),
+            exchangerId: trafficPlan.id,
+            phone: req.body.phone,
+            cost: trafficPlan.purchasePrice,
+            value: trafficPlan.value,
+            bid: trafficPlan.bid,
+            customerId: customer.id,
+            chargeType: chargetype,
+            paymentMethodId: paymentMethod.id,
+            total: total,
+            totalIntegral: parseInt(deductible * exchangeRate),
+            exchangeIntegral: deductible,
+            productType: models.TrafficPlan.PRODUCTTYPE["bill"]
+          }).save().then(function(extractOrder) {
+            next(null, paymentMethod, trafficPlan, extractOrder)
+          }).catch(function(err) {
             next(err)
           })
         }
       }).catch(function(err){
         next(err)
       })
-
-
-    }], function(error, paymentMethod, dataPlan, order){
+    }], function(error, paymentMethod, trafficPlan, extractOrder){
       if(error){
         console.log(error)
         res.json({ err: 1, msg: "server error" })
       }else{
-        var ipstr = req.ip.split(':'),
-          ip = ipstr[ipstr.length -1]
+        //TODO salary
+        if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE && extractOrder.total > 0){
+          var ip = helpers.ip(req),
+              total_amount = Math.round(extractOrder.total * 100).toFixed(0)
+          var orderParams = {
+            body: '话费套餐 ' + trafficPlan.name,
+            attach: extractOrder.id,
+            out_trade_no: config.token + "_" + extractOrder.phone + "_" + extractOrder.id + "_" + total_amount,
+            total_fee: total_amount,
+            spbill_create_ip: ip,
+            openid: customer.wechat,
+            trade_type: 'JSAPI'
+          };
 
-        var orderParams = {
-          body: '流量套餐 ' + dataPlan.name,
-          attach: order.id,
-          out_trade_no: config.token + "_" + dataPlan.id + "_" + Math.round(order.total * 100),
-          total_fee:  Math.round(order.total * 100),
-          spbill_create_ip: ip,
-          openid: customer.wechat,
-          trade_type: 'JSAPI'
-        };
-
-        console.log(orderParams)
-        payment.getBrandWCPayRequestParams(orderParams, function(err, payargs){
-          if(err){
-            console.log("payment fail")
+          console.log(orderParams)
+          payment.getBrandWCPayRequestParams(orderParams, function(err, payargs){
+            if(err){
+              console.log("payment fail")
+              console.log(err)
+              res.json({err: 1, msg: '付款失败'})
+            }else{
+              console.log(payargs)
+              res.json(payargs);
+            }
+          });
+        }else{
+          // charge by salary or remainingTraffic or wechat payment total equal 0
+          customer.reduceTraffic(models, extractOrder, function(){
+            customer.reduceIntegral(models, extractOrder).then(function(customer, extractOrder, trafficPlan, flowHistory){
+              res.json({err: 0, msg: '付款成功', totalIntegral: customer.totalIntegral })
+            }).catch(function(err){
+              console.log(err)
+            })
+            extractOrder.updateAttributes({
+              state: models.ExtractOrder.STATE.PAID
+            }).then(function(extractOrder){
+            })
+          }, function(err){
             console.log(err)
-            res.json({err: 1, msg: 'payment fail'})
-          }else{
-            console.log(payargs)
-            res.json(payargs);
-          }
-        });
+            res.json({err: 1, msg: '付款失败'})
+          })
+        }
       }
     })
 })
 
+
 var middleware = require('wechat-pay').middleware;
-app.use('/orderconfirm', middleware(initConfig).getNotify().done(function(message, req, res, next) {
+app.use('/billconfirm', middleware(initConfig).getNotify().done(function(message, req, res, next) {
   console.log(message)
 
-  var orderId = message.attach
-
+  var extractOrderId = message.attach
   async.waterfall([function(next) {
-    models.Order.findById(orderId).then(function(order) {
-      if(order){
-        next(null, order)
+    models.ExtractOrder.findById(extractOrderId).then(function(extractOrder) {
+      if(extractOrder){
+        next(null, extractOrder)
       }else{
         next(new Error('order not found'))
       }
     }).catch(function(err) {
       next(err)
     })
-  }, function(order, next){
-    if(message.result_code === 'SUCCESS' && !order.isPaid()){
-      order.updateAttributes({
-        state: models.Order.STATE.PAID,
+  }, function(extractOrder, next){
+    if(message.result_code === 'SUCCESS' && !extractOrder.isPaid()){
+      extractOrder.updateAttributes({
+        state: models.ExtractOrder.STATE.PAID,
         transactionId: message.transaction_id
-      }).then(function(order){
-        next(null, order)
+      }).then(function(extractOrder){
+        next(null, extractOrder)
       })
     }else{
       next(new Error("pass"))
     }
-  }, function(order, next) {
-    models.Customer.findById(order.customerId).then(function(customer) {
-      next(null, order, customer)
+  }, function(extractOrder, next) {
+    models.Customer.findById(extractOrder.customerId).then(function(customer) {
+      next(null, extractOrder, customer)
     }).catch(function(err) {
       next(err)
     })
-  }, function(order, customer, next) {
-    customer.addTraffic(models, order, function(customer, order, flowHistory){
-      next(null, order, customer)
-    }, function(err) {
+  }, function(extractOrder, customer, next) {
+    extractOrder.getExchanger().then(function(trafficPlan){
+      next(null, extractOrder, customer, trafficPlan)
+    }).catch(function(err){
       next(err)
     })
-  }], function(err, order, customer){
+  }, function(extractOrder, customer, trafficPlan, next) {
+    //do history
+    customer.reduceTraffic(models, extractOrder, function(){
+      next(null, extractOrder, customer)
+      customer.reduceIntegral(models, extractOrder)
+      autoCharge(extractOrder, trafficPlan, function(err, trafficPlan, extractOrder){
+        if(err){
+          console.log(err)
+          // refund
+          customer.refundIntegral(models, extractOrder, err)
+        }else{
+          console.log("充值成功")
+        }
+      })
+    }, function(err){
+      next(err)
+    }, extractOrder.chargeType)
+
+  }, helpers.doOrderTotal, helpers.doAffiliate, helpers.autoAffiliate], function(err, extractOrder, customer){
     if(err){
       res.reply(err)
     }else{

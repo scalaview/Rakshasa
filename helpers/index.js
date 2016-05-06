@@ -958,6 +958,199 @@ function cmccGroupName(name){
   return array.join("<br>").htmlSafe()
 }
 
+function doAffiliate(extractOrder, customer, pass){
+  pass(null, extractOrder, customer)
+
+  async.waterfall([function(next) {
+    extractOrder.getExchanger().then(function(trafficPlan){
+      next(null, trafficPlan)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(trafficPlan, next) {
+    models.AffiliateConfig.loadConfig(models, trafficPlan, function(configs) {
+      if(configs.length <= 0){
+        return
+      }
+      // var wrapped = configs.map(function (value, index) {
+      //             return {index: value.level, value: value};
+      //           });
+      var configHash = {}
+      _(configs).forEach(function(n) {
+        configHash[n.level] = n
+      }).value();
+
+      var ll = customer.getAncestry()
+      if(ll.length <= 0){
+        return
+      }
+      var ancestryArr = []
+      var end = (ll.length - 3) ? ll.length - 3 : 0
+
+      for (var i = ll.length - 1; i >= end; i--) {
+        ancestryArr.push(ll[i])
+      };
+      async.waterfall([function(next) {
+        models.Customer.findAll({
+          where: {
+            id: {
+              $in: ancestryArr
+            }
+          }
+        }).then(function(ancestries) {
+
+          var objHash = ancestries.map(function (value, index) {
+            if(configHash[customer.ancestryDepth - value.ancestryDepth]){
+              return {
+                config: configHash[customer.ancestryDepth - value.ancestryDepth],
+                customer: value
+              }
+            }
+          }).compact()
+
+          next(null, objHash)
+        }).catch(function(err) {
+          next(err)
+        })
+      }, function(objHash, next) {
+
+        async.each(objHash, function(obj, callback) {
+          var one =  obj.customer
+          var confLine = obj.config
+
+          var salary = (parseInt(confLine.percent) / 100) * extractOrder.total
+          one.updateAttributes({
+            salary: one.salary + salary
+          }).then(function(o) {
+            // add history
+            one.takeFlowHistory(models, customer, salary, "从" + customer.username + "获得分销奖励 " + salary, models.FlowHistory.STATE.ADD , function() {
+            }, function(err) {
+            }, models.FlowHistory.TRAFFICTYPE.SALARY)
+            callback()
+          }).catch(function(err) {
+            callback(err)
+          })
+
+        }, function(err) {
+          if(err){
+            next(err)
+          }else{
+            next(null)
+          }
+        })
+
+      }], function(err) {
+
+      })
+
+    }, function(err) {})
+  }], function(err) {
+
+  })
+}
+
+
+function autoVIP(extractOrder, customer, pass) {
+  pass(null, extractOrder, customer)
+
+  if(customer.levelId){
+    models.Level.findById(customer.levelId).then(function(level) {
+      if( level === undefined ||  level.code == 'normal'){
+        setVip(extractOrder, customer)
+      }
+    })
+  }else{
+    setVip(extractOrder, customer)
+  }
+}
+
+function setVip(extractOrder, customer){
+  models.DConfig.findOrCreate({
+    where: {
+      name: "vipLimit"
+    },
+    defaults: {
+      name: 'vipLimit',
+      value: 1
+    }
+  }).spread(function(dConfig) {
+    if(customer.orderTotal > parseFloat(dConfig.value) ) {
+
+      async.waterfall([function(next) {
+        models.Level.findOne({
+          where: {
+            code: "vip"
+          }
+        }).then(function(level) {
+          if(level){
+            next(null, level)
+          }
+        }).catch(function(err) {
+          next(err)
+        })
+      }, function(level, next) {
+        customer.updateAttributes({
+          levelId: level.id
+        }).then(function(c) {
+          next(null, c)
+        }).catch(function(err) {
+          next(err)
+        })
+      }], function(err, c) {
+        if(err){
+          console.log(err)
+        }
+      })
+    }
+  })
+}
+
+
+function autoAffiliate(extractOrder, customer, pass) {
+  pass(null, extractOrder, customer)
+
+  async.waterfall([function(next) {
+    models.DConfig.findOrCreate({
+      where: {
+        name: 'affiliate'
+      },
+      defaults: {
+        name: 'affiliate',
+        value: 1
+      }
+    }).spread(function(dConfig) {
+      next(null, dConfig)
+    }).catch(function(err) {
+      next(err)
+    })
+  }, function(dConfig, next){
+    if(parseFloat(dConfig.value) < customer.orderTotal){
+      customer.updateAttributes({
+        isAffiliate: true
+      }).then(function(customer){
+        next(null)
+      })
+    }else{
+      next(null)
+    }
+  }], function(err) {
+    if(err){
+      console.log(err)
+    }
+    return
+  })
+}
+
+function doOrderTotal(extractOrder, customer, pass) {
+  pass(null, extractOrder, customer)
+
+  customer.updateAttributes({
+    orderTotal: customer.orderTotal + extractOrder.total
+  }).catch(function(err) {
+    console.log(err)
+  })
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -1014,3 +1207,8 @@ exports.ip = ip;
 exports.autoCharge = autoCharge;
 exports.chargeTypeTran = chargeTypeTran;
 exports.cmccGroupName = cmccGroupName;
+exports.doAffiliate = doAffiliate;
+exports.autoVIP = autoVIP;
+exports.setVip = setVip;
+exports.autoAffiliate = autoAffiliate;
+exports.doOrderTotal = doOrderTotal;

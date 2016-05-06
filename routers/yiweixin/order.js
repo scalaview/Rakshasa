@@ -35,7 +35,7 @@ app.get('/payment', requireLogin, function(req, res) {
   })
 })
 
-app.get('/wechat-order', requireLogin, function(req, res) {
+app.post('/wechat-order', requireLogin, function(req, res) {
     var customer = req.customer
     async.waterfall([function(next){
       if(customer.levelId !== undefined){

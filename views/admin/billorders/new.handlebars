@@ -1,0 +1,164 @@
+<div class="row">
+  <div class="col-xs-12">
+    <div class="form-horizontal">
+      <div class="form-group">
+          <label for="" class="col-xs-2 control-label">手机号码：</label>
+          <div class="col-xs-10">
+            <div class="row">
+              <input type="text" id="mobile" name="number" class="col-xs-4 ng-dirty ng-valid-parse ng-valid ng-valid-required ng-touched" placeholder="请输入手机号码" required="">
+            </div>
+            <div class="row">
+              <p id="phone-detail" style="display: none; color: green" class="help-block"></p>
+            </div>
+          </div>
+      </div>
+      <input type="hidden" name="user_product_no" id="user_product_no" value="" required="">
+      <div class="form-group">
+        <label for="" class="col-xs-2 control-label">流量套餐：</label>
+        <div class="col-xs-10">
+          <div class="products-type-list list-one">
+            <div id="data" class="bs-glyphicons">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+          <label for="" class="col-xs-2 control-label">具体规格：</label>
+          <div class="col-xs-10">
+              <div id="product-price" style="font-size: 23px; color: red">
+              </div>
+          </div>
+      </div>
+      <div class="form-group">
+          <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" id="charge" class="btn btn-primary">提交</button>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script id="trafficplans-template" type="text/x-handlebars-template">
+\{{#each trafficgroups}}
+  <div>
+    <label>\{{name}}</label>
+    <ul class="bs-glyphicons-list">
+      \{{#each trafficplans}}
+        <li data-value="\{{id}}" data-price="\{{cost}}">\{{name}} \{{cost}}元</li>
+      \{{/each}}
+    </ul>
+  </div>
+\{{/each}}
+</script>
+
+<script type="text/javascript">
+$(function(){
+  $("#charge").on("click", recharge)
+  chooseItem()
+  mobileBlur(function(result) {
+    var source   = $("#trafficplans-template").html();
+    if(source !== undefined && source !== ''){
+      getTrafficplan(source, result.catName)
+    }
+  });
+})
+
+function recharge(){
+  var selected = $(".bs-glyphicons-list li.selected"),
+      mobile = $("#mobile").val()
+  if(!isMobile(mobile)){
+    alert("先输入电话")
+    return
+  }
+
+  if(!selected){
+    alert("请选择套餐")
+    return
+  }
+
+  $.ajax({
+    url: '/admin/extractorder',
+    method: "POST",
+    dataType: 'JSON',
+    data: {
+      phone: mobile,
+      trafficPlanId: selected.data("value")
+    }
+  }).done(function(data){
+
+  }).fail(function(){
+
+  })
+}
+
+function chooseItem(){
+  $(document).on("click", ".bs-glyphicons-list li", function(){
+    var $this = $(this)
+    if(!$this.hasClass("selected")){
+      $(".bs-glyphicons-list li").removeClass("selected")
+      $this.addClass("selected")
+      $("#product-price").html($this.data("price") + "元")
+    }
+  })
+}
+
+function mobileBlur(successCallback){
+  //手机号码失去焦点事件
+  $("#mobile").bind("change", function () {
+      var mobile = $.trim($(this).val());
+      if ($.trim(mobile) == "") {
+          return;
+      }
+      if (!isMobile(mobile)) {
+          showDialog("请输入正确的手机号码");
+          return;
+      }
+      getCarrier(mobile, successCallback);
+  });
+}
+
+function getCarrier(phone, successCallback){
+  $.ajax({
+    url: 'https://tcc.taobao.com/cc/json/mobile_tel_segment.htm',
+    method: 'GET',
+    dataType: 'JSONP',
+    data: {
+      tel: phone
+    }
+  }).done(function(result){
+    // areaVid: "30517"carrier: "广东移动"catName: "中国移动"ispVid: "3236139"mts: "1382846"province: "广东"
+    if(result.catName){
+      $("#phone-detail").html(result.catName + ' ' + result.carrier).data("provider", result.carrier).show()
+      successCallback(result)
+    }else{
+      showDialog("请输入正确的手机号码");
+    }
+  }).fail(function(err) {
+    showDialog("服务器错误")
+  })
+}
+
+function getTrafficplan(source, catName){
+  if(!source) return
+  var template = Handlebars.compile(source);
+  $.ajax({
+    url: '/getTrafficplans',
+    dataType: 'JSON',
+    data: {
+      catName: catName
+    },
+    method: "GET"
+  }).done(function(data){
+    if(data.err == 4){  //服务器维护中
+      alert("服务器维护中")
+    }else{
+      var html = template({trafficgroups: data})
+      $("#data").html(html)
+    }
+  }).fail(function(err){
+    console.log(err)
+    alert("服务器错误")
+  })
+}
+</script>

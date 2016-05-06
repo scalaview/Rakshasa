@@ -292,9 +292,9 @@ function paymentConfirm(){
         source   = $("#trafficplans-template").html(),
         choose = $("#chooseMoney .weui_btn.selected")
 
-  // if(source === undefined || source == ''){
-  //   return
-  // }
+  if(source === undefined || source == ''){
+    return
+  }
 
   if(choose.data('id') === undefined || choose.data('id') == ''){
     return
@@ -400,7 +400,7 @@ function orderConfirm(){
     if(dataPlanId !== undefined && dataPlanId !== ''){
       $.ajax({
         url: '/wechat-order',
-        method: "GET",
+        method: "POST",
         dataType: "JSON",
         data: {
           dataPlanId: dataPlanId,
@@ -566,5 +566,118 @@ function bindTrafficplan(){
     $this.addClass("current")
     initTrafficplan()
   })
+}
+
+function billBinding(){
+
+  $(".bill").on('click', '.exchanger', function() {
+    var mobile = $.trim($("#mobile").val());
+    if (!isMobile(mobile)){
+      showDialog("请输入正确的手机号码")
+      return
+    }
+    var $this = $(this)
+    $(".bill .exchanger").removeClass('choose')
+    var choose = $("#chooseMoney .weui_btn.selected")
+    var lessE = choose.data('less')
+
+    if( parseFloat(lessE) < parseFloat($this.data('cost')) ){
+      if(choose.data('id') == 'balance'){
+        showDialog("账户剩余余额不足")
+      }else{
+        showDialog("账户返利余额不足")
+      }
+      return
+    }
+    $this.addClass('choose')
+    var cost = parseFloat($this.data('cost')),
+        discount = 0.00
+    if($("#use-integral").prop("checked")){
+      var exchangeRate = $("#use-integral").data("exchangerate"),
+          totalIntegral = $("#use-integral").data("totalintegral"),
+          discount = parseFloat( parseFloat(totalIntegral) /  parseFloat(exchangeRate) ),
+          cost = parseFloat($this.data('cost')) - discount
+      if(cost < 0.00){
+        discount = parseFloat($this.data('cost'))
+        cost = 0
+      }
+    }
+    phone = $.trim($("#mobile").val())
+    $("#maskflow").html($this.data('name'))
+    $("#maskmobile").html(phone)
+    $("#integral").html(discount.toFixed(2))
+    $("#maskcost").html(cost.toFixed(2))
+    if($("#use-integral").prop("checked") && discount > 0.00 ){
+      $("#integral").parent().show()
+    }else{
+      $("#integral").parent().hide()
+    }
+    $("#mask").show()
+  })
+
+  $(".sure").on("click", billConfirm)
+}
+
+function billConfirm(){
+  var selectedFlow = $(".bill .exchanger.choose")
+        phone = $.trim($("#mobile").val()),
+        flowId = selectedFlow.data("value"),
+        source   = $("#trafficplans-template").html(),
+        choose = $("#chooseMoney .weui_btn.selected")
+
+  if(choose.data('id') === undefined || choose.data('id') == ''){
+    return
+  }
+
+  if(isMobile(phone) && flowId !== undefined && flowId !== '' ){
+    $(".sure").unbind("click")
+    wechatBill(phone, flowId, function(){
+      $(".sure").on("click", billConfirm)
+    })
+  }else{
+    showDialog("请输入电话和选择正确的套餐")
+  }
+}
+
+function wechatBill(phone, flowId, opt){
+  showLoadingToast()
+  $.ajax({
+        url: '/wechat-bill',
+        method: "POST",
+        dataType: "JSON",
+        data: {
+          flowId: flowId,
+          paymentMethod: 'WechatPay',
+          chargetype: choose.data('id'),
+          useIntegral: $("#use-integral").prop("checked"),
+          phone: phone
+        }
+      }).done(function(payargs) {
+        if(opt){
+          opt()
+        }
+        hideLoadingToast()
+        if(payargs.err){
+          showDialog(payargs.msg)
+        }else if(choose.data('id') == "balance"){
+          WeixinJSBridge.invoke('getBrandWCPayRequest', payargs, function(res){
+            if(res.err_msg == "get_brand_wcpay_request:ok"){
+              $("#mask").hide();
+              showDialog("支付成功")
+              doDelay(function(){
+                window.location.reload()
+              },2)
+            }else{
+              showDialog("支付失败，请重试")
+            }
+          });
+        }else{
+          showDialog(payargs.msg)
+        }
+      }).fail(function(err) {
+        hideLoadingToast()
+        console.log(err)
+        showDialog("服务器繁忙")
+      })
 }
 

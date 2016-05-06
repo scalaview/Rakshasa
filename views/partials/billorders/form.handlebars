@@ -1,0 +1,58 @@
+<div class='container-fluid'>
+  <div class="row">
+      <div class="col-lg-12">
+          <h1 class="page-header">充值流量</h1>
+      </div>
+  </div>
+
+<form role="form" accept-charset="UTF-8" action="{{action}}" method="{{method}}">
+  <div class='row'>
+    <div class="col-lg-6">
+
+        <div class="form-group">
+            <label>手机</label>
+            <input class="form-control" placeholder="input title" name="phone" value="{{ extractOrder.phone }}">
+        </div>
+        <div class="form-group">
+          <label>花费流量币</label>
+          <input class="form-control" placeholder="输入花费流量币" id="cost" name="cost" value="{{ extractOrder.cost }}">
+        </div>
+        <div class="form-group">
+          <label>微信支付id</label>
+          <input class="form-control" id="transactionId" name="transactionId" value="{{ extractOrder.transactionId }}">
+        </div>
+        <div class="form-group">
+          <label>充值id</label>
+          <input class="form-control" id="taskid" name="taskid" value="{{ extractOrder.taskid }}">
+        </div>
+
+    </div>
+    <div class="col-lg-6">
+      <div class="form-group">
+        {{#if trafficPlanCollection }}
+          <label>流量套餐</label>
+          {{ selectTag trafficPlanOptions trafficPlanCollection extractOrder.exchangerId }}
+        {{else}}
+          <label>流量任务</label>
+          <input class="form-control" value="{{ extractOrder.flowtask.title }}">
+        {{/if}}
+      </div>
+
+      <div class="form-group">
+        <label>额外赠送流量</label>
+        <input class="form-control" placeholder="输入额外赠送流量" name="extend" value="{{ extractOrder.extend }}">
+      </div>
+      <div class="form-group">
+          <label>订单状态</label>
+          {{ selectTag stateOptions stateCollection extractOrder.state }}
+        </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-11">
+      <button type="submit" class="pull-right btn btn-primary">提  交</button>
+    </div>
+  </div>
+</form>
+
+</div>

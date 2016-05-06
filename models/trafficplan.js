@@ -68,6 +68,7 @@ module.exports = function(sequelize, DataTypes) {
     trafficGroupId: { type: DataTypes.INTEGER, allowNull: true },
     purchasePrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0.0 },
     integral: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
+    productType: { type: DataTypes.STRING, allowNull: true, defaultValue: "traffic" },
     withOutDiscount: { type: DataTypes.VIRTUAL }
   }, {
     classMethods: {
@@ -82,6 +83,7 @@ module.exports = function(sequelize, DataTypes) {
         models.TrafficGroup.findAll({
           where: {
             providerId: providerId,
+            productType: TrafficPlan.PRODUCTTYPE["traffic"],
             display: true
           },
           order: [
@@ -144,7 +146,8 @@ module.exports = function(sequelize, DataTypes) {
     scopes: {
       forSelect: {
         where: {
-          providerId: 0
+          providerId: 0,
+          productType: 'traffic'
         },
         order: [
           ['sortNum']
@@ -175,9 +178,16 @@ module.exports = function(sequelize, DataTypes) {
     '易流量': 6
   }
 
+  TrafficPlan.PRODUCTTYPE = {
+    traffic: "traffic",
+    bill: "bill"
+  }
+
   TrafficPlan.PROVIDERARRAY = Object.keys(TrafficPlan.Provider).map(function(k) { return [TrafficPlan.Provider[k], k] });
 
   TrafficPlan.TYPEARRAY = Object.keys(TrafficPlan.TYPE).map(function(k) { return [TrafficPlan.TYPE[k], k] });
+
+  TrafficPlan.PRODUCTTYPEARRAY = Object.keys(TrafficPlan.PRODUCTTYPE).map(function(k) { return [TrafficPlan.PRODUCTTYPE[k], k] });
 
   return TrafficPlan;
 };
