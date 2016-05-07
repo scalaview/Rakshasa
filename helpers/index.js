@@ -904,10 +904,10 @@ function ip(req){
 function autoCharge(extractOrder, trafficPlan, next){
   extractOrder.autoRecharge(trafficPlan).then(function(res, data) {
       console.log(data)
-      if(trafficPlan.type == models.TrafficPlan.TYPE['易流量']){
-        if(data.retcode == 0){
+      if(trafficPlan.type == models.TrafficPlan.TYPE['新号吧']){
+        if(data.code == 1){
           extractOrder.updateAttributes({
-            taskid: data.OrderID,
+            taskid: data.sysorderid,
             state: models.ExtractOrder.STATE.SUCCESS
           }).then(function(extractOrder){
             next(null, trafficPlan, extractOrder)
@@ -921,20 +921,10 @@ function autoCharge(extractOrder, trafficPlan, next){
           next(new Error(data.Message))
         }
       }else{
-        if(data.state == 1){
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.msg))
-        }
+        extractOrder.updateAttributes({
+          state: models.ExtractOrder.STATE.FAIL
+        })
+        next(new Error(data.Message))
       }
     }).catch(function(err){
       next(err)
