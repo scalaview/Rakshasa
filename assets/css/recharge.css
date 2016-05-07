@@ -85,7 +85,8 @@ body {
 }
 
 .bottonYun span {
-	float: left display: block;
+	float: left;
+  display: block;
 	position: relative;
 	left: 25px;
 	top: 3px;
