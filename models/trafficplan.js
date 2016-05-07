@@ -4,56 +4,6 @@ var request = require("request")
 var async = require("async")
 var helpers = require("../helpers")
 var config = require("../config")
-var crypto = require('crypto')
-
-var DataSource = function(phone){
-  this.phone = phone
-  this.did = config.did
-  this.key = config.umeolKey
-  this.time = (new Date()).getTime()
-  this.preMd5Str = this.phone + this.did + this.time + this.key
-
-  this.options = {
-    uri: config.umeolUrl,
-    method: 'GET',
-    qs: {
-      tel: this.phone,
-      did: this.did,
-      timestamp: this.time,
-      userkey: crypto.createHash('md5').update(this.preMd5Str).digest("hex")
-    }
-  }
-
-  this.then = function(callback){
-    this.successCallback = callback
-    return this
-  }
-
-  this.catch = function(callback){
-   this.errCallback = callback
-   return this
-  }
-
- this.do = function(){
-  var inerSuccessCallback = this.successCallback;
-  var inerErrCallback = this.errCallback;
-
-  request(this.options, function (error, res) {
-    if (!error && res.statusCode == 200) {
-      if(inerSuccessCallback){
-        var data = JSON.parse(res.body)
-        inerSuccessCallback.call(this, res, data)
-      }
-     }else{
-      if(inerErrCallback){
-        inerErrCallback.call(this, error)
-      }
-     }
-   });
-   return this
- }
- return this
-}
 
 module.exports = function(sequelize, DataTypes) {
   var TrafficPlan = sequelize.define('TrafficPlan', {
@@ -74,9 +24,6 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         models.TrafficPlan.belongsTo(models.TrafficGroup, { foreignKey: 'trafficGroupId' });
-      },
-      syncDataSource: function(phone) {
-        return new DataSource(phone)
       },
       getTrafficPlanByGroup: function(models, providerId, groupId, customer, coupons, pass){
         models.TrafficGroup.findAll({

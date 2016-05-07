@@ -1151,6 +1151,29 @@ function doOrderTotal(extractOrder, customer, pass) {
   })
 }
 
+function doIntegral(extractOrder, customer, pass){
+  pass(null, extractOrder, customer)
+
+  async.waterfall([function(next) {
+    extractOrder.getExchanger().then(function(trafficPlan){
+      next(null, trafficPlan)
+    }).catch(function(err){
+      next(err)
+    })
+  }], function(err, trafficPlan){
+    if(err){
+      console.log(err)
+    }else{
+      customer.updateAttributes({
+        orderTotal: parseInt(customer.totalIntegral) + parseInt(trafficPlan.integral)
+      }).catch(function(err) {
+        console.log(err)
+      })
+    }
+  })
+
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -1212,3 +1235,4 @@ exports.autoVIP = autoVIP;
 exports.setVip = setVip;
 exports.autoAffiliate = autoAffiliate;
 exports.doOrderTotal = doOrderTotal;
+exports.doIntegral = doIntegral;
