@@ -9,7 +9,7 @@ var config = require("../../config")
 var client = new OAuth(config.appId, config.appSecret);
 
 app.get('/', function(req, res) {
-  res.sendfile('./public/homepage/index.html');
+  res.redirect("/extractflow")
 })
 
 app.get('/auth', function(req, res) {
