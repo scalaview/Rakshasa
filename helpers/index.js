@@ -1174,6 +1174,13 @@ function doIntegral(extractOrder, customer, pass){
 
 }
 
+function is_admin(user, opts) {
+  if(user.username == "root")
+    return opts ? opts.fn(this) : true;
+  else
+    return opts ? opts.fn(this) : false;
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -1236,3 +1243,4 @@ exports.setVip = setVip;
 exports.autoAffiliate = autoAffiliate;
 exports.doOrderTotal = doOrderTotal;
 exports.doIntegral = doIntegral;
+exports.is_admin = is_admin;

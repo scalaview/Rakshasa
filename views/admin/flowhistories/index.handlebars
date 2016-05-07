@@ -56,6 +56,13 @@
                     <td>
                       {{ strftime createdAt }}
                     </td>
+                    {{#is_admin ../user }}
+                      <td>
+                        <a href="/admin/flowhistories/{{id}}/delete" class="list-group-item" onclick="return confirm('你确定需要删除这条记录吗？')">
+                          <i class="glyphicon glyphicon-trash"></i>
+                        </a>
+                      </td>
+                    {{/is_admin}}
                 </tr>
               {{/each}}
             </tbody>

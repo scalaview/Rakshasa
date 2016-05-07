@@ -116,4 +116,32 @@ admin.get("/flowhistories", function(req, res){
   })
 })
 
+admin.get("/flowhistories/:id/delete", function(req, res){
+  async.waterfall([function(next){
+    if(res.locals.user && helpers.is_admin(res.locals.user)){
+      next(null)
+    }else{
+      next(new Error("permission denied"))
+    }
+  }, function(next) {
+    models.FlowHistory.findById(req.params.id).then(function(flowhistory){
+      next(null, flowhistory.destroy({ force: true }))
+    }).catch(function(err){
+      next(err)
+    })
+  }], function(err, is_done){
+    if(err){
+      console.log(err)
+      res.redirect('/500')
+    }else{
+      if(is_done){
+        req.flash("info", "delete succes")
+      }else{
+        req.flash("error", "delete fail")
+      }
+      res.redirect("back")
+    }
+  })
+})
+
 module.exports = admin;

@@ -12,8 +12,11 @@ var skipUrls = [ '^\/wechat[\/|\?|\#]\?.*', '^\/admin\/login[\/|\?|\#]\?.*', '^\
 admin.all("*", function(req, res, next) {
   var url = req.originalUrl
   if(req.session.user_id){
-    next()
-    return
+    models.User.findById(req.session.user_id).then(function(user){
+      res.locals.user = user
+      next()
+      return
+    })
   }else{
     for (var i = skipUrls.length - 1; i >= 0; i--) {
       var match = req.originalUrl.match(skipUrls[i]);
