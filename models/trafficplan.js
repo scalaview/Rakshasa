@@ -26,23 +26,28 @@ module.exports = function(sequelize, DataTypes) {
         models.TrafficPlan.belongsTo(models.TrafficGroup, { foreignKey: 'trafficGroupId' });
       },
       getTrafficPlanByGroup: function(models, providerId, groupId, customer, coupons, pass){
+        var groupParams = {
+            providerId: providerId
+          }
+        if(customer){
+          groupParams['display'] = true
+        }
         models.TrafficGroup.findAll({
-          where: {
-            providerId: providerId,
-            display: true
-          },
+          where: groupParams,
           order: [
             ['sortNum', 'ASC'],
             ['id', 'ASC']
            ]
         }).then(function(trafficgroups) {
           var params = {
-              productType: TrafficPlan.PRODUCTTYPE["traffic"],
-              display: true
+              productType: TrafficPlan.PRODUCTTYPE["traffic"]
             }
-            if(groupId){
-              params['trafficGroupId'] = groupId
-            }
+          if(groupId){
+            params['trafficGroupId'] = groupId
+          }
+          if(customer){
+            params['display'] = true
+          }
           async.map(trafficgroups, function(trafficgroup, next) {
             trafficgroup.getTrafficPlans({
               where: params,
