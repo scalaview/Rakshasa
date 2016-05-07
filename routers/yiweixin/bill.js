@@ -291,17 +291,6 @@ app.use('/billconfirm', middleware(initConfig).getNotify().done(function(message
     customer.reduceTraffic(models, extractOrder, function(){
       next(null, extractOrder, customer)
       customer.reduceIntegral(models, extractOrder)
-      autoCharge(extractOrder, trafficPlan, function(err, trafficPlan, extractOrder){
-        if(err){
-          console.log(err)
-          // refund
-          if(extractOrder.totalIntegral){
-            customer.refundIntegral(models, extractOrder, err)
-          }
-        }else{
-          console.log("充值成功")
-        }
-      })
     }, function(err){
       next(err)
     }, extractOrder.chargeType)
