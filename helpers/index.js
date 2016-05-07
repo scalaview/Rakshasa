@@ -536,7 +536,7 @@ function requireLogin(req, res, next) {
   var url = req.originalUrl
   var encodeUrl = new Buffer(url).toString('base64');
 
-  if (req.session.customer_id) {
+  if(req.session.customer_id) {
     models.Customer.findOne({ where: { id: req.session.customer_id } }).then(function(customer) {
       if(customer){
         req.customer = customer
@@ -547,7 +547,17 @@ function requireLogin(req, res, next) {
     }).catch(function(err){
       console.log(err)
     })
-  } else {
+  }else if(req.session.user_id) {
+    if(req.session.user_id){
+      models.User.findById(req.session.user_id).then(function(user){
+        res.locals.user = user
+        next()
+        return
+      })
+    }else{
+      res.redirect("/auth?to=" + encodeUrl);
+    }
+  }else {
     res.redirect("/auth?to=" + encodeUrl);
   }
 }
