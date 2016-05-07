@@ -299,12 +299,13 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
       if(extractOrder.totalIntegral){
         customer.reduceIntegral(models, extractOrder)
       }
+      var originExtractOrder = extractOrder
       autoCharge(extractOrder, trafficPlan, function(err, trafficPlan, extractOrder){
         if(err){
           console.log(err)
           // refund
-          if(extractOrder.totalIntegral){
-            customer.refundIntegral(models, extractOrder, err)
+          if(originExtractOrder.totalIntegral){
+            customer.refundIntegral(models, originExtractOrder, err)
           }
         }else{
           console.log("充值成功")
