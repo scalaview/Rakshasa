@@ -397,10 +397,14 @@ function orderConfirm(){
     $("#mask").show()
   });
 
-  $(".sure").click(function(){
+  $(".sure").on('click', sureBinding);
+}
+
+function sureBinding(){
     var $this = $(this),
         dataPlanId = $("#txtFlowCount").val()
     if(dataPlanId !== undefined && dataPlanId !== ''){
+      $(".sure").unbind("click")
       $.ajax({
         url: '/wechat-order',
         method: "POST",
@@ -412,26 +416,26 @@ function orderConfirm(){
       }).done(function(payargs) {
         if(payargs.err){
           showDialog(payargs.msg)
+          $(".sure").on('click', sureBinding);
         }else{
           WeixinJSBridge.invoke('getBrandWCPayRequest', payargs, function(res){
             if(res.err_msg == "get_brand_wcpay_request:ok"){
-              alert("支付成功");
-              // 这里可以跳转到订单完成页面向用户展示
-              window.location.href = '/profile'
+              showDialog("支付成功");
             }else{
-              alert("支付失败，请重试");
+              showDialog("支付失败，请重试");
             }
+            $(".sure").on('click', sureBinding);
           });
         }
       }).fail(function(err) {
         console.log(err)
         showDialog("服务器繁忙")
+        $(".sure").on('click', sureBinding);
       })
     }else{
       showDialog("请输入电话和选择正确的套餐")
     }
-  })
-}
+  }
 
 function withdrawal(){
   $("#exchangeAmount").blur(function() {
