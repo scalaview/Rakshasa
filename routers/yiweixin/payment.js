@@ -33,8 +33,23 @@ app.get('/extractflow', requireLogin, function(req, res){
     }).catch(function(err){
       next(err)
     })
-  }], function(err, CMCCtrafficGroups, dConfig){
-    res.render('yiweixin/orders/order', { customer: req.customer, CMCCtrafficGroups: CMCCtrafficGroups, exchangeRate: dConfig.value || 1, providers: models.TrafficGroup.Provider, layout: 'recharge'  })
+  }, function(CMCCtrafficGroups, dConfig, next){
+    models.Banner.findAll({
+      where: {
+        active: true
+      },
+      order: [
+          'sortNum', 'id'
+      ]
+    }).then(function(banners) {
+      next(null, CMCCtrafficGroups, dConfig, banners)
+    }).catch(function(err) {
+      next(err)
+    })
+  }], function(err, CMCCtrafficGroups, dConfig, banners){
+    res.render('yiweixin/orders/order', { customer: req.customer, CMCCtrafficGroups: CMCCtrafficGroups,
+      exchangeRate: dConfig.value || 1, providers: models.TrafficGroup.Provider,
+      banners: banners, layout: 'recharge'  })
   })
 })
 
