@@ -30,6 +30,11 @@
   </div>
     <div class="zw-tips"><a href="#">购买规则说明</a></div>
 </div>
+{{#iflt 290 customer.id }}
+  <a href="http://dwz.cn/3iz21k">
+    <img class="app-guide1" src="/images/my-logo.png">
+  </a>
+{{/iflt}}
 {{> alertmodal }}
 {{> paymentConfirm }}
 <script type="text/javascript">
