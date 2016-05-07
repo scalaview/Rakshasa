@@ -197,7 +197,7 @@ module.exports = function(sequelize, DataTypes) {
             next(null, customer, extractOrder)
           }else if(extractOrder.chargeType == models.Customer.CHARGETYPE.SALARY){
             customer.updateAttributes({
-              salary: customer.salary + extractOrder.total
+              salary: parseFloat(customer.salary) + parseFloat(extractOrder.total)
             }).then(function(customer) {
               next(null, customer, extractOrder)
             }).catch(function(err) {
