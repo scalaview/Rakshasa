@@ -39,6 +39,11 @@ function Dazhong(phone, product_id, orderId){
   var contentLength = formData.length;
 
   this.options = {
+    headers: {
+      'Content-Length': contentLength,
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 8_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Mobile/12F70 MicroMessenger/6.1.5 NetType/WIFI'
+    },
     uri: uri,
     method: 'POST',
     body: formData
