@@ -97,7 +97,7 @@ app.get('/myticket/:id', function(req, res) {
 
     request(url).pipe(file)
     file.on('finish', function() {
-      images(process.env.PWD + "/public/images/myticket-bg.JPG").draw(images(tmp_file).size(211), 82, 177).save(save_file_path, {quality : 30 });
+      images(process.env.PWD + "/public/images/myticket-bg.JPG").draw(images(tmp_file).size(220), 120, 177).save(save_file_path, {quality : 30 });
 
       fs.unlink(tmp_file, function(err) {
           if (err){
