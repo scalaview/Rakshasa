@@ -920,6 +920,22 @@ function autoCharge(extractOrder, trafficPlan, next){
           })
           next(new Error(data.Message))
         }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['大众']){
+        if(data.errcode == 200){
+          extractOrder.updateAttributes({
+            taskid: data.data.order_id,
+            state: models.ExtractOrder.STATE.SUCCESS
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.errmsg))
+        }
       }else{
         extractOrder.updateAttributes({
           state: models.ExtractOrder.STATE.FAIL

@@ -5,10 +5,7 @@ var async = require("async")
 var helpers = require("../helpers")
 var recharger = require("../recharger")
 var Xinhaoba = recharger.Xinhaoba
-var DefaultRecharger = recharger.DefaultRecharger
-var Recharger = recharger.Recharger
-var HuawoRecharger = recharger.HuawoRecharger
-var YiliuliangRecharger = recharger.YiliuliangRecharger
+var Dazhong = recharger.Dazhong
 var config = require("../config")
 var crypto = require('crypto')
 
@@ -87,6 +84,8 @@ module.exports = function(sequelize, DataTypes) {
         var typeJson = trafficPlan.typeJson()
         if(trafficPlan.type == typeJson['新号吧']){
           return new Xinhaoba(this.id, this.phone, this.bid, this.value)
+        }else if(trafficPlan.type == typeJson['大众']){
+          return new Dazhong(this.phone, this.bid, this.id)
         }
       },
       isPaid: function(){

@@ -6,7 +6,7 @@ var querystring = require('querystring');
 function Dazhong(phone, product_id, orderId){
   this.client_id = config.dazhong_client_id
   this.product_id = product_id
-  this.timestamp = (new Date()).getTime()
+  this.timestamp = Math.round(new Date().getTime()/1000)
   this.nonce_str = Math.random().toString(36).substr(2);
   this.out_trade_no = orderId
   this.notify_url = "http://{{hostname}}/dazhongconfirm/".format({ hostname: config.hostname })
@@ -19,7 +19,7 @@ function Dazhong(phone, product_id, orderId){
         client_id: this.client_id,
         product_id: this.product_id,
         timestamp: this.timestamp,
-        nonce_str: his.nonce_str,
+        nonce_str: this.nonce_str,
         out_trade_no: this.out_trade_no,
         notify_url: this.notify_url,
         phone: this.phone
@@ -33,7 +33,6 @@ function Dazhong(phone, product_id, orderId){
   this.sign = crypto.createHash('md5').update(strArray.join("&")).digest("hex").toUpperCase();
   params['sign'] = this.sign
 
-  console.log(this.options)
 
   var formData = querystring.stringify(params);
   var contentLength = formData.length;
@@ -48,6 +47,7 @@ function Dazhong(phone, product_id, orderId){
     method: 'POST',
     body: formData
   }
+  console.log(this.options)
 
   this.then = function(callback){
     this.successCallback = callback
