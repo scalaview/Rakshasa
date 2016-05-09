@@ -159,7 +159,7 @@ app.post("/dazhongconfirm", function(req, res){
   var data = req.body
 
   confirmOrder({
-    id: data.out_trade_no
+    id: data.out_trade_no,
     state: models.ExtractOrder.STATE.SUCCESS
   }, data.return_code == "FINISHED", data.return_msg, function(err){
     if(err){
