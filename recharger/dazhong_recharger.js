@@ -24,9 +24,10 @@ function Dazhong(phone, product_id, orderId){
         notify_url: this.notify_url,
         phone: this.phone
       }
-  var strArray = []
-  for(var key in Object.keys(params).sort()){
-    strArray.push(key + "=" + params[key])
+  var strArray = [],
+      keys = Object.keys(params).sort()
+  for(var i=0; i < keys.length; i++){
+    strArray.push(keys[i] + "=" + params[keys[i]])
   }
   strArray.push("key=" + this.dazhong_apikey)
 

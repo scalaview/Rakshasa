@@ -154,23 +154,21 @@ function sendRefundNotice(customer, extractOrder, resean){
   })
 }
 
-app.use("/dazhongconfirm", function(req, res){
+app.post("/dazhongconfirm", function(req, res){
   console.log(req.body)
-  console.log(req.rawBody)
-  var data = req.body || req.rawBody
+  var data = req.body
 
-  // confirmOrder({
-  //   state: models.ExtractOrder.STATE.SUCCESS,
-  //   phone: phone,
-  //   taskid: transactionId
-  // }, result == 0, resultDesc, function(err){
-  //   if(err){
-  //     console.log(err)
-  //     res.json({status: 1, msg: "success"})
-  //   }else{
-  //     res.json({status: 1, msg: "success"})
-  //   }
-  // })
+  confirmOrder({
+    id: data.out_trade_no
+    state: models.ExtractOrder.STATE.SUCCESS
+  }, data.return_code == "FINISHED", data.return_msg, function(err){
+    if(err){
+      console.log(err)
+      res.json({status: 1, msg: "success"})
+    }else{
+      res.json({status: 1, msg: "success"})
+    }
+  })
 })
 
 module.exports = app;
