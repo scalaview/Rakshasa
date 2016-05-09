@@ -26,6 +26,7 @@
           <table class="table table-striped">
             <thead>
               <tr>
+                  <th></th>
                   <th>手机</th>
                   <th>名称</th>
                   <th>余   额</th>
@@ -37,6 +38,7 @@
             <tbody>
               {{#each customers.rows}}
                 <tr>
+                    <td>{{ id }}</td>
                     <td>{{ phone }}</td>
                     <td><img src="{{headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ username }}</td>
                     <td>{{ remainingTraffic }}</td>
