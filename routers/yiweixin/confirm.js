@@ -164,9 +164,9 @@ app.post("/dazhongconfirm", function(req, res){
   }, data.return_code == "FINISHED", data.return_msg, function(err){
     if(err){
       console.log(err)
-      res.json({status: 1, msg: "success"})
+      res.json({success: false})
     }else{
-      res.json({status: 1, msg: "success"})
+      res.json({success: true})
     }
   })
 })
