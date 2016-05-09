@@ -44,7 +44,7 @@
           <table class="table table-striped">
             <thead>
               <tr>
-                <th>电话</th>
+                <th>用户</th>
                 <th>状态</th>
                 <th>套餐</th>
                 <th>支付方式</th>
@@ -56,7 +56,7 @@
             <tbody>
               {{#each orders.rows }}
                 <tr>
-                    <td><img src="{{headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ username }}</td>
+                    <td><img src="{{ customer.headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ customer.username }}</td>
                     <td>{{ stateName }}</td>
                     <td>
                       {{ dataPlan.name }}
