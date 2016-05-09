@@ -692,7 +692,7 @@ function wechatBill(phone, flowId, opt){
 
 function trafficplanDetail(){
   $(document).on('click', '.showActionSheet', function () {
-      var mask = $('#mask');
+      var mask = $('#mask-block');
       var weuiActionsheet = $('#weui_actionsheet');
       weuiActionsheet.addClass('weui_actionsheet_toggle');
       mask.show()
