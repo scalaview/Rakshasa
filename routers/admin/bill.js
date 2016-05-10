@@ -154,7 +154,7 @@ admin.get('/bills/:id/edit', function(req, res) {
           typeCollection: typeCollection,
           trafficgroupsOptions: trafficgroupsOptions,
           trafficgroupsCollection: trafficgroupsCollection,
-          path: '/admin/bills/' + trafficPlan.id
+          path: '/admin/bill/' + trafficPlan.id
         })
     }
   })
