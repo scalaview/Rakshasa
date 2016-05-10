@@ -13,6 +13,9 @@ admin.get('/customers', function(req, res) {
   if(req.query.phone !== undefined && req.query.phone.present()){
     params = _.merge(params, { phone: { $like: "%{{phone}}%".format({ phone: req.query.phone }) } })
   }
+  if(req.query.id !== undefined && req.query.id.present()){
+    params = _.merge(params, { id: req.query.id })
+  }
   models.Customer.findAndCountAll({
     where: params,
     limit: req.query.perPage || 15,

@@ -1182,6 +1182,15 @@ function is_admin(user, opts) {
     return opts ? opts.fn(this) : false;
 }
 
+function apiProvider(providerId){
+  for(var i=0; i < models.TrafficPlan.TYPEARRAY.length; i++){
+    var target = models.TrafficPlan.TYPEARRAY[i]
+    if(target.length >= 2 && target[0] == providerId){
+      return target[1]
+    }
+  }
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -1245,3 +1254,4 @@ exports.autoAffiliate = autoAffiliate;
 exports.doOrderTotal = doOrderTotal;
 exports.doIntegral = doIntegral;
 exports.is_admin = is_admin;
+exports.apiProvider = apiProvider;
