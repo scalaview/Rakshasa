@@ -86,6 +86,17 @@ module.exports = function(sequelize, DataTypes) {
           return new Xinhaoba(this.id, this.phone, this.bid, this.value)
         }else if(trafficPlan.type == typeJson['大众']){
           return new Dazhong(this.phone, this.bid, this.id)
+        }else{
+          function Empty(){
+            var that = this
+            this.then = function(callback){ that.successCallback=callback; return this }
+            this.catch = function(callback){ that.errorCallback=callback; return this }
+            this.do = function(){
+              that.successCallback()
+            }
+            return this
+          }
+          return new Empty()
         }
       },
       isPaid: function(){

@@ -904,6 +904,16 @@ function ip(req){
 function autoCharge(extractOrder, trafficPlan, next){
   extractOrder.autoRecharge(trafficPlan).then(function(res, data) {
       console.log(data)
+      if(!trafficPlan.type){
+        extractOrder.updateAttributes({
+          state: models.ExtractOrder.STATE.SUCCESS
+        }).then(function(extractOrder){
+          next(null, trafficPlan, extractOrder)
+        }).catch(function(err) {
+          next(err)
+        })
+        return
+      }
       if(trafficPlan.type == models.TrafficPlan.TYPE['新号吧']){
         if(data.code == 1){
           extractOrder.updateAttributes({

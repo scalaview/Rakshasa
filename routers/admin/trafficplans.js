@@ -69,7 +69,7 @@ admin.get('/trafficplans/new', function(req, res) {
       var trafficPlan = models.TrafficPlan.build(),
           providerOptions = { name: "providerId", class: 'select2 col-lg-12 col-xs-12' },
           providerCollection = models.TrafficPlan.PROVIDERARRAY,
-          typeOptions = { name: "type", class: 'select2 col-lg-12 col-xs-12' },
+          typeOptions = { name: "type", class: 'select2 col-lg-12 col-xs-12', includeBlank: true },
           typeCollection = models.TrafficPlan.TYPEARRAY,
           trafficgroupsOptions = { name: "trafficGroupId", class: 'select2 col-lg-12 col-xs-12', includeBlank: true }
 
@@ -143,7 +143,7 @@ admin.get('/trafficplans/:id/edit', function(req, res) {
     }else{
       var providerOptions = { name: "providerId", class: 'select2 col-lg-12 col-xs-12' },
           providerCollection = models.TrafficPlan.PROVIDERARRAY,
-          typeOptions = { name: "type", class: 'select2 col-lg-12 col-xs-12' },
+          typeOptions = { name: "type", class: 'select2 col-lg-12 col-xs-12', includeBlank: true },
           typeCollection = models.TrafficPlan.TYPEARRAY,
           trafficgroupsOptions = { name: "trafficGroupId", class: 'select2 col-lg-12 col-xs-12', includeBlank: true }
 
