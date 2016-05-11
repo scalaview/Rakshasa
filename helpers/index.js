@@ -906,7 +906,7 @@ function autoCharge(extractOrder, trafficPlan, next){
       console.log(data)
       if(!trafficPlan.type){
         extractOrder.updateAttributes({
-          state: models.ExtractOrder.STATE.SUCCESS
+          state: models.ExtractOrder.STATE.AWAIT
         }).then(function(extractOrder){
           next(null, trafficPlan, extractOrder)
         }).catch(function(err) {

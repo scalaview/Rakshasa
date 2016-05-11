@@ -78,6 +78,8 @@ module.exports = function(sequelize, DataTypes) {
           return "退款"
         }else if(this.state === ExtractOrder.STATE.FINISH){
           return "充值成功"
+        }else if(this.state === ExtractOrder.STATE.AWAIT){
+          return "待充值"
         }
       },
       autoRecharge: function(trafficPlan){
@@ -112,7 +114,8 @@ module.exports = function(sequelize, DataTypes) {
     SUCCESS: 3,
     FAIL: 4,
     REFUNDED: 5,
-    FINISH: 6
+    FINISH: 6,
+    AWAIT: 7
   }
 
   ExtractOrder.CHARGETYPE = {
