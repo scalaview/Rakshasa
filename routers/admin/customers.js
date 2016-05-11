@@ -16,16 +16,28 @@ admin.get('/customers', function(req, res) {
   if(req.query.id !== undefined && req.query.id.present()){
     params = _.merge(params, { id: req.query.id })
   }
-  models.Customer.findAndCountAll({
-    where: params,
-    limit: req.query.perPage || 15,
-    offset: helpers.offset(req.query.page, req.query.perPage || 15),
-    order: [
-        ['createdAt', 'DESC']
-      ]
-  }).then(function(customers) {
-    var result = helpers.setPagination(customers, req)
-    res.render('admin/customers/index', { customers: result, query: req.query })
+  async.waterfall([function(next){
+    models.Customer.findAndCountAll({
+      where: params,
+      limit: req.query.perPage || 15,
+      offset: helpers.offset(req.query.page, req.query.perPage || 15),
+      order: [
+          ['createdAt', 'DESC']
+        ]
+    }).then(function(customers) {
+      var result = helpers.setPagination(customers, req)
+      next(null, result)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(result, next){
+    models.Level.findAll().then(function(levels){
+      next(null, result, levels || [])
+    }).catch(function(err){
+      next(err)
+    })
+  }], function(err, result, levels){
+    res.render('admin/customers/index', { customers: result, query: req.query, levels: levels })
   })
 })
 

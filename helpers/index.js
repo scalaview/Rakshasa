@@ -1191,6 +1191,14 @@ function apiProvider(providerId){
   }
 }
 
+function showLevelName(levels, levelId){
+  for(var i=0; i<levels.length; i++){
+    if(levels[i].id == levelId){
+      return levels[i].name
+    }
+  }
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -1255,3 +1263,4 @@ exports.doOrderTotal = doOrderTotal;
 exports.doIntegral = doIntegral;
 exports.is_admin = is_admin;
 exports.apiProvider = apiProvider;
+exports.showLevelName = showLevelName;
