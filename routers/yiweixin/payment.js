@@ -248,9 +248,9 @@ app.post('/pay', requireLogin, function(req, res) {
                 if(err){
                   console.log(err)
                   // refund
-                  customer.refundTraffic(models, extractOrder, err, function(customer, extractOrder, flowHistory){
+                  customer.refundTraffic(models, extractOrder, err.message, function(customer, extractOrder, flowHistory){
                     if(extractOrder.totalIntegral){
-                      customer.refundIntegral(models, extractOrder, err)
+                      customer.refundIntegral(models, extractOrder, err.message)
                     }
                   }, function(err){
                     console.log(err)
@@ -320,7 +320,7 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
           console.log(err)
           // refund
           if(originExtractOrder.totalIntegral){
-            customer.refundIntegral(models, originExtractOrder, err)
+            customer.refundIntegral(models, originExtractOrder, err.message)
           }
         }else{
           console.log("充值成功")

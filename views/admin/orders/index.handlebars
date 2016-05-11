@@ -44,6 +44,7 @@
           <table class="table table-striped">
             <thead>
               <tr>
+                <th></th>
                 <th>用户</th>
                 <th>状态</th>
                 <th>套餐</th>
@@ -56,6 +57,7 @@
             <tbody>
               {{#each orders.rows }}
                 <tr>
+                    <td>{{ customer.id }}</td>
                     <td><img src="{{ customer.headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ customer.username }}</td>
                     <td>{{ stateName }}</td>
                     <td>

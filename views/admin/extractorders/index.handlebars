@@ -48,6 +48,7 @@
             <thead>
               <tr>
                 <th>手机号码</th>
+                <th></th>
                 <th>用 户</th>
                 <th>状 态</th>
                 <th>花 费</th>
@@ -64,6 +65,7 @@
               {{#each extractOrders.rows}}
                 <tr>
                     <td>{{ phone }}</td>
+                    <td>{{ customer.id }}</td>
                     <td><img src="{{customer.headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ customer.username }}</td>
                     <td>{{ stateName }}</td>
                     <td>{{ total }}</td>

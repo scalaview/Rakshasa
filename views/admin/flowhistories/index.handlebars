@@ -39,6 +39,7 @@
           <table class="table table-striped">
             <thead>
               <tr>
+                <th></th>
                 <th>用户</th>
                 <th>状态</th>
                 <th>数目</th>
@@ -49,7 +50,8 @@
             <tbody>
               {{#each flowhistories.rows}}
                 <tr>
-                    <td>{{ customer.phone }}</td>
+                    <td>{{ customer.id }}</td>
+                    <td><img src="{{customer.headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ customer.username }}</td>
                     <td>{{ flowhistorySourceLink source }}</td>
                     <td>{{ amountType state amount }}</td>
                     <td>{{ comment }}</td>
