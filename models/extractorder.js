@@ -108,14 +108,14 @@ module.exports = function(sequelize, DataTypes) {
   });
 
   ExtractOrder.STATE = {
+    AWAIT: 7,
     INIT: 0,
     PAID: 1,
     UNPAID: 2,
     SUCCESS: 3,
     FAIL: 4,
     REFUNDED: 5,
-    FINISH: 6,
-    AWAIT: 7
+    FINISH: 6
   }
 
   ExtractOrder.CHARGETYPE = {
