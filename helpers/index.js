@@ -964,7 +964,7 @@ function chargeTypeTran(chargeType){
 function cmccGroupName(name){
   var array = []
   _.forEach(name.split(" "), function(v){
-    array.push("<b>{{v}}</b>".format({ v: v }))
+    array.push("<span class='br'>{{v}}</span>".format({ v: v }))
   })
   return array.join("<br>").htmlSafe()
 }

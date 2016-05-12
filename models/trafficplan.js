@@ -60,6 +60,7 @@ module.exports = function(sequelize, DataTypes) {
               if(trafficplans.length > 0){
                 trafficplans = helpers.applyCoupon(coupons, trafficplans, customer)
                 data = {
+                  id: trafficgroup.id,
                   name: trafficgroup.name,
                   trafficplans: trafficplans
                 }

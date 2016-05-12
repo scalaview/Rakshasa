@@ -15,6 +15,15 @@ Handlebars.registerHelper('subSummary', function(text, size) {
   }
 });
 
+Handlebars.registerHelper('cmccGroupName', function(name) {
+  var array = [],
+      names = name.split(" ")
+  for(var i=0; i< names.length; i++){
+    array.push("<span class='br'>"+ names[i] +"</span>")
+  }
+  return new Handlebars.SafeString(array.join(""))
+});
+
 //页面加载
 $(document).ready(function () {
   applylimit()
@@ -189,13 +198,10 @@ function getCarrier(phone, successCallback){
 function initTrafficplan(){
   var source   = $("#trafficplans-template").html();
   if(source !== undefined && source !== ''){
-    var $this = $(".bottonYun li.current"),
+    var $this = $(".js_type_list li.active"),
         id = $this.data('id'),
         provider = $this.data("provider")
-    if(id == 'yd'){
-      var groupId = $(".bottonStyle li.current").data('id')
-    }
-    getTrafficplan(source, provider, groupId)
+    getTrafficplan(source, provider, null)
   }
 }
 
