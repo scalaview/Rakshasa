@@ -48,13 +48,14 @@ $(document).ready(function () {
     loadMore()
     $(window).scroll(bindScroll);
   }
-  // mobileBlur(function(result) {
-  //   var source   = $("#trafficplans-template").html();
-  //   if(source !== undefined && source !== ''){
-  //     getTrafficplan(source, result.catName)
-  //     submitIsEnable(true);
-  //   }
-  // });
+  mobileBlur(function(result) {
+    var source   = $("#trafficplans-template").html();
+    if(source !== undefined && source !== ''){
+      getTrafficplan(source, result.catName)
+      $(".rbt-list.js_type_list li.active").removeClass("active")
+      $(".rbt-list.js_type_list li[data-provider='"+ result.catName +"']").addClass("active")
+    }
+  });
   changePayment()
 });
 
@@ -118,14 +119,12 @@ function mobileBlur(successCallback){
       if ($.trim(mobile) == "") {
           $(".correct").hide();
           $(".correct").html("");
-          $(".llb").html(window.plans || "");
           // showDialog("请输入手机号码");
           return;
       }
       if (!isMobile(mobile)) {
           $(".correct").hide();
           $(".correct").html("");
-          $(".llb").html(window.plans || "");
           showDialog("请输入正确的手机号码");
           return;
       }
@@ -184,7 +183,7 @@ function getCarrier(phone, successCallback){
     hideLoadingToast();
     // areaVid: "30517"carrier: "广东移动"catName: "中国移动"ispVid: "3236139"mts: "1382846"province: "广东"
     if(result.catName){
-      $("#phone-detail").html(result.catName + ' ' + result.carrier).data("provider", result.carrier).show()
+      $(".tips").html(result.catName + ' ' + result.carrier).data("provider", result.carrier).show()
       successCallback(result)
     }else{
       showDialog("请输入正确的手机号码");

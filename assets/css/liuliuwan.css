@@ -69,7 +69,7 @@ body { background: rgb(244, 246, 248); }
 .rh-fill .input:focus { border: 1px solid rgb(143, 195, 32); box-shadow: rgba(143, 195, 32, 0.4) 0px 0px 6px inset; }
 .rh-fill .btn { position: absolute; right: 0px; top: 50%; height: 0.5rem; line-height: 0.5rem; padding-right: 0.15rem; transform: translate(0px, -50%); }
 .rh-fill .tips { position: absolute; right: 0.42rem; top: 0px; line-height: 0.5rem; font-size: 0.12rem; color: rgb(153, 153, 153); }
-.recharge-bd { padding-top: 1.49rem; padding-bottom: 0.5rem; }
+.recharge-bd { padding-top: 3.15rem; padding-bottom: 0.5rem; }
 .rb-header { padding: 0.13rem 0.1rem; font-size: 0.12rem; background: rgb(245, 247, 249); }
 .rb-header .title { color: rgb(0, 133, 208); }
 .rb-header .btn { display: inline-block; margin-left: 0.1rem; }
