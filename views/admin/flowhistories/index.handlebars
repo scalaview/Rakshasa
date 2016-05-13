@@ -50,7 +50,7 @@
             <tbody>
               {{#each flowhistories.rows}}
                 <tr>
-                    <td>{{ customer.id }}</td>
+                    <td>{{ customerId }}</td>
                     <td><img src="{{customer.headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ customer.username }}</td>
                     <td>{{ flowhistorySourceLink source }}</td>
                     <td>{{ amountType state amount }}</td>
