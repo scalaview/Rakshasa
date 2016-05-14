@@ -56,6 +56,18 @@ module.exports = function(sequelize, DataTypes) {
                                   $gt: 0
                                 }
                               }
+              }else{
+                var params = {
+                                trafficPlanId: {
+                                  $eq: null
+                                },
+                                level: {
+                                  $lte: maxDepth
+                                },
+                                percent: {
+                                  $gt: 0
+                                }
+                              }
               }
               next(null, params)
             })

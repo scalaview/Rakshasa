@@ -11,7 +11,67 @@ var crypto = require('crypto')
 
 module.exports = function(sequelize, DataTypes) {
   var ExtractOrder = sequelize.define('ExtractOrder', {
-    state: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+    state:{
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      set: function(val){
+        var that = this
+        if(val == ExtractOrder.STATE.FINISH && this.state != ExtractOrder.STATE.FINISH ){
+          async.waterfall([function(next){
+            that.getCustomer().then(function(customer){
+              if(customer){
+                next(null, customer)
+              }else{
+                next(new Error("customer not found"))
+              }
+            }).catch(function(err){
+              next(err)
+            })
+          }, function(customer, next){
+            helpers.doOrderTotal(that, customer, next)
+          }, helpers.doAffiliate, helpers.doIntegral], function(err, extractOrder, customer){
+            if(err){
+              console.log(err)
+              return;
+            }
+          })
+        }else if(this.state == ExtractOrder.STATE.FINISH && val != ExtractOrder.STATE.FINISH){
+          async.waterfall([function(next){
+            that.getCustomer().then(function(customer){
+              if(customer){
+                next(null, customer)
+              }else{
+                next(new Error("customer not found"))
+              }
+            }).catch(function(err){
+              next(err)
+            })
+          }, function(customer, next){
+            customer.refundTraffic(helpers.models, that, "手动修改状态", function(customer, extractOrder, flowHistory){
+              if(extractOrder.totalIntegral){
+                customer.refundIntegral(helpers.models, extractOrder, "手动修改状态")
+              }
+              next(null, that, customer)
+            }, function(err){
+              next(err)
+            })
+          }, function(extractOrder, customer, next){
+            customer.reduceAncestries(helpers.models, extractOrder, "手动修改状态").then(function(customer, extractOrder){
+              next(null, extractOrder, customer)
+            }).catch(function(err){
+              next(err)
+            })
+          }], function(err, extractOrder, customer){
+            if(err){
+              console.log(err)
+              return;
+            }
+          })
+        }
+        this.setDataValue('state', val);
+      }
+    },
     exchangerType: { type: DataTypes.STRING, allowNull: false },
     exchangerId: { type: DataTypes.INTEGER, allowNull: false },
     phone: {  type: DataTypes.STRING, allowNull: true },

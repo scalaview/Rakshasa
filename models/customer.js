@@ -312,6 +312,82 @@ module.exports = function(sequelize, DataTypes) {
           })
         });
       },
+      reduceAncestries: function(models, extractOrder, message) {
+        var customer = this
+        return new Promise(function (resolve, reject) {
+          async.waterfall([function(next){
+            var ll = customer.getAncestry()
+            if(ll.length <= 0){
+              console.log("on ancestry")
+              return;
+            }
+            models.Customer.findAll({
+              where: {
+                id: {
+                  $in: ll
+                }
+              }
+            }).then(function(ancestries) {
+              next(null, ancestries)
+            }).catch(function(err) {
+              next(err)
+            })
+          }, function(ancestries, next) {
+            extractOrder.getTrafficPlan().then(function(trafficPlan) {
+              extractOrder.trafficPlan = trafficPlan
+              next(null, ancestries, extractOrder, trafficPlan)
+            }).catch(function(err) {
+              next(err)
+            })
+          }, function(ancestries, extractOrder, trafficPlan, pass) {
+            async.each(ancestries, function(ancestry, next){
+              models.FlowHistory.findOne({
+                where: {
+                  type: extractOrder.className(),
+                  typeId: extractOrder.id,
+                  state: models.FlowHistory.STATE.ADD,
+                  customerId: ancestry.id
+                },
+                order: [
+                  ["updatedAt", "DESC"]
+                ]
+              }).then(function(flowHistory){
+                if(!flowHistory){
+                  pass(null, customer, extractOrder, 0)
+                }
+                var salary = parseFloat(ancestry.salary) - parseFloat(flowHistory.amount)
+                if(salary < 0){
+                  salary = 0
+                }
+                ancestry.updateAttributes({
+                  salary: salary
+                }).then(function(ancestry){
+                  var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。分销奖励已经取消，对你造成的不便我们万分抱歉"
+                  ancestry.takeFlowHistory(models, extractOrder, parseFloat(flowHistory.amount).toFixed(2), msg, models.FlowHistory.STATE.REDUCE, function(flowHistory){
+                      next(null, customer, extractOrder, flowHistory)
+                  }, function(err) {
+                    next(err)
+                  }, extractOrder.chargeType)
+                })
+              }).catch(function(err){
+                next(err)
+              })
+            }, function(err){
+              if(err){
+                pass(err)
+              }else{
+                pass(null, customer, extractOrder)
+              }
+            })
+          }], function(err, customer, extractOrder) {
+            if(err){
+              reject(err)
+            }else{
+              resolve(customer, extractOrder)
+            }
+          })
+        });
+      },
       takeFlowHistory: function(models, obj, amount, comment, state, successCallBack, errCallBack, from){
         var customer = this
         if(state !== models.FlowHistory.STATE.ADD && state !== models.FlowHistory.STATE.REDUCE){

@@ -330,7 +330,7 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
       next(err)
     }, extractOrder.chargeType)
 
-  }, helpers.doOrderTotal, helpers.doAffiliate, helpers.doIntegral, helpers.autoAffiliate], function(err, extractOrder, customer){
+  }, helpers.autoAffiliate], function(err, extractOrder, customer){
     if(err){
       res.reply(err)
     }else{
