@@ -1176,7 +1176,7 @@ function doIntegral(extractOrder, customer, pass){
       console.log(err)
     }else{
       customer.updateAttributes({
-        orderTotal: parseInt(customer.totalIntegral) + parseInt(trafficPlan.integral)
+        totalIntegral: parseInt(customer.totalIntegral) + parseInt(trafficPlan.integral)
       }).catch(function(err) {
         console.log(err)
       })
