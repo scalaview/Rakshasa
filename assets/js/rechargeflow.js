@@ -39,13 +39,19 @@ $(document).ready(function () {
     loadMore()
     $(window).scroll(bindScroll);
   }
-  // mobileBlur(function(result) {
-  //   var source   = $("#trafficplans-template").html();
-  //   if(source !== undefined && source !== ''){
-  //     getTrafficplan(source, result.catName)
-  //     submitIsEnable(true);
-  //   }
-  // });
+  mobileBlur(function(result) {
+    var source   = $("#trafficplans-template").html();
+    if(source !== undefined && source !== ''){
+      $(".bottonYun li.current").removeClass("current")
+      $(".bottonYun li[data-provider='"+ result.catName +"']").addClass("current")
+      if($(".bottonYun li.current").data("id") == "yd"){
+        getTrafficplan(source, result.catName, $(".bottonStyle li.current").data("id"))
+      }else{
+        getTrafficplan(source, result.catName)
+      }
+      submitIsEnable(true);
+    }
+  });
   changePayment()
 });
 
@@ -109,14 +115,12 @@ function mobileBlur(successCallback){
       if ($.trim(mobile) == "") {
           $(".correct").hide();
           $(".correct").html("");
-          $(".llb").html(window.plans || "");
           // showDialog("请输入手机号码");
           return;
       }
       if (!isMobile(mobile)) {
           $(".correct").hide();
           $(".correct").html("");
-          $(".llb").html(window.plans || "");
           showDialog("请输入正确的手机号码");
           return;
       }
@@ -244,7 +248,31 @@ function extractConfirm(){
       showDialog("请输入正确的手机号码")
       return
     }
-    var $this = $(this)
+
+    var $this = $(this),
+        provider = $this.data("provider")
+    if(window.catName){
+      switch(window.catName){
+        case "中国移动":
+          if(provider != '0'){
+            showDialog("请充值移动套餐")
+            return
+          }
+          break;
+        case "中国联通":
+          if(provider != '1'){
+            showDialog("请充值通套餐")
+            return
+          }
+          break;
+        case "中国电信":
+          if(provider != '2'){
+            showDialog("请充值电信套餐")
+            return
+          }
+          break;
+      }
+    }
     $(".llb a").removeClass('choose')
     var choose = $("#chooseMoney .weui_btn.selected")
     var lessE = choose.data('less')
