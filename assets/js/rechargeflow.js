@@ -42,6 +42,7 @@ $(document).ready(function () {
   mobileBlur(function(result) {
     var source   = $("#trafficplans-template").html();
     if(source !== undefined && source !== ''){
+      window.catName = result.catName
       $(".bottonYun li.current").removeClass("current")
       $(".bottonYun li[data-provider='"+ result.catName +"']").addClass("current")
       if($(".bottonYun li.current").data("id") == "yd"){
