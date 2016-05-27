@@ -139,7 +139,7 @@ admin.get("/billorders/:id/edit", function(req, res){
       stateCollection: models.ExtractOrder.STATEARRAY,
       stateOptions: stateOptions,
       failState: models.ExtractOrder.STATE.FAIL,
-      path: '/admin/billorders/'+extractOrder.id
+      path: '/admin/billorder/'+extractOrder.id
     })
   })
 })
