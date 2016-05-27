@@ -721,9 +721,12 @@ function wechatBill(phone, flowId, opt){
 
 function trafficplanDetail(){
   $(document).on('click', '.showActionSheet', function () {
+      var providerId = $(this).data("provider")
       var mask = $('#mask-block');
       var weuiActionsheet = $('#weui_actionsheet');
       weuiActionsheet.addClass('weui_actionsheet_toggle');
+      $("#actionSheet_wrap .weui_article span").hide()
+      $("#detail-" + providerId).show()
       mask.show()
           .focus()//加focus是为了触发一次页面的重排(reflow or layout thrashing),使mask的transition动画得以正常触发
           .addClass('weui_fade_toggle').one('click', function () {
