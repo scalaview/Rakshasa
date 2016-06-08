@@ -100,5 +100,18 @@
 $(function(){
   $(".sure").unbind("click")
   billBinding()
+  $("h3.ui-nowrap").each(function(i, e){
+    var $this = $(e),
+        str = $this.text(),
+        length = 11, maxlength = 22
+    if(str.length >= 11){
+      var stt = []
+      for (var i = 0; i < maxlength;) {
+        stt.push(str.slice(i, i + length));
+        i = i + length
+      }
+      $this.html(stt.join('<br>'))
+    }
+  })
 })
 </script>
