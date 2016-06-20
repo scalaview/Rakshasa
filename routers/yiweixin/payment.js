@@ -208,7 +208,9 @@ app.post('/pay', requireLogin, function(req, res) {
         if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE && extractOrder.total > 0){
           var ip = helpers.ip(req),
               total_amount = Math.round(extractOrder.total * 100).toFixed(0),
-              out_trade_no = extractOrder.phone + "_" + extractOrder.id + "_" + total_amount + "_" + (new Date()).getTime()
+              time = (new Date()).getTime() + "",
+              time = time.substring(time.length-7, time.length-1)
+              out_trade_no = extractOrder.phone + "_" + extractOrder.id + "_" + total_amount + "_" + time
 
           extractOrder.updateAttributes({
             out_trade_no: out_trade_no
