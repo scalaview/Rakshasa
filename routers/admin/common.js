@@ -95,4 +95,60 @@ admin.get('/kindeditor/filemanager', function (req, res) {
       })
 })
 
+
+admin.get('/fixdata', function(req, res){
+
+  async.waterfall([function(next){
+    models.FlowHistory.findAll({
+      where: {
+        trafficType: "salary",
+        type: "ExtractOrder"
+      }
+    }).then(function(flowHistories){
+      next(null, flowHistories)
+    })
+  }, function(flowHistories, pass){
+    async.map(flowHistories, function(flow, next){
+      models.ExtractOrder.findById(flow.typeId).then(function(extractOrder){
+        if(extractOrder){
+          models.Customer.findById(extractOrder.customerId).then(function(customer){
+            if(customer){
+              flow.updateAttributes({
+                type: customer.className(),
+                typeId: customer.id
+              }).then(function(flow){
+                next(null, flow)
+              }).catch(function(err){
+                next(err)
+              })
+            }else{
+              console.log("Customer no found " + extractOrder.customerId)
+              next(null)
+            }
+          })
+        }else{
+          console.log("ExtractOrder no found " + flow.typeId)
+          next(null)
+        }
+      }).catch(function(err){
+        next(err)
+      })
+    }, function(err, flows){
+      if(err){
+        pass(err)
+      }else{
+        pass(null, flows)
+      }
+    })
+  }], function(err, flows){
+    if(err){
+      console.log(err)
+      res.json(err)
+    }else{
+      res.json({success: true})
+    }
+  })
+
+})
+
 module.exports = admin;
