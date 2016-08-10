@@ -18,7 +18,7 @@ function Xinhaoba(orderId, phone, prodid, num){
 				phone: this.phone,
 				num: this.num
 			})
-  		
+
   		this.check = crypto.createHash('md5').update(checkParams).digest("hex").toLowerCase()
 
 	var params = {
@@ -74,4 +74,46 @@ function Xinhaoba(orderId, phone, prodid, num){
 
 }
 
+
+function orderDetail(submitorderid, sysorderid, prodid, phone){
+
+  var uri = "http://api.xinhaoba.com/commoninterface.do",
+      checkParams = "api_key={{apiKey}}&prodid={{prodid}}&submitorderid={{submitorderid}}&sysorderid={{sysorderid}}&phone={{phone}}".format({
+        apiKey: config.xinhaoba_apikey,
+        prodid: prodid,
+        submitorderid: submitorderid,
+        sysorderid: sysorderid,
+        phone: phone
+      })
+  var check = crypto.createHash('md5').update(checkParams).digest("hex").toLowerCase()
+  var params = {
+        cmd: "query",
+        loginname: config.xinhaoba_loginname,
+        prodid: prodid,
+        submitorderid: submitorderid,
+        sysorderid: sysorderid,
+        phone: phone,
+        check: check
+      },
+      options = {
+        uri: uri,
+        method: 'GET',
+        qs: params
+      }
+  console.log(options)
+  return new Promise(function(resolve, reject) {
+    request(options, function (error, res, body) {
+      if (!error && res.statusCode == 200) {
+        console.log(body)
+        var data = JSON.parse(body.trim())
+        resolve(data)
+      }else{
+        reject(error)
+      }
+     });
+  })
+}
+
+
 module.exports.Xinhaoba = Xinhaoba;
+module.exports.XinhaobaOrderDetail = orderDetail;
