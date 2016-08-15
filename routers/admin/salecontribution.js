@@ -25,6 +25,8 @@ admin.get("/salecontribution", function(req, res){
       next(null, customers)
     })
 
+  }, function(customer, pass){
+
   }], function(err){
 
   })

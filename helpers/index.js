@@ -119,7 +119,7 @@ function compact(obj){
 function fileUpload(file, successCallBack, errorCallBack){
   var origin_this = this,
       old_path = file.path,
-      file_size = file.size,  
+      file_size = file.size,
       file_type = file.type,
       origin_file_name = file.name,
       file_name = Math.round((new Date().valueOf() * Math.random())) + "_" + origin_file_name,
@@ -1246,6 +1246,41 @@ function showLevelName(levels, levelId){
   }
 }
 
+
+function orderSuccessNotifiction(customer, order, trafficPlan){
+  var templateId = '模板id';
+  var url = "http://" + config.hostname + '/orders';
+  var data = {
+     "title": {
+       "value":"恭喜你购买成功！",
+       "color":"#173177"
+     },
+     "product_name":{
+       "value": trafficPlan.name,
+       "color":"#173177"
+     },
+     "cost": {
+       "value": order.total.toFixed(2),
+       "color":"#173177"
+     },
+     "datetime": {
+       "value": strftime(new Date, "YYYY年MM月DD日"),
+       "color":"#173177"
+     },
+     "remark":{
+       "value":"欢迎再次购买！",
+       "color":"#173177"
+     }
+  };
+  API.sendTemplate(customer.wechat, templateId, url, data, function(err, result){
+    if(err){
+      console.log(err)
+    }else{
+      console.log(result)
+    }
+  });
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -1311,4 +1346,5 @@ exports.doIntegral = doIntegral;
 exports.is_admin = is_admin;
 exports.apiProvider = apiProvider;
 exports.showLevelName = showLevelName;
-exports.models = models
+exports.models = models;
+exports.orderSuccessNotifiction = orderSuccessNotifiction;
