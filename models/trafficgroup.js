@@ -1,4 +1,5 @@
 'use strict';
+// 流量分组
 module.exports = function(sequelize, DataTypes) {
   var TrafficGroup = sequelize.define('TrafficGroup', {
     name: DataTypes.STRING,
@@ -12,6 +13,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true
+    },
+    // 分组详情
+    info: {
+      type: DataTypes.TEXT
     }
   }, {
     classMethods: {

@@ -41,6 +41,7 @@ admin.get("/billorders", function(req, res) {
           extractOrder.exchanger = exchanger
           if(exchanger.className() === "TrafficPlan"){
             extractOrder.trafficPlan = exchanger
+            extractOrder.provider = models.TrafficPlan.ProviderName[exchanger.providerId]
           }else if(exchanger.className() === "FlowTask"){
             extractOrder.flowtask = exchanger
           }

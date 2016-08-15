@@ -40,14 +40,15 @@
               <tr>
                 <th>手机号码</th>
                 <th>用 户</th>
+                  <th>用户名</th>
                 <th>状 态</th>
                 <th>花 费</th>
                 <th>成 本</th>
                 <th>微信支付</th>
                 <th>支付手段</th>
                 <th>获得话费</th>
+                  <th>运营商</th>
                 <th>创建时间</th>
-                <th></th>
                 <th></th>
               </tr>
             </thead>
@@ -63,6 +64,7 @@
                     <td>{{ transactionId }}</td>
                     <td>{{ chargeTypeTran chargeType }}</td>
                     <td>{{ value }} 元</td>
+                    <td>{{provider}}</td>
                     <td>
                       {{ strftime createdAt }}
                     </td>

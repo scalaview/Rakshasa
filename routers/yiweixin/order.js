@@ -17,7 +17,9 @@ var initConfig = {
 var payment = new Payment(initConfig);
 var _ = require('lodash')
 
-
+/**
+ * 充值余额-页面
+ */
 app.get('/payment', requireLogin, function(req, res) {
   var customer = req.customer
   async.waterfall([function(next){
@@ -35,6 +37,47 @@ app.get('/payment', requireLogin, function(req, res) {
   })
 })
 
+/**
+ * 订单-页面
+ */
+app.get('/orderPage', requireLogin, function (req, res) {
+  var customer = req.customer
+  var tranfficplanId = req.query.tranfficplanId
+  var tel = req.query.tel
+ console.log(tranfficplanId,tel)
+  async.waterfall([function(next){
+    models.TrafficPlan.findById(tranfficplanId).then(function(trafficPlan){
+      if(trafficPlan){
+        next(null, trafficPlan)
+      }else{
+        res.json({ err: 1, msg: "请选择正确的套餐" })
+      }
+    }).catch(function(err) {
+      next(err)
+    })
+  },function(trafficgroups, next){ //
+    models.DConfig.findOne({
+      where: {
+        name: "exchangeRate"
+      }
+    }).then(function(dConfig){
+      next(null, trafficgroups, dConfig)
+    }).catch(function(err){
+      next(err)
+    })
+  }], function(err, trafficPlan, dConfig) {
+    if(err){
+      console.log(err)
+    }else{
+      res.render('yiweixin/orders/orderPage',
+          { customer: customer, trafficPlan: trafficPlan, tel : tel,exchangeRate: (dConfig ? dConfig.value : 1), layout: 'orderPage' })
+    }
+  })
+})
+
+/**
+ * 支付通用套餐
+ */
 app.post('/wechat-order', requireLogin, function(req, res) {
     var customer = req.customer
     async.waterfall([function(next){

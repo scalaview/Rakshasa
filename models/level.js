@@ -1,4 +1,7 @@
 'use strict';
+/**
+ * level是用户等级,打折用到
+ */
 module.exports = function(sequelize, DataTypes) {
   var Level = sequelize.define('Level', {
       name: {

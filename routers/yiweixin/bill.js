@@ -19,33 +19,152 @@ var _ = require('lodash')
 
 
 app.get('/bill', requireLogin, function(req, res) {
+  
   async.waterfall([function(next){
-    models.TrafficPlan.findAll({
+
+    models.TrafficGroup.findAll({
       where: {
         providerId: models.TrafficGroup.Provider["中国移动"],
-        productType: models.TrafficPlan.PRODUCTTYPE["bill"],
         display: true
-      }
-    }).then(function(trafficPlan){
-      next(null, trafficPlan)
-    }).catch(function(err){
-      next(err)
+      },
+      order: [
+        ['sortNum', 'ASC'],
+        ['id', 'ASC']
+      ]
+    }).then(function(trafficgroups) {
+      async.map(trafficgroups, function(trafficgroup, next) {
+        trafficgroup.getTrafficPlans({
+          where: {
+            providerId: models.TrafficGroup.Provider["中国移动"],
+            productType: models.TrafficPlan.PRODUCTTYPE["bill"],
+            display: true
+          },
+          order: [
+            ['sortNum', 'ASC'],
+            ['id', 'ASC']
+          ]
+        }).then(function(trafficplans) {
+          var data = null
+          if(trafficplans.length > 0){
+            data = {
+              name: trafficgroup.name,
+              info : trafficgroup.info,
+              trafficplans: trafficplans
+            }
+          }
+          next(null, data)
+        }).catch(function(err) {
+          next(err)
+        })
+      }, function(err, result) {
+        if(err){
+          next(err)
+        }else{
+          var data = []
+          for (var i = 0; i < result.length; i++) {
+            if(result[i])
+              data.push(result[i])
+          };
+          next(null, data)
+        }
+      })
     })
-  }, function(trafficPlan, next){
+
+  }, function(trafficgroups, next){ //
     models.DConfig.findOne({
       where: {
         name: "exchangeRate"
       }
     }).then(function(dConfig){
-      next(null, trafficPlan, dConfig)
+      next(null, trafficgroups, dConfig)
     }).catch(function(err){
       next(err)
     })
-  }], function(err, trafficPlan, dConfig){
-    res.render('yiweixin/orders/bill', { customer: req.customer, trafficPlan: trafficPlan, exchangeRate: dConfig.value || 1, layout: 'bill' })
+  },function(trafficgroups, dConfig, next){
+    models.Banner.findAll({
+      where: {
+        active: true
+      },
+      order: [
+        'sortNum', 'id'
+      ]
+    }).then(function(banners) {
+      next(null, trafficgroups, dConfig, banners)
+    }).catch(function(err) {
+      next(err)
+    })
+  }], function(err, trafficgroups, dConfig, banners){
+    console.log(trafficgroups, dConfig, banners)
+    res.render('yiweixin/orders/bill1', { banners: banners,customer: req.customer, trafficgroups: trafficgroups, exchangeRate: (dConfig ? dConfig.value || 1 : 1), layout: 'bill1' })
   })
 })
 
+
+app.post('/bill', requireLogin, function(req, res) {
+  var provider = req.body.catName
+  async.waterfall([function(next){
+
+    models.TrafficGroup.findAll({
+      where: {
+        providerId: models.TrafficGroup.Provider[provider],
+        display: true
+      },
+      order: [
+        ['sortNum', 'ASC'],
+        ['id', 'ASC']
+      ]
+    }).then(function(trafficgroups) {
+      async.map(trafficgroups, function(trafficgroup, next) {
+        trafficgroup.getTrafficPlans({
+          where: {
+            providerId: models.TrafficGroup.Provider[provider],
+            productType: models.TrafficPlan.PRODUCTTYPE["bill"],
+            display: true
+          },
+          order: [
+            ['sortNum', 'ASC'],
+            ['id', 'ASC']
+          ]
+        }).then(function(trafficplans) {
+          var data = null
+          if(trafficplans.length > 0){
+            data = {
+              name: trafficgroup.name,
+              info : trafficgroup.info,
+              trafficplans: trafficplans
+            }
+          }
+          next(null, data)
+        }).catch(function(err) {
+          next(err)
+        })
+      }, function(err, result) {
+        if(err){
+          next(err)
+        }else{
+          var data = []
+          for (var i = 0; i < result.length; i++) {
+            if(result[i])
+              data.push(result[i])
+          };
+          next(null, data)
+        }
+      })
+    })
+  }], function(err, trafficgroups){
+    if (err){
+      res.json({ err: 1, msg: "服务器繁忙" })
+    } else {
+      res.json({trafficgroups: trafficgroups})
+    }
+  })
+})
+
+
+
+/**
+ * 支付话费套餐
+ */
 app.post('/wechat-bill', requireLogin, function(req, res) {
     var customer = req.customer,
         useIntegral = req.body.useIntegral == 'true' ? true : false
@@ -200,11 +319,13 @@ app.post('/wechat-bill', requireLogin, function(req, res) {
         //TODO salary
         if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE && extractOrder.total > 0){
           var ip = helpers.ip(req),
-              total_amount = Math.round(extractOrder.total * 100).toFixed(0)
+              total_amount = Math.round(extractOrder.total * 100).toFixed(0),
+              time = (new Date()).getTime() + "",
+              time = time.substring(time.length-7, time.length-1)
           var orderParams = {
             body: '话费套餐 ' + trafficPlan.name,
             attach: extractOrder.id,
-            out_trade_no: config.token + "_" + extractOrder.phone + "_" + extractOrder.id + "_" + total_amount,
+            out_trade_no: extractOrder.phone + "_" + extractOrder.id + "_" + total_amount + "_" + time,
             total_fee: total_amount,
             spbill_create_ip: ip,
             openid: customer.wechat,
@@ -246,7 +367,6 @@ app.post('/wechat-bill', requireLogin, function(req, res) {
       }
     })
 })
-
 
 var middleware = require('wechat-pay').middleware;
 app.use('/billconfirm', middleware(initConfig).getNotify().done(function(message, req, res, next) {

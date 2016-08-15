@@ -4,7 +4,7 @@
     <div class="info">
        <h5>{{ customer.username }}</h5>
        <p><small>关注时间： {{ strftime customer.subscribeTime "YYYY-MM-DD" }}</small></p>
-       <p><small>推荐人： {{#if parent.username }} {{ parent.username }} {{else}} 淘优团 {{/if}} 会员编号{{customer.id}}</small></p>
+       <p><small>推荐人： {{#if parent.username }} {{ parent.username }} {{else}} 168爱流量 {{/if}} 会员编号{{customer.id}}</small></p>
        {{#if customer.isAffiliate }}<p><small style='color:red'>恭喜你已经成为供应商</small></p>{{/if}}
     </div>
  </div>
@@ -15,7 +15,7 @@
        <div style="width:25%;">消费：￥{{ customer.orderTotal }}</div>
        <div style="width:25%;">余额：￥{{ customer.remainingTraffic }}</div>
        <div style="width:25%;">分销：￥{{ customer.salary }}</div>
-       <div style="width:25%;">积分：{{ customer.totalIntegral }}</div>
+       <div style="width:25%;">流量币：{{ customer.totalIntegral }}</div>
     </div>
  </div>
 </div>

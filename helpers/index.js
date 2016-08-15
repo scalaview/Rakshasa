@@ -119,7 +119,7 @@ function compact(obj){
 function fileUpload(file, successCallBack, errorCallBack){
   var origin_this = this,
       old_path = file.path,
-      file_size = file.size,
+      file_size = file.size,  
       file_type = file.type,
       origin_file_name = file.name,
       file_name = Math.round((new Date().valueOf() * Math.random())) + "_" + origin_file_name,
@@ -515,9 +515,14 @@ function errTips(err) {
 // ===================login=====================
 
 function requireLogin(req, res, next) {
-  if(process.env.NODE_ENV == "development"){
+
+
+  if(process.env.NODE_ENV == "development" || !process.env.NODE_ENV){
     req.session.customer_id = 1
   }
+
+  console.log('[%s]\n\t NODE_ENV:%s customer_id:%s', __filename,process.env.NODE_ENV,req.session.customer_id);
+
   var url = req.originalUrl
   var encodeUrl = new Buffer(url).toString('base64');
 
@@ -783,7 +788,7 @@ function applylimit(salary, _class){
   if(typeof _class === 'string'){
     var cla = _class
   }
-  if(salary >= (config.applylimit || 100.00) ){
+  if(salary >= (config.applylimit || 20.00) ){
     return "href='/apply' class='{{#if cla}}{{cla}}{{/if}}'".format({cla: cla}).htmlSafe()
   }else{
     return "href='javascript:void(0);' class='applylimit{{#if cla}} {{cla}}{{/if}}'".format({cla: cla}).htmlSafe()
@@ -945,6 +950,38 @@ function autoCharge(extractOrder, trafficPlan, next){
             state: models.ExtractOrder.STATE.FAIL
           })
           next(new Error(data.errmsg))
+        }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['流量通']){
+        if(data.Code == '0'){
+          extractOrder.updateAttributes({
+            taskid: data.TaskID,
+            state: models.ExtractOrder.STATE.SUCCESS
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.Message))
+        }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['易赛']){
+        if(data.Esaipay.Result == 'success'){
+          extractOrder.updateAttributes({
+            taskid: data.Esaipay.InOrderNumber,
+            state: models.ExtractOrder.STATE.SUCCESS
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.Esaipay.Remark))
         }
       }else{
         extractOrder.updateAttributes({

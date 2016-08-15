@@ -363,7 +363,7 @@ module.exports = function(sequelize, DataTypes) {
                   salary: salary
                 }).then(function(ancestry){
                   var msg = "提取" + trafficPlan.name + "至" + extractOrder.phone + "失败。原因：" + message + "。分销奖励已经取消，对你造成的不便我们万分抱歉"
-                  ancestry.takeFlowHistory(models, customer, parseFloat(flowHistory.amount).toFixed(2), msg, models.FlowHistory.STATE.REDUCE, function(flowHistory){
+                  ancestry.takeFlowHistory(models, extractOrder, parseFloat(flowHistory.amount).toFixed(2), msg, models.FlowHistory.STATE.REDUCE, function(flowHistory){
                       next(null, customer, extractOrder, flowHistory)
                   }, function(err) {
                     next(err)

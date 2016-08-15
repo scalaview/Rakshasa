@@ -19,19 +19,23 @@ module.exports = function(sequelize, DataTypes) {
     purchasePrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0.0 },
     integral: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     productType: { type: DataTypes.STRING, allowNull: true, defaultValue: "traffic" },
-    withOutDiscount: { type: DataTypes.VIRTUAL }
+    withOutDiscount: { type: DataTypes.VIRTUAL },
+    // 醒目提示
+    tip : { type: DataTypes.STRING }
   }, {
     classMethods: {
       associate: function(models) {
         models.TrafficPlan.belongsTo(models.TrafficGroup, { foreignKey: 'trafficGroupId' });
       },
-      getTrafficPlanByGroup: function(models, providerId, groupId, customer, coupons, pass){
+      getTrafficPlanByGroup: function(models, providerId, province, customer, coupons, pass){
         var groupParams = {
-            providerId: providerId
+            providerId: providerId,
+            $or : [ { name : {$like : '%'+province+'%'}},{ name : {$like : '%中国%'}},{ name : {$like : '%全国%'}}]
           }
         if(customer){
           groupParams['display'] = true
         }
+        console.log(`[${__filename} 35]\n\t`,groupParams);
         models.TrafficGroup.findAll({
           where: groupParams,
           order: [
@@ -39,15 +43,18 @@ module.exports = function(sequelize, DataTypes) {
             ['id', 'ASC']
            ]
         }).then(function(trafficgroups) {
+        console.log(`[${__filename} 42]\n\t trafficgroups:${trafficgroups.length}`);
           var params = {
               productType: TrafficPlan.PRODUCTTYPE["traffic"]
             }
+          /*
           if(groupId){
             params['trafficGroupId'] = groupId
-          }
+          }*/
           if(customer){
             params['display'] = true
           }
+          console.log(`[${__filename} 52]\n\t`,params);
           async.map(trafficgroups, function(trafficgroup, next) {
             trafficgroup.getTrafficPlans({
               where: params,
@@ -56,11 +63,13 @@ module.exports = function(sequelize, DataTypes) {
                 ['id', 'ASC']
               ]
             }).then(function(trafficplans) {
+              console.log(`[${__filename} 60]\n\t trafficplans:${trafficplans}`);
               var data = null
               if(trafficplans.length > 0){
                 trafficplans = helpers.applyCoupon(coupons, trafficplans, customer)
                 data = {
                   name: trafficgroup.name,
+                  info : trafficgroup.info,
                   trafficplans: trafficplans
                 }
               }
@@ -69,6 +78,7 @@ module.exports = function(sequelize, DataTypes) {
               next(err)
             })
           }, function(err, result) {
+              console.log(`[${__filename} 74]\n\t`,result);
             if(err){
               pass(err)
             }else{
@@ -130,7 +140,9 @@ module.exports = function(sequelize, DataTypes) {
 
   TrafficPlan.TYPE = {
     "新号吧": 1,
-    "大众": 2
+    "大众": 2,
+    '流量通': 3,
+    '易赛': 4
   }
 
   TrafficPlan.PRODUCTTYPE = {

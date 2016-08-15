@@ -1,4 +1,7 @@
 'use strict';
+/**
+ * dynamic config保存一些动态的配置，例如微信token
+ */
 module.exports = function(sequelize, DataTypes) {
   var DConfig = sequelize.define('DConfig', {
     name: {

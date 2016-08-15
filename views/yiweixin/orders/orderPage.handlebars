@@ -1,0 +1,54 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-xs-12 col-md-12">
+            <header class="title">
+                <a onclick="history.go(-1);" class="back"><i class="glyphicon glyphicon-chevron-left"></i></a>
+                <h4>订单支付</h4>
+                <a href="#" class="reload"><i class="glyphicon glyphicon-user"></i></a>
+            </header>
+        </div>
+        <div class="col-sm-12 col-xs-12" style="height: 70px;"></div>
+        <!-- 这里是页面内容区 -->
+        <div class="col-sm-12 col-xs-12 col-md-12">
+                <ul class="list-group">
+<!--                    <li class="list-group-item"><label>订单编号：</label><span>ILLB20160710201278</span></li>-->
+                    <li class="list-group-item"><label>充值号码：</label><span id="tel">{{ tel }}</span></li>
+                    <li class="list-group-item"><label>订单名称：</label><span>{{ trafficPlan.name }}</span></li>
+                    <!--<li class="list-group-item"><label>订单说明：</label><span>全国流量，当月有效</span></li>-->
+                    <li class="list-group-item"><label>花费：</label><span id="cost">{{trafficPlan.cost}}</span></li>
+                    <input type="hidden" name="flowId" value="{{trafficPlan.id}}">
+                    <input type="hidden" name="productType" value="{{trafficPlan.productType}}">
+                    <li class="list-group-item" style="position: relative"><label>选择支付方式：</label>
+                        <ul class="pay chargetype">
+                            <li><a href="#" data-type="balance"><img src="/images/pay/pay1.gif"/></a></li>
+                            <li><a href="#" data-type="remainingTraffic"><img src="/images/pay/pay2.gif"/></a></li>
+                            <li><a href="#" data-type="salary"><img src="/images/pay/pay3.gif"/></a></li>
+                        </ul>
+                    </li>
+
+                    <li class="list-group-item" style="position: relative"><label></label>
+                        <ul class="pay money">
+                            <div id="salary" data-less="{{customer.salary}}" style="display: none">您当前可用<span style="color:orange;"> {{customer.salary}}  </span>元</div>
+                            <div id="remainingTraffic"  data-less="{{customer.remainingTraffic}}" style="display: none">您当前可用<span style="color:orange;"> {{customer.remainingTraffic}}  </span>元</div>
+                            <div id="balance"  data-less="" style="display: none" ><span style="color:orange;">微信安全支付</span></div>
+                        </ul>
+                    </li>
+                </ul>
+            <!--流量币-->
+            <div class="jifen">
+                <span>您有{{ customer.totalIntegral  }}流量币，使用流量币</span>
+                <label>
+                    <input type="checkbox" id="use-integral" class="ios-switch tinyswitch" checked data-exchangerate='{{ exchangeRate }}' data-totalintegral="{{ customer.totalIntegral  }}"/>
+                    <div  id="check-intergral">
+                        <div></div>
+                    </div>
+                </label>
+            </div>
+                <input type="button" class="btn btn-success btn-block" value="支付" id="submit" />
+        </div>
+        <!--search end-->
+
+        <div class="col-sm-12 col-xs-12" style="height: 50px;"></div>
+    </div>
+    <!--row end-->
+</div>

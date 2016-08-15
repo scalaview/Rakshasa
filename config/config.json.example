@@ -1,24 +1,24 @@
 {
   "development": {
     "username": "root",
-    "password": "123456",
-    "database": "yiliuliang",
+    "password": "wteam13",
+    "database": "rose",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "timezone":"+08:00"
   },
   "test": {
     "username": "root",
-    "password": "123456",
-    "database": "yiliuliang",
+    "password": "wteam13",
+    "database": "rose",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "timezone":"+08:00"
   },
   "production": {
     "username": "root",
-    "password": "123456",
-    "database": "yiliuliang",
+    "password": "wteam13",
+    "database": "rose",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "timezone":"+08:00"

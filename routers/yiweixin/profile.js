@@ -7,9 +7,15 @@ var config = require("../../config")
 var requireLogin = helpers.requireLogin
 var _ = require('lodash')
 
+/**
+ * params { 
+ *  catName : '' 运营商中文名字
+ *  province : '' 地区
+ * }
+ */
 app.get('/getTrafficplans', requireLogin, function(req, res){
   var customer = req.customer,
-      groupId = req.query.groupId
+      province = req.query.province
   if(models.TrafficPlan.Provider[req.query.catName] !== undefined || req.query.catName == "all"){
     var providerId = req.query.catName == "all" ?  Object.keys(models.TrafficPlan.ProviderName) : models.TrafficPlan.Provider[req.query.catName]
     async.waterfall([function(next) {
@@ -48,12 +54,13 @@ app.get('/getTrafficplans', requireLogin, function(req, res){
         outnext(err)
       })
     }, function(coupons, outnext) {
-      models.TrafficPlan.getTrafficPlanByGroup(models, providerId, groupId, customer, coupons, outnext)
+      models.TrafficPlan.getTrafficPlanByGroup(models, providerId, province, customer, coupons, outnext)
     }], function(err, result) {
       if(err){
         console.log(err)
         res.json({ err: 1, msg: "server err" })
       }else{
+        console.log('[%s]\n\t result:%s', __filename,result);
         res.json(result)
       }
     })

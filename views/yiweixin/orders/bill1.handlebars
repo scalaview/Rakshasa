@@ -1,0 +1,132 @@
+<div class="container">
+    <div class="row">
+
+        {{> "yiweixin/navbar" }} <!-- 导航栏nav end-->
+        <!-- 这里是页面内容区 -->
+        <div class="col-sm-12 col-xs-12">
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox" id="banner">
+
+                    {{#each banners}}
+                        <div class="item">
+                            <img src="{{ image }}" alt="...">
+                        </div>
+                    {{/each}}
+                    <!-- Controls -->
+                    <a class="left carousel-control controll-slider" href="#carousel-example-generic" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control controll-slider" href="#carousel-example-generic" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+            <form class="form-inline search-phone">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="input-group-addon i-phone"><i class="glyphicon glyphicon-phone"></i></div>
+                        <input type="text" class="form-control" placeholder="请输入充值号码,，查看对应的套餐" id="phoneNumber">
+                    </div>
+                </div>
+            </form>
+            <!--流量币-->
+            <div class="jifen">
+                <span style="font-size: 14px">您有{{ customer.totalIntegral  }}流量币，使用流量币</span>
+                <label>
+                    <input type="checkbox" class="ios-switch tinyswitch" checked/>
+                    <div>
+                        <div></div>
+                    </div>
+                </label>
+                <p style="color:red">购买扣减流量币，若充值失败  自动退回流量币，100流量币可抵1元</p>
+            </div>
+
+            <div  id="traffic">
+                <!--2-->
+                {{#each trafficgroups}}
+                <div class="alert alert-success tips">
+                    <label>{{ name }}</label>
+                    <p style="display: none">{{ info }}</p>
+                    <a data-toggle="modal" data-target="#detail" class="info tips-right"><i class="glyphicon glyphicon-question-sign"></i> 话费详情</a>
+                </div>
+                <div class="cell-list">
+                    <ul class="list-group">
+                        {{#each trafficplans}}
+                        <a helf="#" class="exchanger" data-value="{{id}}">
+                            <li class="list-group-item cell-list-detail">
+                                <label>{{name}}</label>
+                                <div>{{ cost }}元 <p>赠送{{integral}}流量币</p> </div>
+                            </li>
+                        </a>
+                        {{/each}}
+                    </ul>
+                </div>
+                {{/each}}
+                <!--2 end-->
+                {{#if trafficgroups}}
+                 {{else}}
+                    <div class="col-sm-12 col-xs-12" style="height: 50px;">
+                        <h4>没有话费套餐</h4>
+                    </div>
+                {{/if}}
+            </div>
+
+        </div>
+        <!--search end-->
+
+        <div class="col-sm-12 col-xs-12" style="height: 50px;"></div>
+    </div>
+    <!--row end-->
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="detail-title">话费详情</h4>
+            </div>
+            <div class="modal-body">
+                <textarea disabled="disabled"  rows="18" style="width: 98%; background: white; color: red" ></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+
+
+<script id="trafficplans-template" type="text/x-handlebars-template">
+    \{{#each trafficgroups}}
+        <div class="alert alert-success tips">
+            <label>\{{ name }}</label>
+            <p style="display: none">\{{ info }}</p>
+            <a data-toggle="modal" data-target="#detail" class="info tips-right"><i class="glyphicon glyphicon-question-sign"></i> 话费详情</a>
+        </div>
+        <div class="cell-list">
+            <ul class="list-group">
+                \{{#each trafficplans}}
+                    <a helf="#" class="exchanger" data-value="\{{id}}">
+                        <li class="list-group-item cell-list-detail">
+                            <label>\{{name}}</label>
+                            <div>\{{ cost }}元 <p>赠送\{{integral}}流量币</p></div>
+                        </li>
+                    </a>
+                \{{/each}}
+            </ul>
+        </div>
+    \{{/each}}
+    <!--2 end-->
+    \{{#if trafficgroups}}
+    \{{else}}
+        <div class="col-sm-12 col-xs-12" style="height: 50px;">
+            <h4>没有话费套餐</h4>
+        </div>
+    \{{/if}}
+</script>

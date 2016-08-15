@@ -6,7 +6,6 @@ var async = require("async")
 var _ = require('lodash')
 var config = require(process.env.PWD + "/config")
 var autoCharge = helpers.autoCharge
-var recharger = require("../../recharger")
 
 admin.get("/extractorders", function(req, res) {
   var result;
@@ -363,65 +362,5 @@ admin.post("/extractorder/:id/refund", function(req, res){
     }
   })
 })
-
-
-admin.get("/syncorderdetail", function(req, res){
-  async.waterfall([function(next){
-    models.ExtractOrder.findAll({
-      where: {
-        state: models.ExtractOrder.STATE.SUCCESS,
-        type: {
-          $ne: 0
-        }
-      }
-    }).then(function(extractOrders){
-      next(null, extractOrders)
-    }).catch(function(err){
-      next(err)
-    })
-  }, function(extractOrders, pass){
-    async.each(extractOrders, function(extractOrder, next){
-      var detail = recharger.XinhaobaOrderDetail(extractOrder.id, extractOrder.taskid, extractOrder.bid, extractOrder.phone)
-      if(detail){
-        detail.then(function(data){
-          console.log(data)
-          switch(data.code){
-            case '1':
-              extractOrder.updateAttributes({
-                state: models.ExtractOrder.STATE.FINISH
-              })
-              break;
-            case '20':
-              extractOrder.updateAttributes({
-                state: models.ExtractOrder.STATE.FAIL
-              })
-              break;
-            default:
-              console.log("extractOrder: " + extractOrder.id + " sync code: " + data.code + ", " + data.msg)
-          }
-          console.log("extractOrder: " + extractOrder.id + " sync code: " + data.code + ", " + data.msg)
-          next(null)
-        })
-      }else{
-        next(null)
-      }
-    }, function(err){
-      if(err){
-        pass(err)
-      }else{
-        pass(null)
-      }
-    })
-  }], function(err){
-    if(err){
-      console.log(err)
-      req.flash('err', err.message)
-    }else{
-      req.flash('info', "sync success")
-    }
-    res.redirect('/admin/extractorders')
-  })
-})
-
 
 module.exports = admin;

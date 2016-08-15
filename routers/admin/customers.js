@@ -174,6 +174,10 @@ admin.get('/contribution', function(req, res) {
     if(req.query.phone !== undefined && req.query.phone.present()){
       params = _.merge(params, { phone: { $like: "%{{phone}}%".format({ phone: req.query.phone }) } })
     }
+    if(req.query.customerId !== undefined && req.query.customerId.present()){
+      params = _.merge(params, { id: req.query.customerId })
+    }
+    
     models.Customer.findAndCountAll({
       where: params,
       limit: req.query.perPage || 15,

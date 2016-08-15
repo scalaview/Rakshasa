@@ -39,6 +39,7 @@ admin.get('/trafficplans', function(req, res) {
         trafficgroupsOptions = { name: "trafficGroupId", class: 'select2 editChoose col-lg-12 col-xs-12', includeBlank: true }
 
       result = helpers.setPagination(trafficPlans, req)
+
       res.render('admin/trafficplans/index', {
         trafficPlans: result,
         providerOptions: providerOptions,

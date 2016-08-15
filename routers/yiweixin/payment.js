@@ -13,7 +13,7 @@ var autoCharge = helpers.autoCharge
 
 app.get('/extractflow', requireLogin, function(req, res){
   async.waterfall([function(next){
-    models.TrafficGroup.findAll({
+    models.TrafficGroup.findAll({// 查找属性中国移动的分组
       where: {
         providerId: models.TrafficGroup.Provider["中国移动"],
         display: true
@@ -44,15 +44,22 @@ app.get('/extractflow', requireLogin, function(req, res){
     }).then(function(banners) {
       next(null, CMCCtrafficGroups, dConfig, banners)
     }).catch(function(err) {
+      console.log("banners ",err)
       next(err)
     })
   }], function(err, CMCCtrafficGroups, dConfig, banners){
-    res.render('yiweixin/orders/order', { customer: req.customer, CMCCtrafficGroups: CMCCtrafficGroups,
-      exchangeRate: dConfig.value || 1, providers: models.TrafficGroup.Provider,
-      banners: banners, layout: 'recharge'  })
+    console.log("[" +__filename+ " 50]",CMCCtrafficGroups, dConfig, banners)
+    res.render('yiweixin/orders/order1', { customer: req.customer, 
+      CMCCtrafficGroups: CMCCtrafficGroups,
+      exchangeRate:(dConfig ? dConfig.value : 1), 
+      providers: models.TrafficGroup.Provider,
+      banners: banners, layout: 'recharge1'  })
   })
 })
 
+/**
+ * 支付流量套餐
+ */
 app.post('/pay', requireLogin, function(req, res) {
     var customer = req.customer,
         useIntegral = req.body.useIntegral == 'true' ? true : false
@@ -96,7 +103,7 @@ app.post('/pay', requireLogin, function(req, res) {
       }).catch(function(err) {
         next(err)
       })
-    }, function(paymentMethod, trafficPlan, next){
+    }, function(paymentMethod, trafficPlan, next){ // 处理优惠卷
       models.Coupon.findAll({
         where: {
           trafficPlanId: trafficPlan.id,
@@ -114,7 +121,7 @@ app.post('/pay', requireLogin, function(req, res) {
       }).catch(function(err) {
         next(err)
       })
-    }, function(paymentMethod, trafficPlan, next){
+    }, function(paymentMethod, trafficPlan, next){ // 动态配置--兑换率
       models.DConfig.findOne({
         where: {
           name: "exchangeRate"
@@ -249,8 +256,13 @@ app.post('/pay', requireLogin, function(req, res) {
             }else{
               res.json({err: 0, msg: '付款成功', totalIntegral: customer.totalIntegral })
             }
+            var total_amount = Math.round(extractOrder.total * 100).toFixed(0),
+                time = (new Date()).getTime() + "",
+                time = time.substring(time.length-7, time.length-1)
+                out_trade_no = extractOrder.phone + "_" + extractOrder.id + "_" + total_amount + "_" + time
             extractOrder.updateAttributes({
-              state: models.ExtractOrder.STATE.PAID
+              state: models.ExtractOrder.STATE.PAID,
+              out_trade_no: out_trade_no
             }).then(function(extractOrder){
               autoCharge(extractOrder, trafficPlan, function(err){
                 if(err){

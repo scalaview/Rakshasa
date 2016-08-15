@@ -213,6 +213,7 @@ function getTrafficplan(source, catName, groupId){
   if(groupId){
     params["groupId"] = groupId
   }
+  console.log(params)
   showLoadingToast();
   $.ajax({
     url: '/getTrafficplans',
@@ -220,6 +221,7 @@ function getTrafficplan(source, catName, groupId){
     data: params,
     method: "GET"
   }).done(function(data){
+    console.log(data)
     if(data.err == 4){  //服务器维护中
       var err_source = $("#err-template").html()
       if(err_source != undefined && err_source != ''){
@@ -512,7 +514,7 @@ function changePayment(){
 
 function applylimit(){
   $(".applylimit").click(function(){
-    showDialog("分销奖励未超过100元，无法提现")
+    showDialog("分销奖励未超过20元，无法提现")
   })
 }
 

@@ -1,0 +1,291 @@
+body {
+	font-family: "微软雅黑";
+}
+
+header.title {
+	color: #fff;
+	text-align: center;
+	background: #3d87b4;
+	display: block;
+	/*margin: 0px -15px;*/
+	padding: 3px 0;
+	width: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 99;
+}
+
+a.back {
+	color: #fff;
+	float: left;
+	padding: 15px 12px;
+	display: block;
+	margin-top: -4px;
+	height: 45px;
+	margin-bottom: -6px;
+}
+
+a.back:hover {
+	background: #0d5784;
+}
+
+a.reload {
+	color: #fff;
+	float: right;
+	padding: 15px 12px;
+	display: block;
+	margin-top: -42px;
+	height: 45px;
+	margin-bottom: -6px;
+}
+
+a.reload:hover {
+	background: #2AC845;
+}
+
+div.tips {
+	/*margin: 10px;*/
+	font-size: 12px;
+	position: relative;
+	width: 100%;
+}
+
+div.tips label {
+	width: 70%;
+}
+div.tips a{
+	width: 30%;
+	/*display: block;*/
+	float: right;
+	text-align: center;
+	color: #90c225;
+
+}
+/*a.tips-right {
+	width: 30%;
+	color: #90c225;
+	float: right;
+
+}*/
+
+ul.navation {
+	list-style: none;
+	width: 100%;
+	padding: 5px;
+}
+
+ul.navation li {
+	float: left;
+	text-align: center;
+	width: 33%;
+	margin-left: 0px;
+	display: block;
+}
+
+ul.navation li a {
+	text-decoration: none;
+	color: #9b9d92;
+}
+
+ul.navation li a:hover {
+	color: #0089bf;
+	display: block;
+}
+
+li.nav-active a i,
+li.nav-active a span {
+	color: #0089bf;
+}
+
+ul.navation li a i {
+	font-size: 20px;
+}
+
+ul.navation li a span {
+	font-size: 12px;
+}
+
+.input-group-addon {
+	color: #899490;
+	padding: 5px;
+	font-size: 20px;
+	float: center;
+}
+
+form.search-phone {
+	margin-top: 15px;
+}
+
+div.cell {
+	text-align: center;
+	padding: 0px;
+	border: 1px solid #7d8c89;
+	border-radius: 3px;
+	margin: -1px -8px 20px -8px;
+	position: relative;
+}
+
+div.cell:hover,
+div.cell:visited {
+	box-shadow: 1px 3px 3px #999;
+	background: #eee;
+	border: 1px solid #0089bf;
+}
+
+div.cell-active {
+	box-shadow: 1px 3px 3px #999;
+	background: #eee;
+	border: 1px solid #0089bf;
+}
+
+div.cell h5 h4{
+	color: #3d87b4;
+	margin: 4px;
+}
+
+div.cell p {
+	font-size: 14px;
+	color: #3d87b4;
+	margin: 2px;
+}
+
+div.cell div {
+	color: #afafaf;
+}
+
+div.extra {
+	position: absolute;
+	right: 0px;
+	width: 0;
+	height: 0;
+	border-top: 34px solid #fb4541;
+	border-left: 34px solid transparent;
+}
+
+small.extra-font {
+	position: absolute;
+	right: -1px;
+	color: #eee;
+	/*overflow: hidden;*/
+	font-style: initial;
+	transform: rotate(45deg);
+	top: 2px;
+}
+
+div#carousel-example-generic {
+	margin: 0px -15px;
+}
+
+div#banner img {
+	width: 100%;
+	height: auto;
+}
+
+div.cell-list {
+	margin-top: -13px;
+	font-size: 8px;
+}
+
+li.cell-list-detail label {
+	width: 70%;
+	font-size: 14px;
+}
+
+li.cell-list-detail div {
+	width: 25%;
+	display: block;
+	float: right;
+	text-align: center;
+	margin-top: -6px;
+	font-size: 14px;
+}
+
+li.cell-list-detail div p {
+	color: #999;
+	font-size: 10px;
+	margin-top: 3px;
+}
+
+ul.pay {
+	text-align: center;
+	padding: 1px;
+	margin: 5px -30px;
+}
+
+ul.pay li {
+	display: inline-block;
+	padding: 3px;
+	width: 33%;
+	height: 50px;
+	margin: 0px -10px;
+	/*margin-bottom: 15px;*/
+}
+
+ul.pay li a {
+	text-decoration: none;
+	width: 100%;
+	height: 100%;
+}
+
+ul.pay li img {
+	width: 90%;
+	height: auto;
+	padding: 2px;
+	background: #eee;
+}
+
+ul.pay li img:hover {
+	background: #1BB300;
+}
+@media screen  and (max-width: 320px) {
+	ul.pay li img {
+		width: 88px;
+		height: 36px;
+		padding: 2px;
+		background: #eee;
+	}
+}
+@media screen and (min-width: 320px) and (max-width: 360px) {
+	ul.pay li img {
+		width: 88px;
+		height: 36px;
+		padding: 2px;
+		background: #eee;
+	}
+}
+
+@media screen and (min-width: 360px) and (max-width: 640px){
+	ul.pay li img {
+		width: 105px;
+		height: 45px;
+		padding: 2px;
+		background: #eee;
+	}
+}
+@media screen and (min-width: 640px) {
+	ul.pay li img {
+		width: 150px;
+		height: 59px;
+		padding: 2px;
+		background: #eee;
+	}
+}
+
+div.jifen {
+	color: #6c8484;
+	margin: 10px auto;
+}
+
+div.jifen span {
+	font-size: 8px;
+}
+
+div.jifen label {
+	float: right;
+	margin: -15px -8px -15px 0;
+}
+
+.controll-slider {
+	top: -35%;
+}

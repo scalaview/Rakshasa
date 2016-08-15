@@ -16,7 +16,7 @@
   "dependencies": {
     "jquery": "~2.1.4",
     "bootstrap": "~3.3.5",
-    "kindeditor": "https://github.com/kindsoft/kindeditor.git#~4.1.10",
+    "kindeditor": "https://github.com/kindsoft/kindeditor.git",
     "bootstrap-datepicker": "https://github.com/eternicode/bootstrap-datepicker.git#~1.4.0",
     "requirejs": "jrburke/requirejs#~2.1.20",
     "handlebars": "~3.0.3",

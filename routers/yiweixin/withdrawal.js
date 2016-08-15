@@ -191,10 +191,6 @@ app.post('/apply', requireLogin, function(req, res) {
 
       params = _.extend(params, { customerId: customer.id })
 
-  if(params.amount <= 0){
-    res.redirect('/errmsg')
-    return
-  }
   async.waterfall([function(next) {
     models.DConfig.findOrCreate({
       where: {
@@ -207,7 +203,7 @@ app.post('/apply', requireLogin, function(req, res) {
       next(null, dConfig)
     })
   }, function(dConfig, next) {
-    var fix = parseFloat(params.amount)
+    var fix = parseFloat(dConfig.value) * parseFloat(params.amount)
     params = _.extend(params, { cost: fix })
     if( parseFloat(customer.salary) >= fix ){
       models.Withdrawal.build(params).save().then(function(withdrawal) {

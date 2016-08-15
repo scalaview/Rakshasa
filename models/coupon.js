@@ -3,6 +3,9 @@ var _ = require('lodash')
 var async = require("async")
 var config = require("../config")
 
+/**
+ * 优惠券
+ */
 module.exports = function(sequelize, DataTypes) {
   var Coupon = sequelize.define('Coupon', {
     name: {
