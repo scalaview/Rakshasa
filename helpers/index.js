@@ -1046,7 +1046,7 @@ function doAffiliate(extractOrder, customer, pass){
             }
           }
         }).then(function(ancestries) {
-
+          sendAncestryNotice(ancestries, trafficPlan);
           var objHash = ancestries.map(function (value, index) {
             if(configHash[customer.ancestryDepth - value.ancestryDepth]){
               return {
@@ -1060,7 +1060,6 @@ function doAffiliate(extractOrder, customer, pass){
         }).catch(function(err) {
           next(err)
         })
-        sendAncestryNotice(ancestryArr, trafficPlan);
       }, function(objHash, next) {
 
         async.each(objHash, function(obj, callback) {
@@ -1098,10 +1097,15 @@ function doAffiliate(extractOrder, customer, pass){
   })
 }
 
-function sendAncestryNotice(customer_ids, trafficPlan){
-  if(!customer_ids.present()){
+function sendAncestryNotice(customers, trafficPlan){
+  if(customers <= 0){
     return;
   }
+
+  var customer_ids = customers.map(function(value, index){
+    return value.wechat
+  }).compact()
+
   async.waterfall([function(next) {
     models.MessageTemplate.findOrCreate({
         where: {
@@ -1117,7 +1121,7 @@ function sendAncestryNotice(customer_ids, trafficPlan){
         next(err)
       })
   }, function(content, next){
-    api.massSendText(content, customer_ids, function(err, result) {
+    API.massSendText(content, customer_ids, function(err, result) {
       if(err){
         next(err)
       }else{
@@ -1295,7 +1299,7 @@ function orderSuccessNotifiction(customer, order, trafficPlan){
        "color":"#173177"
      },
      "price": {
-       "value": order.total.toFixed(2),
+       "value": parseFloat(order.total).toFixed(2),
        "color":"#173177"
      },
      "time": {
