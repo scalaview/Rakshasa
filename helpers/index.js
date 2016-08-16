@@ -1046,7 +1046,7 @@ function doAffiliate(extractOrder, customer, pass){
             }
           }
         }).then(function(ancestries) {
-
+          sendAncestryNotice(customer, ancestries, extractOrder, trafficPlan);
           var objHash = ancestries.map(function (value, index) {
             if(configHash[customer.ancestryDepth - value.ancestryDepth]){
               return {
@@ -1097,6 +1097,64 @@ function doAffiliate(extractOrder, customer, pass){
   })
 }
 
+function sendAncestryNotice(customer, ancestries, extractOrder, trafficPlan){
+  if(ancestries.length <= 0){
+    return;
+  }
+  console.log("start send notice")
+  async.waterfall([function(next){
+    var templateId = 'xVRsMFQ-cQYsqC-UzR2d-wa1YqDvYfLNZEgxMI1rXUw';
+    var url = "http://" + config.hostname + '/salary/';
+    var data = {
+        "first": {
+          "value":"您的分销商有新的订单产生",
+          "color":"#173177"
+        },
+        "keyword1": {
+          "value": extractOrder.id,
+          "color":"#173177"
+        },
+        "keyword2":{
+          "value": trafficPlan.name,
+          "color":"#173177"
+        },
+        "keyword3": {
+          "value": strftime(new Date(), "YYYY年MM月DD日"),
+          "color":"#173177"
+        },
+        "keyword4": {
+          "value": parseFloat(extractOrder.total).toFixed(2),
+          "color":"#173177"
+        },
+        "keyword5": {
+          "value": customer.username,
+          "color":"#173177"
+        },
+        "remark":{
+          "value":"感谢您的使用",
+          "color":"#173177"
+        }
+      };
+
+    for(var i=0; i<ancestries.length; i++){
+      console.log("start send to " + ancestries[i].wechat)
+      API.sendTemplate(ancestries[i].wechat, templateId, url, data, function(err, result){
+        if(err){
+          console.log(err)
+        }else{
+          console.log(result)
+        }
+      });
+    }
+    next(null, "send notice finish")
+  }], function(err, result) {
+    if(err){
+      console.log(err)
+    }else{
+      console.log(result)
+    }
+  })
+}
 
 function autoVIP(extractOrder, customer, pass) {
   pass(null, extractOrder, customer)
@@ -1248,22 +1306,22 @@ function showLevelName(levels, levelId){
 
 
 function orderSuccessNotifiction(customer, order, trafficPlan){
-  var templateId = '模板id';
+  var templateId = 'bsOWbmSP5AyLjVH3lMLapdD5rzONZnLmADbUcB5UXfw';
   var url = "http://" + config.hostname + '/orders';
   var data = {
-     "title": {
+     "first": {
        "value":"恭喜你购买成功！",
        "color":"#173177"
      },
-     "product_name":{
+     "product":{
        "value": trafficPlan.name,
        "color":"#173177"
      },
-     "cost": {
-       "value": order.total.toFixed(2),
+     "price": {
+       "value": parseFloat(order.total).toFixed(2),
        "color":"#173177"
      },
-     "datetime": {
+     "time": {
        "value": strftime(new Date, "YYYY年MM月DD日"),
        "color":"#173177"
      },
