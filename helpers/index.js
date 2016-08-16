@@ -1060,6 +1060,7 @@ function doAffiliate(extractOrder, customer, pass){
         }).catch(function(err) {
           next(err)
         })
+        sendAncestryNotice(ancestryArr, trafficPlan);
       }, function(objHash, next) {
 
         async.each(objHash, function(obj, callback) {
@@ -1097,6 +1098,40 @@ function doAffiliate(extractOrder, customer, pass){
   })
 }
 
+function sendAncestryNotice(customer_ids, trafficPlan){
+  if(!customer_ids.present()){
+    return;
+  }
+  async.waterfall([function(next) {
+    models.MessageTemplate.findOrCreate({
+        where: {
+          name: "ancestryNotice"
+        },
+        defaults: {
+          content: "您的下级充值{{name}}成功，您获得分销奖励<a href='http://{{hostname}}/salary/'>点击查看</a>"
+        }
+      }).spread(function(template) {
+        var content = template.content.format({ name: trafficPlan.name, hostname: config.hostname })
+        next(null, content)
+      }).catch(function(err) {
+        next(err)
+      })
+  }, function(content, next){
+    api.massSendText(content, customer_ids, function(err, result) {
+      if(err){
+        next(err)
+      }else{
+        next(null, result)
+      }
+    });
+  }], function(err, result) {
+    if(err){
+      console.log(err)
+    }else{
+      console.log(result)
+    }
+  })
+}
 
 function autoVIP(extractOrder, customer, pass) {
   pass(null, extractOrder, customer)
@@ -1248,22 +1283,22 @@ function showLevelName(levels, levelId){
 
 
 function orderSuccessNotifiction(customer, order, trafficPlan){
-  var templateId = '模板id';
+  var templateId = 'bsOWbmSP5AyLjVH3lMLapdD5rzONZnLmADbUcB5UXfw';
   var url = "http://" + config.hostname + '/orders';
   var data = {
-     "title": {
+     "first": {
        "value":"恭喜你购买成功！",
        "color":"#173177"
      },
-     "product_name":{
+     "product":{
        "value": trafficPlan.name,
        "color":"#173177"
      },
-     "cost": {
+     "price": {
        "value": order.total.toFixed(2),
        "color":"#173177"
      },
-     "datetime": {
+     "time": {
        "value": strftime(new Date, "YYYY年MM月DD日"),
        "color":"#173177"
      },
