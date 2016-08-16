@@ -8,7 +8,7 @@ var requireLogin = helpers.requireLogin
 var _ = require('lodash')
 
 /**
- * params { 
+ * params {
  *  catName : '' 运营商中文名字
  *  province : '' 地区
  * }
@@ -74,7 +74,10 @@ app.get("/income", requireLogin, function(req, res){
   models.FlowHistory.incomeHistories({
     where: {
       customerId: customer.id
-    }
+    },
+    order:[
+      ['updatedAt', 'DESC']
+    ]
   }, function(flowHistories){
     res.render('yiweixin/flowhistories/income', { flowHistories: flowHistories })
   }, function(err){
@@ -88,7 +91,10 @@ app.get("/spend", requireLogin, function(req, res){
   models.FlowHistory.reduceHistories({
     where: {
       customerId: customer.id
-    }
+    },
+    order:[
+      ['updatedAt', 'DESC']
+    ]
   }, function(flowHistories){
     res.render('yiweixin/flowhistories/spend', { flowHistories: flowHistories })
   }, function(err){
@@ -103,7 +109,10 @@ app.get('/salary', requireLogin, function(req, res) {
     where: {
       customerId: customer.id,
       trafficType: models.FlowHistory.TRAFFICTYPE.SALARY
-    }
+    },
+    order:[
+      ['updatedAt', 'DESC']
+    ]
   }).then(function(flowhistories) {
     res.render('yiweixin/flowhistories/salary', { flowhistories: flowhistories })
   }).catch(function(err) {
