@@ -250,14 +250,12 @@ app.post('/pay', requireLogin, function(req, res) {
             if(extractOrder.totalIntegral){
               customer.reduceIntegral(models, extractOrder).then(function(customer, extractOrder, trafficPlan, flowHistory){
                 helpers.orderSuccessNotifiction(customer, extractOrder, trafficPlan);
-                sendAncestryNotice(customer.getAncestry(), trafficPlan)
                 res.json({err: 0, msg: '付款成功', totalIntegral: customer.totalIntegral })
               }).catch(function(err){
                 console.log(err)
               })
             }else{
               helpers.orderSuccessNotifiction(customer, extractOrder, trafficPlan);
-              sendAncestryNotice(customer.getAncestry(), trafficPlan)
               res.json({err: 0, msg: '付款成功', totalIntegral: customer.totalIntegral })
             }
             var total_amount = Math.round(extractOrder.total * 100).toFixed(0),
@@ -334,7 +332,6 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
     })
   }, function(extractOrder, customer, trafficPlan, next) {
     helpers.orderSuccessNotifiction(customer, extractOrder, trafficPlan);
-    sendAncestryNotice(customer.getAncestry(), trafficPlan)
     //do history
     customer.reduceTraffic(models, extractOrder, function(){
       next(null, extractOrder, customer)
@@ -366,40 +363,5 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
   })
 }));
 
-
-function sendAncestryNotice(customer_ids, trafficPlan){
-  if(!customer_ids.present()){
-    return;
-  }
-  async.waterfall([function(next) {
-    models.MessageTemplate.findOrCreate({
-        where: {
-          name: "ancestryNotice"
-        },
-        defaults: {
-          content: "您的下级充值{{name}}成功，您获得分销奖励<a href='http://{{hostname}}/salary/'>点击查看</a>"
-        }
-      }).spread(function(template) {
-        var content = template.content.format({ name: trafficPlan.name, hostname: config.hostname })
-        next(null, content)
-      }).catch(function(err) {
-        next(err)
-      })
-  }, function(content, next){
-    api.massSendText(content, customer_ids, function(err, result) {
-      if(err){
-        next(err)
-      }else{
-        next(null, result)
-      }
-    });
-  }], function(err, result) {
-    if(err){
-      console.log(err)
-    }else{
-      console.log(result)
-    }
-  })
-}
 
 module.exports = app;
