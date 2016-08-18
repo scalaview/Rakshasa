@@ -5,6 +5,7 @@ var helpers = require("../../helpers")
 var async = require("async")
 var _ = require('lodash')
 var config = require("../../config")
+var sequelize = models.sequelize
 
 
 admin.get("/salecontribution", function(req, res){
@@ -25,12 +26,141 @@ admin.get("/salecontribution", function(req, res){
       next(null, customers)
     })
 
-  }, function(customer, pass){
+  }, function(customers, pass){
+    async.map(customers.rows, function(customer, next){
+      var ancestryList = customer.getAncestry()
+      if(ancestryList.length <= 0){
+        var originCondition = customer.id;
+      }else{
+        var originCondition = customer.ancestry + '/' + customer.id;
+      }
 
-  }], function(err){
-
+      async.map([1, 2, 3], function(_i, _next){
+        var condition = originCondition
+        if(_i==1){
+          var partailCondition = "SELECT id FROM Customers AS `Customer` WHERE `Customer`.ancestry = :condition AND `Customer`.ancestryDepth = :depth ";
+        }else if(_i== 3){
+          condition = condition + '/%'
+          var partailCondition = "SELECT id FROM Customers AS `Customer` WHERE `Customer`.ancestry LIKE :condition AND `Customer`.ancestryDepth >= :depth ";
+        }else{
+          condition = condition + '/%'
+          var partailCondition = "SELECT id FROM Customers AS `Customer` WHERE `Customer`.ancestry LIKE :condition AND `Customer`.ancestryDepth = :depth ";
+        }
+        var replacements = { state: models.ExtractOrder.STATE["FINISH"], condition: condition, depth: (_i + customer.ancestryDepth) }
+        if(req.query.trafficPlanId){
+          _.merge(replacements, { trafficPlanId: req.query.trafficPlanId })
+          var baseQuery = "SELECT sum(`total`) AS `total` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`state` = :state AND `ExtractOrder`.`exchangerType` = 'TrafficPlan' AND `ExtractOrder`.`exchangerId` = :trafficPlanId AND `ExtractOrder`.`customerId` IN ("
+        }else{
+          var baseQuery = "SELECT sum(`total`) AS `total` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`state` = :state AND `ExtractOrder`.`exchangerType` = 'TrafficPlan' AND `ExtractOrder`.`customerId` IN ("
+        }
+        sequelize.query(baseQuery + partailCondition + ") ",
+          { replacements: replacements, type: sequelize.QueryTypes.SELECT }
+        ).then(function(result) {
+          if(result.length >= 1){
+            customer['total_' + _i]=result[0].total
+            _next(null, result[0].total)
+          }else{
+            customer['total_' + _i]=0.00
+            _next(null, 0)
+          }
+        }).catch(function(err, result){
+          if(err){
+            _next(err)
+          }else{
+            _next(null, customer)
+          }
+        })
+      }, function(err, result){
+        if(err){
+          next(err)
+        }else{
+          next(null, customer)
+        }
+      })
+    }, function(err, result){
+      if(err){
+        pass(err)
+      }else{
+        customers.rows = result
+        pass(null, customers)
+      }
+    })
+  }, function(customers, next){
+    models.TrafficGroup.findAll({
+      order:[
+        'sortNum'
+      ]
+    }).then(function(trafficgroups) {
+      var trafficgroupsCollection = [];
+      for (var i = 0; i < trafficgroups.length; i++) {
+        trafficgroupsCollection.push([ trafficgroups[i].id, trafficgroups[i].name ])
+      };
+      next(null, customers, trafficgroupsCollection)
+    }).catch(function(err) {
+      next(err)
+    })
+  }, function(customers, trafficgroupsCollection, next){
+    if(req.query.trafficGroupId){
+      models.TrafficPlan.findAll({
+        where: {
+          trafficGroupId: req.query.trafficGroupId
+        }
+      }).then(function(trafficPlans){
+        var trafficPlansCollection = [];
+        for (var i = 0; i < trafficPlans.length; i++) {
+          trafficPlansCollection.push([ trafficPlans[i].id, trafficPlans[i].name ])
+        };
+        next(null, customers, trafficgroupsCollection, trafficPlansCollection)
+      }).catch(function(err){
+        next(err)
+      })
+    }else{
+      next(null, customers, trafficgroupsCollection, [])
+    }
+  }], function(err, customers, trafficgroupsCollection, trafficPlansCollection){
+    if(err){
+      console.log(err)
+      res.redirect('/500')
+    }else{
+      var trafficgroupsOptions = { id: "sale-trafficGroupId", name: "trafficGroupId", class: 'select2 col-lg-12 col-xs-12', includeBlank: true },
+          trafficPlansOptions  = { id: "sale-trafficPlanId", name: "trafficPlanId", class: 'select2 col-lg-12 col-xs-12', includeBlank: true },
+          result = helpers.setPagination(customers, req)
+      res.render('admin/sale/contribution', {
+        customers: result,
+        query: req.query,
+        trafficgroupsOptions: trafficgroupsOptions,
+        trafficgroupsCollection: trafficgroupsCollection,
+        trafficPlansOptions: trafficPlansOptions,
+        trafficPlansCollection: trafficPlansCollection
+      })
+    }
   })
 })
 
+
+admin.get('/getplans', function(req, res){
+  var groupId = req.query.groupId ? req.query.groupId : null
+  async.waterfall([function(next){
+    models.TrafficPlan.findAll({
+      where: {
+        trafficGroupId: groupId
+      },
+      order: [
+       'sortNum'
+      ]
+    }).then(function(trafficPlans) {
+      next(null, trafficPlans)
+    }).catch(function(err) {
+      next(err)
+    })
+  }], function(err, trafficPlans){
+    if(err){
+      console.log(err)
+      res.json({ err: 1, msg: err.message })
+    }else{
+      res.json({ err: 0, data: trafficPlans })
+    }
+  })
+})
 
 module.exports = admin;

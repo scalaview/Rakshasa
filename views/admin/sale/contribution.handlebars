@@ -1,0 +1,111 @@
+<div class="row">
+  <form role="form" accept-charset="UTF-8" action="/admin/salecontribution" method="GET">
+    <div class="col-lg-3">
+      <div class="form-group">
+        <label>手机</label>
+        <input class="form-control" name="phone" value="{{ query.phone }}">
+      </div>
+      <div class="form-group">
+        <label>用户编号</label>
+        <input class="form-control" name="customerId" value="{{ query.customerId }}">
+      </div>
+    </div>
+    <div class="col-lg-3">
+      <div class="form-group">
+        <label>分  组</label>
+        {{ selectTag trafficgroupsOptions trafficgroupsCollection query.trafficGroupId }}
+      </div>
+      <div class="form-group">
+        <label>套  餐</label>
+        {{ selectTag trafficPlansOptions trafficPlansCollection query.trafficPlanId }}
+      </div>
+    </div>
+    <div class="col-lg-3 col-lg-offset-3" style="padding-top: 19px;">
+      <div class="form-group">
+        <button type='submit' class="btn btn-info col-lg-8 pull-right">搜索</button>
+      </div>
+    </div>
+  </form>
+</div>
+<hr>
+
+<script type="text/javascript">
+$(function(){
+  $("#sale-trafficGroupId").on("change", function(e){
+    var $this = $(this)
+    console.log($this.val())
+    $.ajax({
+      url: '/admin/getplans',
+      data: {
+        groupId: $this.val()
+      },
+      method: "GET"
+    }).success(function(res){
+      if(res.err){
+        console.log(err.msg)
+      }else{
+        var options = []
+        options.push($("<option/>"))
+        for (i=0; i<res.data.length; i++) {
+          options.push($("<option/>", {
+                      value: res.data[i].id,
+                      text: res.data[i].name,
+                  }))
+        }
+        $("#sale-trafficPlanId").empty().append(options);
+        $("#sale-trafficPlanId").select2()
+      }
+    }).fail(function(err){
+      if(err){
+        console.log(err)
+      }
+    })
+  })
+})
+</script>
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        用户管理
+      </div>
+      <!-- /.panel-heading -->
+      <div class="panel-body">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                  <th></th>
+                  <th>手机</th>
+                  <th>用户</th>
+                  <th>一级营业额</th>
+                  <th>二级营业额</th>
+                  <th>三级营业额</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each customers.rows}}
+                <tr>
+                    <td>{{ id }}</td>
+                    <td>{{ phone }}</td>
+                    <td><img src="{{headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ username }}</td>
+                    <td>{{#if total_1}}  {{total_1}} {{else}} 0 {{/if}}元</td>
+                    <td>{{#if total_2}}  {{total_2}} {{else}} 0 {{/if}}元</td>
+                    <td>{{#if total_3}}  {{total_3}} {{else}} 0 {{/if}}元</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.table-responsive -->
+      </div>
+
+      <div class="panel-footer">
+          {{pagination customers (addParams '/admin/salecontribution' query)}}
+      </div>
+      <!-- /.panel-body -->
+    </div>
+    <!-- /.panel -->
+  </div>
+</div>
