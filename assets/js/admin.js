@@ -114,4 +114,35 @@ $(function(){
     e.stopPropagation();
   })
 
+  $("#sale-trafficGroupId").on("change", function(e){
+    var $this = $(this)
+    console.log($this.val())
+    $.ajax({
+      url: '/admin/getplans',
+      data: {
+        groupId: $this.val()
+      },
+      method: "GET"
+    }).success(function(res){
+      if(res.err){
+        console.log(err.msg)
+      }else{
+        var options = []
+        options.push($("<option/>"))
+        for (i=0; i<res.data.length; i++) {
+          options.push($("<option/>", {
+                      value: res.data[i].id,
+                      text: res.data[i].name,
+                  }))
+        }
+        $("#sale-trafficPlanId").empty().append(options);
+        $("#sale-trafficPlanId").select2()
+      }
+    }).fail(function(err){
+      if(err){
+        console.log(err)
+      }
+    })
+  })
+
 })

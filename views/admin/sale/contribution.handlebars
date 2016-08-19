@@ -29,41 +29,6 @@
 </div>
 <hr>
 
-<script type="text/javascript">
-$(function(){
-  $("#sale-trafficGroupId").on("change", function(e){
-    var $this = $(this)
-    console.log($this.val())
-    $.ajax({
-      url: '/admin/getplans',
-      data: {
-        groupId: $this.val()
-      },
-      method: "GET"
-    }).success(function(res){
-      if(res.err){
-        console.log(err.msg)
-      }else{
-        var options = []
-        options.push($("<option/>"))
-        for (i=0; i<res.data.length; i++) {
-          options.push($("<option/>", {
-                      value: res.data[i].id,
-                      text: res.data[i].name,
-                  }))
-        }
-        $("#sale-trafficPlanId").empty().append(options);
-        $("#sale-trafficPlanId").select2()
-      }
-    }).fail(function(err){
-      if(err){
-        console.log(err)
-      }
-    })
-  })
-})
-</script>
-
 <div class="row">
   <div class="col-lg-12">
     <div class="panel panel-default">
@@ -79,6 +44,7 @@ $(function(){
                   <th></th>
                   <th>手机</th>
                   <th>用户</th>
+                  <th>个人消费</th>
                   <th>一级营业额</th>
                   <th>二级营业额</th>
                   <th>三级营业额</th>
@@ -90,6 +56,7 @@ $(function(){
                     <td>{{ id }}</td>
                     <td>{{ phone }}</td>
                     <td><img src="{{headimgurl}}" onError="this.src='http://placehold.it/380x380';" style="width: 36px;">{{ username }}</td>
+                    <td>{{#if total_0}}  {{total_0}} {{else}} 0 {{/if}}元</td>
                     <td>{{#if total_1}}  {{total_1}} {{else}} 0 {{/if}}元</td>
                     <td>{{#if total_2}}  {{total_2}} {{else}} 0 {{/if}}元</td>
                     <td>{{#if total_3}}  {{total_3}} {{else}} 0 {{/if}}元</td>

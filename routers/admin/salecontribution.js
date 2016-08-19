@@ -35,21 +35,32 @@ admin.get("/salecontribution", function(req, res){
         var originCondition = customer.ancestry + '/' + customer.id;
       }
 
-      async.map([1, 2, 3], function(_i, _next){
+      async.map([0, 1, 2, 3], function(_i, _next){
         var condition = originCondition
-        if(_i==1){
-          var partailCondition = "SELECT id FROM Customers AS `Customer` WHERE `Customer`.ancestry = :condition AND `Customer`.ancestryDepth = :depth ";
-        }else if(_i== 3){
-          condition = condition + '/%'
-          var partailCondition = "SELECT id FROM Customers AS `Customer` WHERE `Customer`.ancestry LIKE :condition AND `Customer`.ancestryDepth >= :depth ";
-        }else{
-          condition = condition + '/%'
-          var partailCondition = "SELECT id FROM Customers AS `Customer` WHERE `Customer`.ancestry LIKE :condition AND `Customer`.ancestryDepth = :depth ";
-        }
         var replacements = { state: models.ExtractOrder.STATE["FINISH"], condition: condition, depth: (_i + customer.ancestryDepth) }
+        switch(_i){
+          case 0:
+            var partailCondition = customer.id;
+            replacements = { state: models.ExtractOrder.STATE["FINISH"] }
+            break;
+          case 1:
+            var partailCondition = "SELECT id FROM Customers AS `Customer` WHERE `Customer`.ancestry = :condition AND `Customer`.ancestryDepth = :depth ";
+            break;
+          case 3:
+            condition = condition + '/%'
+            var partailCondition = "SELECT id FROM Customers AS `Customer` WHERE `Customer`.ancestry LIKE :condition AND `Customer`.ancestryDepth >= :depth ";
+            break;
+          default:
+            condition = condition + '/%'
+            var partailCondition = "SELECT id FROM Customers AS `Customer` WHERE `Customer`.ancestry LIKE :condition AND `Customer`.ancestryDepth = :depth ";
+        }
+
         if(req.query.trafficPlanId){
           _.merge(replacements, { trafficPlanId: req.query.trafficPlanId })
           var baseQuery = "SELECT sum(`total`) AS `total` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`state` = :state AND `ExtractOrder`.`exchangerType` = 'TrafficPlan' AND `ExtractOrder`.`exchangerId` = :trafficPlanId AND `ExtractOrder`.`customerId` IN ("
+        }else if(req.query.trafficGroupId){
+          var baseQuery = "SELECT sum(`total`) AS `total` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`state` = :state AND `ExtractOrder`.`exchangerType` = 'TrafficPlan' AND `ExtractOrder`.`exchangerId` IN ( SELECT TrafficPlan.id FROM TrafficPlans AS TrafficPlan WHERE TrafficPlan.trafficGroupId = :trafficGroupId ) AND `ExtractOrder`.`customerId` IN ("
+          _.merge(replacements, { trafficGroupId: req.query.trafficGroupId })
         }else{
           var baseQuery = "SELECT sum(`total`) AS `total` FROM `ExtractOrders` AS `ExtractOrder` WHERE `ExtractOrder`.`state` = :state AND `ExtractOrder`.`exchangerType` = 'TrafficPlan' AND `ExtractOrder`.`customerId` IN ("
         }
