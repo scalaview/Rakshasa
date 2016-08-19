@@ -714,7 +714,11 @@ function getSlaves(customer, outnext){
         }
       }
 
-      params = _.extend(params, { ancestryDepth: _depth })
+      if( (_depth - customer.ancestryDepth) == 3 ){
+        params = _.extend(params, { ancestryDepth: { $gte: _depth }})
+      }else{
+        params = _.extend(params, { ancestryDepth: _depth })
+      }
 
       models.Customer.count({
         where: params

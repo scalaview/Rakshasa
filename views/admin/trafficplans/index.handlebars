@@ -29,6 +29,7 @@
                   <th>提供商</th>
                   <th>分组</th>
                   <th></th>
+                  <th></th>
               </tr>
             </thead>
             <tbody>
@@ -54,6 +55,11 @@
                     <td>
                       <a href="/admin/trafficplans/{{id}}/edit" class="list-group-item">
                         <i class="glyphicon glyphicon-pencil"></i>
+                      </a>
+                    </td>
+                    <td>
+                      <a href="/admin/trafficplans/{{id}}/delete" class="list-group-item" onclick="return confirm('你确定需要删除吗？')">
+                        <i class="glyphicon glyphicon-trash"></i>
                       </a>
                     </td>
                   </td>

@@ -225,4 +225,27 @@ admin.post('/trafficplan/:id', function(req, res){
   })
 })
 
+admin.get('/trafficplans/:id/delete', function(req, res){
+  async.waterfall([function(next) {
+    models.TrafficPlan.findById(req.params.id).then(function(trafficPlan){
+      next(null, trafficPlan.destroy({ force: true }))
+    }).catch(function(err){
+      next(err)
+    })
+  }], function(err, is_done){
+    if(err){
+      console.log(err)
+      res.redirect('/500')
+    }else{
+      if(is_done){
+        req.flash("info", "delete succes")
+      }else{
+        req.flash("error", "delete fail")
+      }
+      res.redirect("back")
+    }
+  })
+
+})
+
 module.exports = admin;

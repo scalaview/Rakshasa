@@ -23,6 +23,7 @@
                   <th>名字</th>
                   <th>显示</th>
                   <th></th>
+                  <th></th>
               </tr>
             </thead>
             <tbody>
@@ -31,10 +32,10 @@
                     <td>{{ name }}</td>
                     <td>{{ display }}</td>
                     <td>
-                    <a href="/admin/trafficgroups/{{id}}/edit" class="list-group-item">
-                      <i class="glyphicon glyphicon-pencil"></i>
-                    </a>
-                  </td>
+                      <a href="/admin/trafficgroups/{{id}}/edit" class="list-group-item">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                      </a>
+                    </td>
                 </tr>
               {{/each}}
             </tbody>
