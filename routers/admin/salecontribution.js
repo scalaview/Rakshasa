@@ -37,7 +37,7 @@ admin.get("/salecontribution", function(req, res){
 
       async.map([0, 1, 2, 3], function(_i, _next){
         var condition = originCondition
-        var replacements = { state: models.ExtractOrder.STATE["FINISH"], condition: condition, depth: (_i + customer.ancestryDepth) }
+        var replacements = { state: models.ExtractOrder.STATE["FINISH"], depth: (_i + customer.ancestryDepth) }
         switch(_i){
           case 0:
             var partailCondition = customer.id;
@@ -54,6 +54,7 @@ admin.get("/salecontribution", function(req, res){
             condition = condition + '/%'
             var partailCondition = "SELECT id FROM Customers AS `Customer` WHERE `Customer`.ancestry LIKE :condition AND `Customer`.ancestryDepth = :depth ";
         }
+        replacements['condition'] = condition
 
         if(req.query.trafficPlanId){
           _.merge(replacements, { trafficPlanId: req.query.trafficPlanId })
