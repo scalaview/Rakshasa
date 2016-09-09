@@ -171,4 +171,21 @@ app.post("/dazhongconfirm", function(req, res){
   })
 })
 
+app.get("/huadongconfirm", function(req, res){
+  console.log(req.query)
+  var data = req.query
+
+  confirmOrder({
+    taskid: data.charge_num,
+    state: models.ExtractOrder.STATE.SUCCESS
+  }, data.status == "1", "", function(err){
+    if(err){
+      console.log(err)
+      res.json({success: false})
+    }else{
+      res.json({success: true})
+    }
+  })
+})
+
 module.exports = app;

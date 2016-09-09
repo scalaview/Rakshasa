@@ -946,6 +946,22 @@ function autoCharge(extractOrder, trafficPlan, next){
           })
           next(new Error(data.errmsg))
         }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['华动']){
+        if(data.code == 1 || data.code == 2){
+          extractOrder.updateAttributes({
+            taskid: data.chargeNum,
+            state: models.ExtractOrder.STATE.SUCCESS
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.msg))
+        }
       }else{
         extractOrder.updateAttributes({
           state: models.ExtractOrder.STATE.FAIL
