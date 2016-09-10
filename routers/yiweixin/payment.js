@@ -293,7 +293,7 @@ app.use('/paymentconfirm', middleware(helpers.initConfig).getNotify().done(funct
       next(err)
     })
   }, function(extractOrder, next){
-    if(message.result_code === 'SUCCESS' && !extractOrder.isPaid()){
+    if(message.result_code === 'SUCCESS' && extractOrder.state == models.ExtractOrder.STATE.INIT){
       extractOrder.updateAttributes({
         state: models.ExtractOrder.STATE.PAID,
         transactionId: message.transaction_id
