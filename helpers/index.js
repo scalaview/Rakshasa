@@ -962,6 +962,22 @@ function autoCharge(extractOrder, trafficPlan, next){
           })
           next(new Error(data.msg))
         }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['大众通信']){
+        if(data.ack == "success" && (data.shipping_status == 2 || data.shipping_status == 3 || data.shipping_status == 4 || data.shipping_status == 6)){
+          extractOrder.updateAttributes({
+            taskid: data.order_number,
+            state: models.ExtractOrder.STATE.SUCCESS
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.message || data.shipping_status_desc))
+        }
       }else{
         extractOrder.updateAttributes({
           state: models.ExtractOrder.STATE.FAIL
