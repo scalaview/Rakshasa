@@ -104,22 +104,22 @@ Oms.prototype.syncProducts = function(){
     }
   }
 
-    function getValue(string){
-      var string = string.replace(/[0-9]*元/ig,"")
-          y = /[M|G]/,
-          end = y.exec(string)
-      if(end.index + 1 <= string.length){
-        var unit = string.substring(end.index, end.index + 1)
-      }else{
-        var unit = 'M'
-      }
-      var size = string.replace(/[^0-9]/ig,"")
-      if(unit.toLowerCase() == 'g' ){
-        return parseInt(size) * 1024
-      }else{
-        return parseInt(size)
-      }
+  function getValue(string){
+    var string = string.replace(/[0-9]*元/ig,""),
+        y = /[M|G]/,
+        end = y.exec(string)
+    if(end.index + 1 <= string.length){
+      var unit = string.substring(end.index, end.index + 1)
+    }else{
+      var unit = 'M'
     }
+    var size = string.replace(/[^0-9]/ig,"")
+    if(unit.toLowerCase() == 'g' ){
+      return parseInt(size) * 1024
+    }else{
+      return parseInt(size)
+    }
+  }
 
   this.getProducts().then(function(data){
     if(data.ack == "success"){
