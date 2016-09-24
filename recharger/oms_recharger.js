@@ -90,6 +90,8 @@ Oms.prototype.getProducts = function(){
 
 Oms.prototype.syncProducts = function(){
   var models  = require('../models')
+  var async = require("async")
+
 
   function getProviderId(product_category){
     //运营商类型 1：电信 2：移动 3：联通
