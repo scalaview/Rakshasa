@@ -6,6 +6,7 @@ var async = require("async")
 var requireLogin = helpers.requireLogin
 var config = require("../../config")
 var WechatAPI = require('wechat-api');
+var formidable = require('formidable')
 
 var api = helpers.API
 
@@ -189,19 +190,20 @@ app.get("/huadongconfirm", function(req, res){
 })
 
 app.post("/omsconfirm", function(req, res){
-  console.log(req.rawBody)
-  var data = req.rawBody
-
-  confirmOrder({
-    taskid: data.order_number,
-    state: models.ExtractOrder.STATE.SUCCESS
-  }, (data.indexOf("已充值") != -1), data.shipping_status_message, function(err){
-    if(err){
-      console.log(err)
-      res.json({success: false})
-    }else{
-      res.json({success: true})
-    }
+  var form = new formidable.IncomingForm();
+  form.parse(req, function(err, fields, files) {
+    console.log(fields)
+    confirmOrder({
+      taskid: fields.order_number,
+      state: models.ExtractOrder.STATE.SUCCESS
+    }, fields.shipping_status == '4', fields.shipping_status_message, function(err){
+      if(err){
+        console.log(err)
+        res.json({success: false})
+      }else{
+        res.json({success: true})
+      }
+    })
   })
 })
 

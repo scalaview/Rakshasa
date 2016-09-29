@@ -73,7 +73,7 @@ app.use(function(req, res, next){
   console.log("[" + helpers.strftime(new Date()) + "] content-type: " + mime)
   console.log("from: " + helpers.ip(req) + ", user-agent: " + req.headers['user-agent'], "contentType: " + mime)
 
-  var excep = (mime == 'multipart/form-data' && req.method == "POST" && (req.url == "/huawoconfirm" || req.url == "/omsconfirm"))
+  var excep = (mime == 'multipart/form-data' && req.method == "POST" && req.url == "/huawoconfirm")
 
   if (mime != 'text/plain' && mime != 'text/html' && !excep) {
     return next();
