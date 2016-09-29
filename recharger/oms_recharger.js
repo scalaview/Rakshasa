@@ -110,6 +110,7 @@ Oms.prototype.syncProducts = function(){
     var string = string.replace(/[0-9]*元/ig,""),
         y = /[M|G]/,
         end = y.exec(string)
+    if(!end) return 0
     if(end.index + 1 <= string.length){
       var unit = string.substring(end.index, end.index + 1)
     }else{
@@ -128,7 +129,8 @@ Oms.prototype.syncProducts = function(){
       async.each(data.product, function(product, next){
         models.TrafficPlan.findOrCreate({
           where: {
-            bid: product.product_id
+            bid: product.product_id,
+            type: models.TrafficPlan.TYPE["大众通信"]
           },
           defaults: {
             providerId: getProviderId(product.product_category),
