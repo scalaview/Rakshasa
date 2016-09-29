@@ -963,7 +963,7 @@ function autoCharge(extractOrder, trafficPlan, next){
           next(new Error(data.msg))
         }
       }else if(trafficPlan.type == models.TrafficPlan.TYPE['大众通信']){
-        if(data.ack == "success" && (data.shipping_status == 1 && data.shipping_status == 2 || data.shipping_status == 3 || data.shipping_status == 4 || data.shipping_status == 6)){
+        if(data.ack == "success" && (data.shipping_status == 1 || data.shipping_status == 2 || data.shipping_status == 3 || data.shipping_status == 4 || data.shipping_status == 6)){
           extractOrder.updateAttributes({
             taskid: data.order_number,
             state: models.ExtractOrder.STATE.SUCCESS
