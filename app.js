@@ -71,7 +71,7 @@ app.use(function(req, res, next){
     , mime = contentType.split(';')[0];
 
   console.log("[" + helpers.strftime(new Date()) + "] content-type: " + mime)
-  console.log("from: " + helpers.ip(req) + ", user-agent: " + req.headers['user-agent'])
+  console.log("from: " + helpers.ip(req) + ", user-agent: " + req.headers['user-agent'], "contentType: " + mime)
 
   var excep = (mime == 'multipart/form-data' && req.method == "POST" && req.url == "/huawoconfirm")
 
