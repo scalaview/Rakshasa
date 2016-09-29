@@ -189,13 +189,13 @@ app.get("/huadongconfirm", function(req, res){
 })
 
 app.post("/omsconfirm", function(req, res){
-  console.log(req.body)
-  var data = req.body
+  console.log(req.rawBody)
+  var data = req.rawBody
 
   confirmOrder({
     taskid: data.order_number,
     state: models.ExtractOrder.STATE.SUCCESS
-  }, (data.shipping_status == 4), data.shipping_status_message, function(err){
+  }, (data.indexOf("已充值") != -1), data.shipping_status_message, function(err){
     if(err){
       console.log(err)
       res.json({success: false})
