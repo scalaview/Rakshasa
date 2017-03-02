@@ -8,6 +8,7 @@ var Xinhaoba = recharger.Xinhaoba
 var Dazhong = recharger.Dazhong
 var Huadong = recharger.Huadong
 var Oms = recharger.Oms
+var Gdsjll = recharger.Gdsjll
 var config = require("../config")
 var crypto = require('crypto')
 
@@ -155,6 +156,8 @@ module.exports = function(sequelize, DataTypes) {
           return new Huadong(this.id, this.phone, this.bid)
         }else if(trafficPlan.type == typeJson['大众通信']){
           return new Oms().createOrder(this.phone, this.bid)
+        }}else if(trafficPlan.type == typeJson['gdsjll']){
+          return new Gdsjll().createOrder(this.phone, this.bid)
         }else{
           function Empty(){
             var that = this

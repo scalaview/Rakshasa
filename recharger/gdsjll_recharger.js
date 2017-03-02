@@ -4,8 +4,8 @@ var crypto = require('crypto')
 
 
 function Gdsjll(){
-  this.appid = "yll58b61b967cf15"
-  this.appsecret = "40490595784cfa0bf89f64ff4b3f9c9b"
+  this.appid = config.gdsjll_appid
+  this.appsecret = config.gdsjll_appsecret
 }
 
 
@@ -25,11 +25,16 @@ Gdsjll.prototype.timestamp = function(){
   return ((new Date()).getTime()/1000).toFixed(0);
 }
 
+
+Gdsjll.prototype.nonceString = function(){
+  return Math.round((new Date().valueOf() * Math.random())) + '';
+}
+
 Gdsjll.prototype.getProducts = function(){
   var params =  {
         appid: this.appid,
         timestamp: this.timestamp(),
-        nonce_str: Math.round((new Date().valueOf() * Math.random())) + ''
+        nonce_str: this.nonceString()
       }
   params['sign'] = this.sign(params)
   console.log(params)
@@ -48,6 +53,109 @@ Gdsjll.prototype.getProducts = function(){
         reject(err)
       }
     })
+  })
+}
+
+
+Gdsjll.prototype.createOrder = function(phone, productId){
+  var params = {
+    appid: this.appid,
+    timestamp: this.timestamp(),
+    nonce_str: this.nonceString(),
+    mobile: phone,
+    goods_id: productId
+  }
+  params['sign'] = this.sign(params)
+  var options = {
+        url: "http://mp.gdsjll.com/api/recharge",
+        formData: params
+      }
+
+  this.then = function(callback){
+    this.successCallback = callback
+    return this
+  }
+
+  this.catch = function(callback){
+   this.errCallback = callback
+   return this
+  }
+
+  this.do = function(){
+    var inerSuccessCallback = this.successCallback;
+    var inerErrCallback = this.errCallback;
+
+    request.post(options, function(err, res, body){
+      if (!err && res.statusCode == 200) {
+        if(inerSuccessCallback){
+          console.log(body)
+          var data = JSON.parse(res.body.trim())
+          inerSuccessCallback.call(this, res, data)
+        }else{
+          if(inerErrCallback){
+            inerErrCallback.call(this, err)
+          }
+        }
+      }
+    })
+    return this
+  }
+
+  return this
+}
+
+Gdsjll.prototype.syncProducts = function(){
+  var models  = require('../models')
+  var async = require("async")
+
+
+  function getProviderId(operator){
+    //运营商类型 1：中国电信 2：中国移动 3：中国联通
+    switch(operator) {
+      case "中国电信":
+        return models.TrafficPlan.Provider["中国电信"]
+      case "中国移动":
+        return models.TrafficPlan.Provider["中国移动"]
+      case "中国联通":
+        return models.TrafficPlan.Provider["中国联通"]
+    }
+  }
+
+  this.getProducts().then(function(data){
+    if(data.errcode === 0){
+       async.each(data.list, function(product, next){
+        models.TrafficPlan.findOrCreate({
+          where: {
+            bid: product.id,
+            type: models.TrafficPlan.TYPE["gdsjll"]
+          },
+          defaults: {
+            providerId: getProviderId(product.operator),
+            value: product.flow,
+            name: product.title,
+            cost: parseFloat(product.price) + 3.00,
+            display: false,
+            type: models.TrafficPlan.TYPE["gdsjll"],
+            bid: product.id,
+            purchasePrice: product.price
+          }
+        }).then(function(trafficPlan){
+          next(null)
+        }).catch(function(err){
+          next(err)
+        })
+      }, function(err){
+        if(err){
+          console.log(err)
+        }else{
+          console.log("sync success")
+        }
+      })
+    }else{
+      console.log(data.errmsg)
+    }
+  }).catch(function(err) {
+    console.log(err)
   })
 }
 

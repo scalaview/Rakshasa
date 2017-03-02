@@ -132,7 +132,8 @@ module.exports = function(sequelize, DataTypes) {
     "新号吧": 1,
     "大众": 2,
     "华动": 3,
-    "大众通信": 4
+    "大众通信": 4,
+    "gdsjll": 5
   }
 
   TrafficPlan.PRODUCTTYPE = {

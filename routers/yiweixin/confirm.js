@@ -207,4 +207,22 @@ app.post("/omsconfirm", function(req, res){
   })
 })
 
+app.post("/gdsjllconfirm", function(req, res){
+  console.log(req.body)
+  var data = req.body
+
+  confirmOrder({
+    id: data.order_id,
+    state: models.ExtractOrder.STATE.SUCCESS
+  }, data.errcode === 0, data.errmsg + "; " + data.order_errormsg, function(err){
+    if(err){
+      console.log(err)
+      res.json({success: false})
+    }else{
+      res.json({success: true})
+    }
+  })
+})
+
+
 module.exports = app;
