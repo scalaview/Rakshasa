@@ -994,6 +994,22 @@ function autoCharge(extractOrder, trafficPlan, next){
           })
           next(new Error(data.message || data.shipping_status_desc))
         }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['云尚流量']){
+        if(data.errcode === 0 ){
+          extractOrder.updateAttributes({
+            taskid: data.p_order_sn,
+            state: models.ExtractOrder.STATE.SUCCESS
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.msg))
+        }
       }else{
         extractOrder.updateAttributes({
           state: models.ExtractOrder.STATE.FAIL
