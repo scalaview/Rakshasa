@@ -105,7 +105,7 @@ app.post('/wechat-order', requireLogin, function(req, res) {
         var orderParams = {
           body: '流量套餐 ' + dataPlan.name,
           attach: order.id,
-          out_trade_no: config.token + "_" + order.id + "_" + Math.round(order.total * 100) + "_" + parseInt(Math.random() * 1000),
+          out_trade_no: order.id + "_" + Math.round(order.total * 100) + "_" + parseInt(Math.random() * 1000),
           total_fee:  Math.round(order.total * 100),
           spbill_create_ip: ip,
           openid: customer.wechat,

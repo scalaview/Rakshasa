@@ -201,27 +201,36 @@ app.post('/wechat-bill', requireLogin, function(req, res) {
         if(extractOrder.chargeType == models.Customer.CHARGETYPE.BALANCE && extractOrder.total > 0){
           var ip = helpers.ip(req),
               total_amount = Math.round(extractOrder.total * 100).toFixed(0)
-          var orderParams = {
-            body: '话费套餐 ' + trafficPlan.name,
-            attach: extractOrder.id,
-            out_trade_no: config.token + "_" + extractOrder.phone + "_" + extractOrder.id + "_" + total_amount,
-            total_fee: total_amount,
-            spbill_create_ip: ip,
-            openid: customer.wechat,
-            trade_type: 'JSAPI'
-          };
+              time = (new Date()).getTime() + "",
+              time = time.substring(time.length-7, time.length-1)
+              out_trade_no = extractOrder.id + "_" + time
 
-          console.log(orderParams)
-          payment.getBrandWCPayRequestParams(orderParams, function(err, payargs){
-            if(err){
-              console.log("payment fail")
-              console.log(err)
-              res.json({err: 1, msg: '付款失败'})
-            }else{
-              console.log(payargs)
-              res.json(payargs);
-            }
-          });
+          extractOrder.updateAttributes({
+            out_trade_no: out_trade_no
+          }).then(function(extractOrder){
+            var orderParams = {
+              body: '话费套餐 ' + trafficPlan.name,
+              attach: extractOrder.id,
+              out_trade_no: extractOrder.out_trade_no,
+              total_fee: total_amount,
+              spbill_create_ip: ip,
+              openid: customer.wechat,
+              trade_type: 'JSAPI'
+            };
+
+            console.log(orderParams)
+            payment.getBrandWCPayRequestParams(orderParams, function(err, payargs){
+              if(err){
+                console.log("payment fail")
+                console.log(err)
+                res.json({err: 1, msg: '付款失败'})
+              }else{
+                console.log(payargs)
+                res.json(payargs);
+              }
+            });
+          })
+
         }else{
           // charge by salary or remainingTraffic or wechat payment total equal 0
           customer.reduceTraffic(models, extractOrder, function(){

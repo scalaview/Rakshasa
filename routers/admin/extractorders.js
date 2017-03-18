@@ -333,7 +333,7 @@ admin.post("/extractorder/:id/refund", function(req, res){
           total_amount = Math.round(extractOrder.total * 100).toFixed(0),
           refund = {
             out_trade_no: extractOrder.out_trade_no,
-            out_refund_no: "refund_" + config.token + "_" + extractOrder.phone + "_" + extractOrder.id + "_" + total_amount,
+            out_refund_no: "refund_" + extractOrder.out_trade_no,
             total_fee: total_amount,
             refund_fee: total_amount
           }
