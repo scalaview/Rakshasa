@@ -995,7 +995,7 @@ function autoCharge(extractOrder, trafficPlan, next){
           next(new Error(data.message || data.shipping_status_desc))
         }
       }else if(trafficPlan.type == models.TrafficPlan.TYPE['云尚流量']){
-        if(data.errcode === 0 ){
+        if(data.error === 0 ){
           extractOrder.updateAttributes({
             taskid: data.p_order_sn,
             state: models.ExtractOrder.STATE.SUCCESS
