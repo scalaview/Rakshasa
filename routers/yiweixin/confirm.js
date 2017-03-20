@@ -208,19 +208,20 @@ app.post("/omsconfirm", function(req, res){
 })
 
 app.post("/gdsjllconfirm", function(req, res){
-  console.log(req.body)
-  var data = req.body
-
-  confirmOrder({
-    id: data.order_id,
-    state: models.ExtractOrder.STATE.SUCCESS
-  }, data.errcode === 0, data.errmsg + "; " + data.order_errormsg, function(err){
-    if(err){
-      console.log(err)
-      res.json({success: false})
-    }else{
-      res.json({success: true})
-    }
+  var form = new formidable.IncomingForm();
+  form.parse(req, function(err, fields, files) {
+    console.log(fields)
+    confirmOrder({
+      taskid: fields.order_id,
+      state: models.ExtractOrder.STATE.SUCCESS
+    }, fields.errcode == '0', fields.errmsg + "; " + fields.order_errormsg, function(err){
+      if(err){
+        console.log(err)
+        res.json({success: false})
+      }else{
+        res.json({success: true})
+      }
+    })
   })
 })
 
