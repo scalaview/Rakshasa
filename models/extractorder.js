@@ -156,7 +156,7 @@ module.exports = function(sequelize, DataTypes) {
           return new Huadong(this.id, this.phone, this.bid)
         }else if(trafficPlan.type == typeJson['大众通信']){
           return new Oms().createOrder(this.phone, this.bid)
-        }}else if(trafficPlan.type == typeJson['gdsjll']){
+        }else if(trafficPlan.type == typeJson['gdsjll']){
           return new Gdsjll().createOrder(this.phone, this.bid)
         }else{
           function Empty(){
