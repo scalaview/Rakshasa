@@ -1,0 +1,792 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>流量充值</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
+    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
+    <link href="http://hcllbl.imakebe.com/static/mobile/default1/css/weixin.css?v=1.2" rel="stylesheet" />
+    <script src="http://hcllbl.imakebe.com/static/mobile/default1/js/publicdata.js"></script>
+    <script type='text/javascript' src='http://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
+    <!--<script src="http://weixin.feidukj.cn/js/config.js"></script>-->
+
+    <script src="http://hcllbl.imakebe.com/static/mobile/layer_mobile/layer.js"></script>
+
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" charset="utf-8">
+        wx.config({"debug":false,"beta":false,"appId":"wx32e794cb4fdfc33b","nonceStr":"USk0PK7iPA","timestamp":1492924565,"url":"http:\/\/hcllbl.imakebe.com\/weixin\/recharge\/flow","signature":"c5b2e93b496fe9ec5f5cee7df91dd739c8425d67","jsApiList":["checkJsApi","onMenuShareTimeline","onMenuShareAppMessage","onMenuShareQQ","onMenuShareWeibo","onMenuShareQZone","hideMenuItems","showMenuItems"]});
+    </script>
+    <style>
+        #notice p{
+            margin:0 !important;
+        }
+
+        .fdcharge{
+            width:100%;
+            height:2.4rem;
+            line-height:2.4rem;
+            position:relative;
+            margin-top:0.5rem;
+            background-color:#ffffff;
+        }
+        .fdcharge .chargel{
+            width:95%;
+            height:100%;
+            position:absolute;
+            left:0;
+            top:-1px;
+            z-index:2;
+            margin-left: 0.2rem;
+            background-color:transparent !important
+        }
+        .fdcharge .charger{
+            height:100%;
+            position:absolute;
+            right:0;
+            text-align: right;
+            color:#0894ec;
+            z-index:4;
+            margin-right: 0.4rem;
+        }
+        .fdcharge .txtphone{
+            border:0;
+            height:2.3rem;
+            width:90%;
+            line-height:2.3rem;
+            font-size:0.75rem;
+        }
+        .fdcharge .phoneisp{
+            font-size:0.78rem;
+        }
+
+        .content-product{
+            margin:0;
+            background-color:#ffffff; margin-top:0.5rem;
+            padding:0.6rem 0 0.3rem 0;
+        }
+        .content-product .buttons-row{
+            margin-left: 2.2rem;
+            margin-right: 2.2rem;
+        }
+        .content-product .button{
+            line-height: 1.40rem;
+            height: 1.45rem;
+        }
+
+        .chargelist{
+            margin: .7rem !important;
+            padding:0;
+        }
+        .chargelist .row{
+            margin-bottom:0.5rem;
+        }
+        .chargelist .chargeitem{
+            border:1px solid #e9e9e9;
+            border-radius:0.2rem;
+            text-align:center;
+            padding:0.45rem 0;
+        }
+        .chargelist .chargeitem-selected{
+            border:1px solid #0894ec;
+            color:#0894ec;
+        }
+
+        .chargeitem-nodata{
+            text-align: center;
+            padding: 0.45rem 0;
+            border:0 !important;
+        }
+
+        .submitbtn{
+            margin-left:0.7rem;
+            margin-right:0.7rem;
+            margin-top:0.6rem;
+            font-size:0.75rem;
+            line-height:1.9rem !important;
+            height:1.9rem !important;
+
+        }
+        .submitbtn-disable{
+            background-color:#e0e0e8 !important;
+            color:#c3c3c9 !important;
+        }
+
+        .product-list {
+            margin: 0;
+            margin-top: 0.5rem;
+            margin-bottom:2rem;
+        }
+        .product-list .item-content
+        {
+            padding-left: 0.5rem !important;
+        }
+        .product-list .button{
+            border-radius:0.15rem !important;
+            font-size:0.7rem !important;
+        }
+        .product-list .newpprice{
+
+        }
+        .product-list .oldpprice{
+            color:#d0d0d0;
+            font-size:0.6rem;
+            text-decoration:line-through;
+            display:none;
+        }
+        .product-list .premark{
+            font-size:0.6rem;
+            color:#989899;
+        }
+        .product-list .item-title{
+            line-height: 0.8rem;
+        }
+        .product-list .item-inner{
+            padding-top:0.5rem;
+            padding-bottom:0.45rem;
+        }
+        .product-list .button-warning{
+            background-color:#6bc6ff !important
+        }
+
+        .page, .page-group {
+            z-index: 10900;
+        }
+
+        .list-block ul:before{
+            background-color:initial !important;
+        }
+        .list-block ul:after{
+            background-color:initial !important;
+        }
+
+        .modal-text{
+            font-size:0.75rem;
+        }
+        .modal-button{
+            font-size:0.8rem;
+        }
+        .bar-tab:before {
+            height: 0;
+        }
+        .bar:after{
+            height:0;
+        }
+        .bar .button{
+            top:0;
+        }
+
+        .slide {
+            position: relative;
+            overflow: hidden;
+            margin:0 !important;
+            height:7.5rem;
+        }
+
+        .slide:after {
+            content: '';
+            display: block;
+            width: 100%;
+            padding-top: 50%;
+        }
+
+        .slide ul {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .slide li {
+            list-style: none;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+        /* 解决js阻塞页面显示首屏 */
+        .slide li:first-child {
+            z-index: 1;
+        }
+
+        .slide li img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height:100%;
+            border: none;
+        }
+
+        .slide .dot {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            z-index: 5;
+            font-size: 0;
+        }
+
+        .slide .dot span {
+            display: inline-block;
+            width: 5px;
+            height: 5px;
+            margin-left: 5px;
+            border: 1px solid #fff;
+            border-radius: 50%;
+        }
+
+        .slide .dot .cur {
+            background-color: #fff;
+        }
+
+        /*工具栏*/
+        .content{
+            bottom:2.2rem !important;
+        }
+
+        .bar-tab{
+            height:2.2rem !important;
+        }
+        .bar-tab .tab-item{
+            height:initial
+        }
+        .bar-tab .tab-item .icon{
+            top:0.1rem !important;
+            height:0.9rem !important;
+            line-height:0.9rem !important;
+            font-size:0.9rem !important;
+        }
+        .bar-tab .tab-item .icon i{
+            font-size:1.0rem !important;
+        }
+        .bar-tab .tab-item .icon~.tab-label{
+            font-size:0.5rem !important;
+            top:0.04rem !important;
+        }
+        .badge {
+            padding: 0 .2rem;
+            font-size: .6rem;
+            line-height: .8rem;
+            color: white;
+            vertical-align: top;
+            background: red;
+        }
+        .row .col-33 {
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="page-group">
+    <div class="page page-current" >
+        <div class="content">
+                        <div class="fdcharge">
+                <div class="chargel">
+                    <input type="tel" class="txtphone" placeholder="请先输入充值手机号码"
+                           name="mobile" id="mobile" maxlength="11" autocomplete="off" value="" oninput="changer(this.value)" />
+                </div>
+                <div class="charger">
+                    <span class="phoneisp"></span><i class="iconfont" style="font-size:1.2rem;">&#xe601</i>
+                </div>
+            </div>
+            <div class="content-block content-product" >
+                <div class="buttons-row">
+                    <a href="#tabchargeliuliang" class="tab-link active button" ontouchend="tabontouch()">充流量</a>
+                    <a href="#tabchargehuafei" class="tab-link button" ontouchend="tabontouch()">充话费</a>
+                </div>
+
+                <div class="tabs" style="margin-top: 0.7rem;">
+                    <div id="tabchargeliuliang" class="tab active" datatypeclass=".liuliang">
+                        <div class="content-padded grid-demo chargelist liuliang" datatype="1">
+
+                        </div>
+                    </div>
+                    <div id="tabchargehuafei" class="tab" datatypeclass=".huafei">
+                        <div class="content-block chargelist huafei" datatype="2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="button button-fill submitbtn submitbtn-disable" >立即支付</a>
+            <div class="list-block product-list">
+                <ul>
+                    <!--可供购买的类型-->
+                </ul>
+                <div class="mytemplate">
+                    <li class="item-content">
+                        <div class="item-inner">
+                            <div class="item-title" style="white-space: inherit !important;">
+                                <span>
+                                    <span class="newpprice">{ppricewx}元</span>&nbsp;<span class="oldpprice">{pprice}元</span>
+                                    <span class="badge">{yhtips}</span>
+                                </span>
+                                <br />
+                                <span class="premark">{premark}<!--全国流量-特供，当月有效--></span>
+                            </div>
+                            <div class="item-after">
+                                <a href="#" class="button button-fill button-warning" data-flowid="{data-flowid}" onclick="showProductInfo(this)">详情</a>&nbsp;
+                                <a href="#" class="button button-fill" data-ordertips="{ordertips}" data-id="{data-buy-id}" data-flowid="{data-buy-flow}" onclick="submitorder(this)">购买</a>
+                            </div>
+                        </div>
+                    </li>
+                </div>
+            </div>
+        </div>
+        <nav class="bar bar-tab">
+            <a class="tab-item external active" href='javascript:location.replace("/weixin/recharge/index")'>
+                <span class="icon"><i class="iconfont">&#xe600</i></span>
+                <span class="tab-label">充值中心</span>
+            </a>
+            <a class="tab-item external" href='javascript:location.replace("/weixin/user/floworder")'>
+                <span class="icon"><i class="iconfont">&#xe604</i></span>
+                <span class="tab-label">订单</span>
+            </a>
+            <a class="tab-item external" href='javascript:location.replace("/weixin/user/index")'>
+                <span class="icon"><i class="iconfont">&#xe603</i></span>
+                <span class="tab-label">会员中心</span>
+            </a>
+        </nav>
+        <div class="product_info" style="font-size:0.65rem;display:none">
+            <div class="page page-current">
+                <header class="bar bar-nav" style="padding:0; height:auto; background-color:transparent">
+                    <div class="buttons-tab">
+                        <a href="#tab1" id="pimginfo" class="tab-link active button">充值详情</a>
+                        <!--<a href="#tab2" id="puseinfo" class="tab-link button">使用说明</a>-->
+                    </div>
+                </header>
+                <div class="content" style="top:2.0rem;">
+                    <div class="tabs">
+                        <div id="tab1" class="tab active">
+                            <div class="content-block">
+                                <!--<p id="productinfo" class="productinfo">-->
+                                <!--</p>-->
+                                <pre id="productinfo" style="white-space: pre-wrap;word-wrap: break-word;"></pre>
+
+                            </div>
+                        </div>
+                        <!--<div id="tab2" class="tab">-->
+                            <!--<div class="content-block">-->
+                                <!--<p id="productuseinfo" class="productinfo">-->
+                                <!--</p>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+            <div class="bar bar-tab" style="z-index:20000; bottom:1rem;text-align:right; padding-right:1rem; height:1.5rem;background-color:transparent; ">
+                <img src="http://hcllbl.imakebe.com/static/mobile/default/flowstatic/close.png" onclick="$('.product_info').hide();$('.blooming-menu__container').show();" alt="" style="width:1.5rem;">
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<script src="http://hcllbl.imakebe.com/static/mobile/default1/js/swipeslide.min.js"></script>
+<script src="http://hcllbl.imakebe.com/static/mobile/default1/js/m.js"></script>
+<script type="text/javascript">
+    wx.ready(function(){
+        wx.onMenuShareTimeline({
+    title: '', // 分享标题
+    link: '', // 分享链接
+    imgUrl: 'http://hcllbl.imakebe.com', // 分享图标
+    success: function () {
+    },
+    cancel: function () {
+    }
+});
+wx.onMenuShareAppMessage({
+    title: '', // 分享标题
+    desc: '', // 分享描述
+    link: '', // 分享链接
+    imgUrl: 'http://hcllbl.imakebe.com', // 分享图标
+    type: 'link', // 分享类型,music、video或link，不填默认为link
+    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+    success: function () {
+    },
+    cancel: function () {
+    }
+});
+    });
+
+    $(function () {
+        //询问框
+        $('#slidemain').swipeSlide({
+            continuousScroll: true,
+            speed: 3000,
+            transitionType: 'cubic-bezier(0.22, 0.69, 0.72, 0.88)',
+            firstCallback: function (i, sum, me) {
+                me.find('.dot').children().first().addClass('cur');
+            },
+            callback: function (i, sum, me) {
+                me.find('.dot').children().eq(i).addClass('cur').siblings().removeClass('cur');
+            }
+        });
+        getDefault(1);
+        getDefault(2);
+    });
+    function getDefault(type) {
+        var datatypeclass='.liuliang';
+        if(type==2)
+            datatypeclass='.huafei';
+        var result = {
+            "error": 0,
+            "data": [{
+                "package": "1G特惠"
+            }, {
+                "package": "10G特惠"
+            }, {
+                "package": "20G特惠"
+            }, {
+                "package": "100M"
+            }, {
+                "package": "200M"
+            }, {
+                "package": "500M"
+            }, {
+                "package": "1G"
+            }, {
+                "package": "2G"
+            }, {
+                "package": "3G"
+            }, {
+                "package": "4G"
+            }, {
+                "package": "6G"
+            }, {
+                "package": "11G"
+            }],
+            "msg": "获取成功",
+            "phoneisp": ""
+        }
+
+        showProductGroups(result.data, datatypeclass);
+
+    }
+    //数据
+    function changer(phone) {
+        if (phone.length == 11) {
+            $("#mobile").blur();
+            getProducts(phone, ".liuliang");
+            getProducts(phone, ".huafei");
+        }
+    }
+
+    function getProducts(phone, datatypeclass) {
+        $.showIndicator();
+        var result = {
+            "error": 0,
+            "data": [{
+                "package": "20G大礼包",
+                "packagesize": 2
+            }, {
+                "package": "100M",
+                "packagesize": 100
+            }, {
+                "package": "300M",
+                "packagesize": 300
+            }, {
+                "package": "500M",
+                "packagesize": 500
+            }, {
+                "package": "1G",
+                "packagesize": 1000
+            }, {
+                "package": "2G",
+                "packagesize": 2000
+            }, {
+                "package": "3G",
+                "packagesize": 3000
+            }, {
+                "package": "4G",
+                "packagesize": 4000
+            }, {
+                "package": "6G",
+                "packagesize": 6000
+            }, {
+                "package": "11G",
+                "packagesize": 11000
+            }],
+            "msg": "获取成功",
+            "phoneisp": "广东广州移动"
+        }
+        $.hideIndicator();
+        if (result.error == 1) {
+            $.alert(result.msg);
+        } else {
+            showProductGroups(result.data, datatypeclass);
+        }
+        // $.ajax({
+        //     type: "post",
+        //     url: "/weixin/recharge/getpackagegroup",
+        //     data: { phone: $("#mobile").val(), datatype: $(datatypeclass).attr("datatype") },
+        //     success: function (result) {
+        //         $.hideIndicator();
+        //         $(".phoneisp").html(result.phoneisp);
+        //         if (result.error == 1) {
+        //             $.alert(result.msg);
+        //         } else {
+        //             showProductGroups(result.data, datatypeclass);
+        //         }
+        //     }
+        // });
+    }
+
+    function showProductGroups(data, datatypeclass) {
+        $(".product-list ul").html("");
+        $(datatypeclass).html("");
+        var whilecount = Math.ceil(data.length / 3);
+        var c = 0;
+        var html = "";
+        var clickstr = "";
+        if ($("#mobile").val().length == 11){
+            clickstr = 'onclick="selectPItem(this)"';
+        }else{
+            clickstr = 'onclick="tips(this)"';
+        }
+
+        for (var i = 0; i < whilecount; i++) {
+            html += '<div class="row">';
+            if (c < data.length) {
+                html += '<div class="col-33 chargeitem" ' + clickstr + ' datatypeclass="' + datatypeclass + '">' + data[c]['package'] + '</div>';
+                c++;
+            }
+            if (c < data.length) {
+                html += '<div class="col-33 chargeitem" ' + clickstr + ' datatypeclass="' + datatypeclass + '">' + data[c]['package'] + '</div>';
+                c++;
+            }
+            if (c < data.length) {
+                html += '<div class="col-33 chargeitem" ' + clickstr + ' datatypeclass="' + datatypeclass + '">' + data[c]['package'] + '</div>';
+                c++;
+            }
+            html += '</div>';
+        }
+        if (html.length < 1) {
+            html = '<div class="row">' + '<div class="col-33 chargeitem">' + "暂时缺货" + '</div>' + '</div>';
+        }
+        $(datatypeclass).html(html);
+    }
+
+    //选择
+    function selectPItem(obj) {
+        var classname = $(obj).attr("class");
+        if (classname == "col-33 chargeitem chargeitem-selected")
+            return;
+        //恢复其它
+        $(obj).parent().parent().find(".chargeitem").attr("class", classname);
+        //改变自身
+        $(obj).attr("class", "col-33 chargeitem chargeitem-selected");
+
+        //获取产品
+        $.showIndicator();
+        var result = {
+            "error": 0,
+            "data": [{
+                "id": 52,
+                "flow_id": 8,
+                "sale_price": "23.00",
+                "yh_tips": "",
+                "package": "500M",
+                "packagesize": 500,
+                "short_desc": "[国内流量，30天有效期]，1-3小时到账。",
+                "ordertips": ""
+            }, {
+                "id": 36,
+                "flow_id": 5,
+                "sale_price": "20.80",
+                "yh_tips": "",
+                "package": "500M",
+                "packagesize": 500,
+                "short_desc": "[国内流量，月底清零，]10-30分钟到账。",
+                "ordertips": ""
+            }],
+            "msg": "获取成功",
+            "phoneisp": "广东广州移动"
+        }
+        $.hideIndicator();
+        $(".phoneisp").html(result.phoneisp);
+        if (result.error == 1) {
+            $.alert(data.msg);
+        } else {
+            showProducts(result.data, $(".product-list ul"));
+        }
+
+        // $.ajax({
+        //     type: "post",
+        //     url: "/weixin/recharge/getpackage",
+        //     data: { phone: $("#mobile").val(), datatype: $($(obj).attr("datatypeclass")).attr("datatype"), package:$(obj).html() },
+        //     success: function (result) {
+        //         $.hideIndicator();
+        //         $(".phoneisp").html(result.phoneisp);
+        //         if (result.error == 1) {
+        //             $.alert(data.msg);
+        //         } else {
+        //             showProducts(result.data, $(".product-list ul"));
+        //         }
+        //     }
+        // });
+    }
+    //显示商品
+    function showProducts(products, obj) {
+        $(".submitbtn").hide();
+        $(obj).html("");
+        if (products.length == 0) {
+            $.alert("暂时缺货！");
+            return;
+        }
+        var phone = $("#mobile").val();
+        for (var i = 0; i < products.length; i++) {
+            var template = $(".mytemplate").html();
+            var product = products[i];
+            var desc = product.short_desc;
+            desc = desc.replace(/\[/g,'<span style="color: red">');
+            desc = desc.replace(/\]/g,'</span>');
+            template = template.replace("{premark}", desc);
+            template = template.replace("{yhtips}", product.yh_tips);
+            template = template.replace("{ordertips}", product.ordertips);
+
+            template = template.replace("{ppricewx}", product.sale_price);
+            template = template.replace("{pprice}", product.sale_price);
+            template = template.replace("{data-flowid}", product.flow_id);
+            template = template.replace("{data-buy-id}",product.id)
+            template = template.replace("{data-buy-flow}",product.flow_id)
+
+            $(obj).append(template);
+        }
+    }
+    //选择卡改变
+    function tabontouch() {
+        $(".product-list ul").html("");
+        $(".content-product").find(".chargeitem").attr("class", "col-33 chargeitem");
+        $(".submitbtn").attr("style", "");
+    }
+
+    //显示商品详情
+    function showProductInfo(obj) {
+        $.showIndicator();
+        var pid = $(obj).attr("data-flowid");
+        var data = {
+    "error": 0,
+    "result": "【充值对象】：仅限广东移动2G\/3G\/4G手机用户充值；\r\n\r\n【有效期限】：自生效30天有效期，可跨月，与月结无关；\r\n\r\n【流量类型】：国内流量！\r\n\r\n【使用范围】：所充值流量可全国范围内使用；\r\n\r\n【充值限制】：流量为通过集团流量自由充形式充值，属于集群共享流量，无限叠加；流量王、随心王、飞享套餐和转品牌套餐、4g省内30天有效专用流量的客户不得使用,充了后果自负；\r\n\r\n【注意事项】：由于用户误填写手机号码后充入别人账号，责任用户自行承担；\r\n\r\n【特殊情况】：此产品只能充值广东省移动的手机号，其他省份一概不支持；\r\n\r\n【到帐时间】：早上9点至晚上10点为充值时间，1~6小时左右到账，如遇移动延迟则48小时内\r\n\r\n【查询方式】：发送CXLL至10086查询；\r\n\r\n【其他问题】：充值成功一般有短信提醒，若未收到短信可咨询10086查询流量情况（流量查询）；流量无法抵扣超出的流量及话费！\r\n\r\n【售后处理】：对流量使用或者套餐有限制的某些号码咨询运营商，不接受说充了不能用等问题的售后，这个是您号码问题，不是流量的问题。\r\n"
+}
+            $.hideIndicator();
+            if (data.ret > 0) {
+                $.alert(data.msg);
+            } else {
+                $("#productinfo").html(data.result);
+//                  $("#productuseinfo").html('');
+                $(".blooming-menu__container").hide();
+                $.popup(".product_info");
+            }
+//         $.ajax({
+//             type: "post",
+//             url: "/weixin/flow/getflowdetail",
+//             data: { id: pid },
+//             success: function (data) {
+//                 $.hideIndicator();
+//                 if (data.ret > 0) {
+//                     $.alert(data.msg);
+//                 } else {
+//                     $("#productinfo").html(data.result);
+// //                  $("#productuseinfo").html('');
+//                     $(".blooming-menu__container").hide();
+//                     $.popup(".product_info");
+//                 }
+//             }
+//         });
+    }
+
+    //提交订单
+    function submitorder(buy) {
+        $.showIndicator();
+        var tips = $(buy).attr("data-ordertips");
+        var phone = $("#mobile").val();
+        var flow = $(buy).attr("data-flowid");
+        var package = $(buy).attr("data-id");
+
+        var continue_order = 1;
+//        alert(tips);
+        if(tips){
+            tips = tips.replace(/\[/g,'<span style="color: red">');
+            tips = tips.replace(/\]/g,'</span>');
+            layer.open({
+                shadeClose: false,
+                content: tips
+                ,btn: ['确定', '取消']
+                ,yes: function(index){
+                    order(phone,flow,package);
+                    layer.close(index);
+                }
+            });
+        }else{
+            order(phone,flow,package);
+        }
+        $.hideIndicator();
+        return false;
+
+    }
+    function order(mobile,flow,package) {
+        $.ajax({
+            type: "post",
+            url: "/weixin/flow/submit2",
+            data: { mobile: mobile, flow: flow,pid:package },
+            success: function (result) {
+                var data = result;
+                $.hideIndicator();
+                if (data.error > 0) {
+                    layer.open({
+                        content: data.msg,
+                        btn: '我知道了',
+                        shadeClose: false,
+                    });
+                    return false;
+                }
+                WeixinJSBridge.invoke(
+                    'getBrandWCPayRequest',eval('(' + data.result + ')') ,
+                    function(res){
+                        if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+                            if(data.url){
+                                layer.open({
+                                    content:  '订单提交成功！！！'+'<br>充值号码： ' + mobile +
+                                    '<br>充值套餐：'+ data.name+
+                                    '<br>点击按钮去输入验证码',
+                                    btn: '去输验证码',
+                                    shadeClose: false,
+                                    yes: function(){
+                                        location.href = data.url;
+                                    }
+                                });
+                            }else{
+                                layer.open({
+                                    content:  '订单提交成功！！！'+
+                                    '<br>充值号码： ' + mobile +
+                                    '<br>充值套餐：'+ data.name+
+                                    '<br>流量将会在稍后到账，请耐心等待',
+                                    btn: '我知道了',
+                                    shadeClose: false,
+                                });
+                            }
+                        }
+                    }
+                );
+            }
+        });
+    }
+    function tips(t) {
+        layer.open({
+            content: '请先输入手机号码'
+            ,skin: 'msg'
+            ,time: 2 //2秒后自动关闭
+        });
+    }
+    $.init();
+</script>
+</body>
+</html>
