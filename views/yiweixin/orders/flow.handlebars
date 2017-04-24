@@ -1,27 +1,3 @@
-
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>流量充值</title>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm.min.css">
-    <link rel="stylesheet" href="http://g.alicdn.com/msui/sm/0.6.2/css/sm-extend.min.css">
-    <link href="http://hcllbl.imakebe.com/static/mobile/default1/css/weixin.css?v=1.2" rel="stylesheet" />
-    <script src="http://hcllbl.imakebe.com/static/mobile/default1/js/publicdata.js"></script>
-    <script type='text/javascript' src='http://g.alicdn.com/sj/lib/zepto/zepto.min.js' charset='utf-8'></script>
-    <!--<script src="http://weixin.feidukj.cn/js/config.js"></script>-->
-
-    <!-- <script src="http://hcllbl.imakebe.com/static/mobile/layer_mobile/layer.js"></script> -->
-
-    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js" type="text/javascript" charset="utf-8"></script>
-    <script type="text/javascript" charset="utf-8">
-        wx.config({"debug":false,"beta":false,"appId":"wx32e794cb4fdfc33b","nonceStr":"USk0PK7iPA","timestamp":1492924565,"url":"http:\/\/hcllbl.imakebe.com\/weixin\/recharge\/flow","signature":"c5b2e93b496fe9ec5f5cee7df91dd739c8425d67","jsApiList":["checkJsApi","onMenuShareTimeline","onMenuShareAppMessage","onMenuShareQQ","onMenuShareWeibo","onMenuShareQZone","hideMenuItems","showMenuItems"]});
-    </script>
     <style>
         #notice p{
             margin:0 !important;
@@ -305,7 +281,22 @@
                 <div class="tabs" style="margin-top: 0.7rem;">
                     <div id="tabchargeliuliang" class="tab active" datatypeclass=".liuliang">
                         <div class="content-padded grid-demo chargelist liuliang" datatype="1">
-
+                            {{#each CMCCtrafficGroups}}
+          <li data-id='{{id}}' {{#if @first}}class="current"{{/if}}>
+            {{ cmccGroupName name }}
+          </li>
+        {{/each}}
+                          <div id="tabchargehuafei" class="tab active" datatypeclass=".huafei">
+                            <div class="content-block chargelist huafei" datatype="2">
+                              \{{#each CtrafficPlans}}
+                                <div class="row">
+                                  \{{#each this}}
+                                    <div class="col-33 chargeitem" data-id=\{{id}} datatypeclass=".huafei">\{{name}}</div>
+                                  \{{/each}}
+                                </div>
+                              \{{/each}}
+                            </div>
+                          </div>
                         </div>
                     </div>
                     <div id="tabchargehuafei" class="tab" datatypeclass=".huafei">
@@ -388,33 +379,33 @@
 
 </div>
 
-<script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script>
+<!-- <script type='text/javascript' src='http://g.alicdn.com/msui/sm/0.6.2/js/sm.min.js' charset='utf-8'></script> -->
 <script src="http://hcllbl.imakebe.com/static/mobile/default1/js/swipeslide.min.js"></script>
 <!-- <script src="http://hcllbl.imakebe.com/static/mobile/default1/js/m.js"></script> -->
 <script type="text/javascript">
-    wx.ready(function(){
-        wx.onMenuShareTimeline({
-    title: '', // 分享标题
-    link: '', // 分享链接
-    imgUrl: 'http://hcllbl.imakebe.com', // 分享图标
-    success: function () {
-    },
-    cancel: function () {
-    }
-});
-wx.onMenuShareAppMessage({
-    title: '', // 分享标题
-    desc: '', // 分享描述
-    link: '', // 分享链接
-    imgUrl: 'http://hcllbl.imakebe.com', // 分享图标
-    type: 'link', // 分享类型,music、video或link，不填默认为link
-    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
-    success: function () {
-    },
-    cancel: function () {
-    }
-});
-    });
+//     wx.ready(function(){
+//         wx.onMenuShareTimeline({
+//     title: '', // 分享标题
+//     link: '', // 分享链接
+//     imgUrl: 'http://hcllbl.imakebe.com', // 分享图标
+//     success: function () {
+//     },
+//     cancel: function () {
+//     }
+// });
+// wx.onMenuShareAppMessage({
+//     title: '', // 分享标题
+//     desc: '', // 分享描述
+//     link: '', // 分享链接
+//     imgUrl: 'http://hcllbl.imakebe.com', // 分享图标
+//     type: 'link', // 分享类型,music、video或link，不填默认为link
+//     dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+//     success: function () {
+//     },
+//     cancel: function () {
+//     }
+// });
+//     });
 
     $(function () {
         //询问框
@@ -610,7 +601,7 @@ wx.onMenuShareAppMessage({
             "msg": "获取成功",
             "phoneisp": "广东广州移动"
         }
-        // $.hideIndicator();
+        $.hideIndicator();
         $(".phoneisp").html(result.phoneisp);
         if (result.error == 1) {
             $.alert(data.msg);
@@ -670,13 +661,13 @@ wx.onMenuShareAppMessage({
 
     //显示商品详情
     function showProductInfo(obj) {
-        // $.showIndicator();
+        $.showIndicator();
         var pid = $(obj).attr("data-flowid");
         var data = {
     "error": 0,
     "result": "【充值对象】：仅限广东移动2G\/3G\/4G手机用户充值；\r\n\r\n【有效期限】：自生效30天有效期，可跨月，与月结无关；\r\n\r\n【流量类型】：国内流量！\r\n\r\n【使用范围】：所充值流量可全国范围内使用；\r\n\r\n【充值限制】：流量为通过集团流量自由充形式充值，属于集群共享流量，无限叠加；流量王、随心王、飞享套餐和转品牌套餐、4g省内30天有效专用流量的客户不得使用,充了后果自负；\r\n\r\n【注意事项】：由于用户误填写手机号码后充入别人账号，责任用户自行承担；\r\n\r\n【特殊情况】：此产品只能充值广东省移动的手机号，其他省份一概不支持；\r\n\r\n【到帐时间】：早上9点至晚上10点为充值时间，1~6小时左右到账，如遇移动延迟则48小时内\r\n\r\n【查询方式】：发送CXLL至10086查询；\r\n\r\n【其他问题】：充值成功一般有短信提醒，若未收到短信可咨询10086查询流量情况（流量查询）；流量无法抵扣超出的流量及话费！\r\n\r\n【售后处理】：对流量使用或者套餐有限制的某些号码咨询运营商，不接受说充了不能用等问题的售后，这个是您号码问题，不是流量的问题。\r\n"
 }
-            // $.hideIndicator();
+            $.hideIndicator();
             if (data.ret > 0) {
                 $.alert(data.msg);
             } else {
@@ -705,7 +696,7 @@ wx.onMenuShareAppMessage({
 
     //提交订单
     function submitorder(buy) {
-        // $.showIndicator();
+        $.showIndicator();
         var tips = $(buy).attr("data-ordertips");
         var phone = $("#mobile").val();
         var flow = $(buy).attr("data-flowid");
@@ -728,7 +719,7 @@ wx.onMenuShareAppMessage({
         }else{
             order(phone,flow,package);
         }
-        // $.hideIndicator();
+        $.hideIndicator();
         return false;
 
     }
@@ -739,7 +730,7 @@ wx.onMenuShareAppMessage({
             data: { mobile: mobile, flow: flow,pid:package },
             success: function (result) {
                 var data = result;
-                // $.hideIndicator();
+                $.hideIndicator();
                 if (data.error > 0) {
                     layer.open({
                         content: data.msg,
@@ -788,5 +779,19 @@ wx.onMenuShareAppMessage({
     }
     // $.init();
 </script>
+
+<script id="trafficplans-template" type="text/x-handlebars-template">
+<div id="tabchargehuafei" class="tab active" datatypeclass=".huafei">
+  <div class="content-block chargelist huafei" datatype="2">
+    \{{#each CtrafficPlans}}
+      <div class="row">
+        \{{#each this}}
+          <div class="col-33 chargeitem" data-id=\{{id}} datatypeclass=".huafei">\{{name}}</div>
+        \{{/each}}
+      </div>
+    \{{/each}}
+  </div>
+</div>
+</script>
+
 </body>
-</html>

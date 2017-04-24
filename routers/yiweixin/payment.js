@@ -53,6 +53,48 @@ app.get('/extractflow', requireLogin, function(req, res){
   })
 })
 
+app.get('/extractflow1', requireLogin, function(req, res){
+  async.waterfall([function(next){
+    models.TrafficGroup.findAll({
+      where: {
+        providerId: models.TrafficGroup.Provider["中国移动"],
+        display: true
+      }
+    }).then(function(CMCCtrafficGroups){
+      next(null, CMCCtrafficGroups)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(CMCCtrafficGroups, next){
+    models.DConfig.findOne({
+      where: {
+        name: "exchangeRate"
+      }
+    }).then(function(dConfig){
+      next(null, CMCCtrafficGroups, dConfig)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(CMCCtrafficGroups, dConfig, next){
+    models.Banner.findAll({
+      where: {
+        active: true
+      },
+      order: [
+          'sortNum', 'id'
+      ]
+    }).then(function(banners) {
+      next(null, CMCCtrafficGroups, dConfig, banners)
+    }).catch(function(err) {
+      next(err)
+    })
+  }], function(err, CMCCtrafficGroups, dConfig, banners){
+    res.render('yiweixin/orders/flow', { customer: req.customer, CMCCtrafficGroups: CMCCtrafficGroups,
+      exchangeRate: dConfig.value || 1, providers: models.TrafficGroup.Provider,
+      banners: banners, layout: 'flow'  })
+  })
+})
+
 app.post('/pay', requireLogin, function(req, res) {
     var customer = req.customer,
         useIntegral = req.body.useIntegral == 'true' ? true : false
