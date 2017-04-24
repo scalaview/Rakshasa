@@ -274,34 +274,16 @@
             </div>
             <div class="content-block content-product" >
                 <div class="buttons-row">
-                    <a href="#tabchargeliuliang" class="tab-link active button" ontouchend="tabontouch()">充流量</a>
-                    <a href="#tabchargehuafei" class="tab-link button" ontouchend="tabontouch()">充话费</a>
+                    <a href="#tabchargeliuliang" class="tab-link active button">充流量</a>
+                    <a href="#tabchargehuafei" class="tab-link button">充话费</a>
                 </div>
 
                 <div class="tabs" style="margin-top: 0.7rem;">
                     <div id="tabchargeliuliang" class="tab active" datatypeclass=".liuliang">
-                        <div class="content-padded grid-demo chargelist liuliang" datatype="1">
-                            {{#each CMCCtrafficGroups}}
-          <li data-id='{{id}}' {{#if @first}}class="current"{{/if}}>
-            {{ cmccGroupName name }}
-          </li>
-        {{/each}}
-                          <div id="tabchargehuafei" class="tab active" datatypeclass=".huafei">
-                            <div class="content-block chargelist huafei" datatype="2">
-                              \{{#each CtrafficPlans}}
-                                <div class="row">
-                                  \{{#each this}}
-                                    <div class="col-33 chargeitem" data-id=\{{id}} datatypeclass=".huafei">\{{name}}</div>
-                                  \{{/each}}
-                                </div>
-                              \{{/each}}
-                            </div>
-                          </div>
-                        </div>
+
                     </div>
                     <div id="tabchargehuafei" class="tab" datatypeclass=".huafei">
-                        <div class="content-block chargelist huafei" datatype="2">
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -458,7 +440,7 @@
             "phoneisp": ""
         }
 
-        showProductGroups(result.data, datatypeclass);
+        // showProductGroups(result.data, datatypeclass);
 
     }
     //数据
@@ -779,19 +761,80 @@
     }
     // $.init();
 </script>
+<script type="text/javascript">
+$(function(){
+  $(".tab-link.button").click(function(){
+    var $this = $(this)
+    if(!$this.hasClass("active")){
+      $(".tab-link.button.active").removeClass("active")
+      $this.addClass("active")
+      var href = $this.attr("href")
+      if(!$(href).hasClass('active')){
+        $(".tabs .tab.active").removeClass("active")
+        $(href).addClass("active")
+        $(".list-block.product-list ul").empty()
+        $(".submitbtn").show();
+      }
+    }
+  })
 
+  $(document).on("click", ".chargeitem", function(){
+    var $this = $(this)
+    if(!$this.hasClass('chargeitem-selected')){
+      $(".chargeitem-selected").removeClass("chargeitem-selected")
+      $this.addClass("chargeitem-selected")
+      var type = $this.data('type'),
+          _id = $this.data('id')
+      if(window.plans[type]){
+        $.each(window.plans[type], function(i, v){
+          if(v.id === _id){
+            var li_source = $("#li-template").html()
+            if(li_source != undefined && li_source != ''){
+              var li_template = Handlebars.compile(li_source);
+              var li_html = li_template({plans: v.trafficplans})
+              $(".submitbtn").hide();
+              $(".list-block.product-list ul").html(li_html)
+            }
+          }
+        })
+      }
+
+    }
+  })
+
+})
+</script>
 <script id="trafficplans-template" type="text/x-handlebars-template">
-<div id="tabchargehuafei" class="tab active" datatypeclass=".huafei">
-  <div class="content-block chargelist huafei" datatype="2">
-    \{{#each CtrafficPlans}}
-      <div class="row">
-        \{{#each this}}
-          <div class="col-33 chargeitem" data-id=\{{id}} datatypeclass=".huafei">\{{name}}</div>
-        \{{/each}}
-      </div>
-    \{{/each}}
-  </div>
+<div class="content-block chargelist huafei" datatype="2">
+  \{{#each trafficPlans}}
+    <div class="row">
+      \{{#each this}}
+        <div class="col-33 chargeitem" data-id="\{{id}}" data-type="\{{../../type}}">\{{name}}</div>
+      \{{/each}}
+    </div>
+  \{{/each}}
 </div>
+</script>
+
+<script id="li-template" type="text/x-handlebars-template">
+\{{#each plans}}
+  <li class="item-content">
+    <div class="item-inner">
+      <div class="item-title" style="white-space: inherit !important;">
+        <span>
+          <span class="newpprice">\{{cost}}元</span><span class="oldpprice">\{{cost}}元</span>
+          <span class="badge"></span>
+        </span>
+        <br>
+        <span class="premark"><span style="color: red">国内流量，30天有效期</span>，1-3小时到账。</span>
+      </div>
+      <div class="item-after">
+        <a href="#" class="button button-fill button-warning" data-id="\{{id}}" onclick="showProductInfo(this)">详情</a>&nbsp;
+        <a href="#" class="button button-fill" data-ordertips="" data-id="\{{id}}" onclick="submitorder(this)">购买</a>
+      </div>
+    </div>
+  </li>
+\{{/each}}
 </script>
 
 </body>

@@ -15,6 +15,16 @@ Handlebars.registerHelper('subSummary', function(text, size) {
   }
 });
 
+Array.prototype.eachSlice = function (size, callback){
+  this.arr = []
+  for (var i = 0, l = this.length; i < l; i += size){
+    this.arr.push(this.slice(i, i + size))
+    if(callback)
+      callback.call(this, this.slice(i, i + size))
+  }
+  return this.arr;
+};
+
 //页面加载
 $(document).ready(function () {
   applylimit()
@@ -200,7 +210,7 @@ function initTrafficplan(){
     if(id == 'yd'){
       var groupId = $(".bottonStyle li.current").data('id')
     }
-    getTrafficplan(source, provider, groupId)
+    getTrafficplan(source, "中国移动", groupId)
   }
 }
 
@@ -231,8 +241,12 @@ function getTrafficplan(source, catName, groupId){
       }
     }else{
       $(".no_data").hide()
-      var html = template({trafficgroups: data})
-      $(".llb").html(html)
+      console.log(data.eachSlice(3))
+      window.plans = {
+        traffic: data
+      }
+      var html = template({trafficPlans: data.eachSlice(3), type: 'traffic'})
+      $("#tabchargeliuliang").html(html)
       hideLoadingToast();
     }
   }).fail(function(err){
