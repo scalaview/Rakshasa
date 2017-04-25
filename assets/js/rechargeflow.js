@@ -44,22 +44,13 @@ $(document).ready(function () {
     $("#needmyflow").html(cost);
   })
   initTrafficplan()
-  if($("#movies-template").html() !== undefined && $("#movies-template").html() !== ''){
-    popstateBack()
-    loadMore()
-    $(window).scroll(bindScroll);
-  }
   mobileBlur(function(result) {
     var source   = $("#trafficplans-template").html();
     if(source !== undefined && source !== ''){
       window.catName = result.catName
-      $(".bottonYun li.current").removeClass("current")
-      $(".bottonYun li[data-provider='"+ result.catName +"']").addClass("current")
-      if($(".bottonYun li.current").data("id") == "yd"){
-        getTrafficplan(source, result.catName, $(".bottonStyle li.current").data("id"))
-      }else{
-        getTrafficplan(source, result.catName)
-      }
+      $(".phoneisp").html(result.catName)
+      getTrafficplan(source, result.catName)
+      loadBillPlans(source)
       submitIsEnable(true);
     }
   });
@@ -204,13 +195,8 @@ function getCarrier(phone, successCallback){
 function initTrafficplan(){
   var source   = $("#trafficplans-template").html();
   if(source !== undefined && source !== ''){
-    var $this = $(".bottonYun li.current"),
-        id = $this.data('id'),
-        provider = $this.data("provider")
-    if(id == 'yd'){
-      var groupId = $(".bottonStyle li.current").data('id')
-    }
-    getTrafficplan(source, "中国移动", groupId)
+    getTrafficplan(source, "中国移动")
+    loadBillPlans(source)
   }
 }
 
@@ -223,38 +209,14 @@ function getTrafficplan(source, catName, groupId){
   if(groupId){
     params["groupId"] = groupId
   }
-  showLoadingToast();
-  $.ajax({
-    url: '/getTrafficplans',
-    dataType: 'JSON',
-    data: params,
-    method: "GET"
-  }).done(function(data){
-    if(data.err == 4){  //服务器维护中
-      var err_source = $("#err-template").html()
-      if(err_source != undefined && err_source != ''){
-        var err_template = Handlebars.compile(err_source);
-        var err_html = err_template({msg: data.msg})
-        $(".no_data").html(err_html)
-        $(".no_data").show()
-        hideLoadingToast();
-      }
-    }else{
-      $(".no_data").hide()
-      console.log(data.eachSlice(3))
-      window.plans = {
-        traffic: data
-      }
-      var html = template({trafficPlans: data.eachSlice(3), type: 'traffic'})
-      $("#tabchargeliuliang").html(html)
-      hideLoadingToast();
-    }
-  }).fail(function(err){
-    console.log(err)
-    hideLoadingToast();
-    showDialog("服务器错误")
+  loadPlans('/getTrafficplans', params).then(function(data){
+    if(!!!window.plans){window.plans={};}
+    window.plans['traffic'] = data
+    var html = template({trafficPlans: data.eachSlice(3), type: 'traffic'})
+    $("#tabchargeliuliang").html(html)
   })
 }
+
 function extractConfirm(){
 
   $(document).on('click', '.exchanger', function() {
@@ -265,8 +227,9 @@ function extractConfirm(){
     }
 
     var $this = $(this),
-        provider = $this.data("provider")
-    
+        provider = $this.data("provider"),
+        type = $this.data('type')
+
     $(".llb a").removeClass('choose')
     var choose = $("#chooseMoney .weui_btn.selected")
     var lessE = choose.data('less')
@@ -303,16 +266,20 @@ function extractConfirm(){
       $("#integral").parent().hide()
     }
     $("#mask").show()
+    if(type == 'traffic'){
+      $(".sure").on("click", paymentConfirm)
+    }else{
+      $(".sure").on("click", billConfirm)
+    }
   })
 
-  $(".sure").on("click", paymentConfirm)
 }
 
 function paymentConfirm(){
   var $this = $(this),
         selectedFlow = $(".llb .exchanger.choose")
         phone = $.trim($("#mobile").val()),
-        flowId = $this.data('id'),
+        flowId = selectedFlow.data('id'),
         source   = $("#trafficplans-template").html(),
         choose = $("#chooseMoney .weui_btn.selected")
 
@@ -510,144 +477,55 @@ function applylimit(){
   })
 }
 
-function ajaxLoadData(url){
-  $.ajax({
-    url: url,
-    dataType: 'JSON',
-    method: "GET"
-  }).done(function(data){
-    var loading = $("#lazy-loading")
-    $("#lazy-loading").remove()
-    $(".g-body").append(window.movies_template(data))
-    $(".g-body").append(loading)
-    $("#nextUrl").attr("href", data.next_url)
-    $("#lazy-loading").hide()
-    $(window).bind('scroll', bindScroll);
-  }).fail(function(err){
-    console.log(err)
-    $("#lazy-loading").hide()
-  })
-}
-
-
-function popstateBack(){
-  window.addEventListener('popstate', function(e){
-    var character = e.state;
-    if(character == null){
-      $(".g-body").show()
-      if(window.bodyscrollTop){
-        $("body").scrollTop(window.bodyscrollTop + 50)
-      }
-      $('.g-detail').empty()
-    } else if (character.detail){
-      $(".g-body").show()
-      $('.g-detail').html(character.data)
-    }
-    $(window).bind('scroll', bindScroll);
-  })
-
-  $(document).on("click", "a.movie-link", function(e){
-    e.preventDefault();
-    var url = $(this).attr("href");
-    if(url != (location.pathname + location.search) ){
-      $('.g-detail').load(url + ' .page', function(){
-        videojs("#really-cool-video").load();
-        $(".g-body").hide()
-        history.pushState({ data: $('.g-detail').html(), detail: true }, null, url);
-        $(window).unbind('scroll');
-        window.bodyscrollTop = $("body").scrollTop()
-        $("body").scrollTop(0)
-      });
-    }
-    e.stopPropagation();
-  })
-
-}
-
-function loadMore()
-{
-  if(!window.movies_template){
-    var source = $("#movies-template").html()
-    window.movies_template = Handlebars.compile(source);
-  }
-  var url = $("#nextUrl").attr("href")
-  if(url){
-    $("#lazy-loading").show()
-    ajaxLoadData(url)
-  }
-}
-
-function bindScroll(){
-  if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
-    $(window).unbind('scroll');
-    loadMore();
-  }
-}
-
 function bindTrafficplan(){
-  $(".bottonYun li").on("click", function(){
-    var $this = $(this);
-    $(".bottonYun li.current").removeClass("current")
-    $this.addClass("current")
-    initTrafficplan()
+  $(".tab-link.button").click(function(){
+    var $this = $(this)
+    if(!$this.hasClass("active")){
+      $(".tab-link.button.active").removeClass("active")
+      $this.addClass("active")
+      var href = $this.attr("href")
+      if(!$(href).hasClass('active')){
+        $(".tabs .tab.active").removeClass("active")
+        $(href).addClass("active")
+        $(".list-block.product-list ul").empty()
+        $(".chargeitem-selected").removeClass("chargeitem-selected")
+        $(".submitbtn").show();
+      }
+    }
   })
-  $(".bottonStyle li").on("click", function(){
-    var $this = $(this);
-    $(".bottonStyle li.current").removeClass("current")
-    $this.addClass("current")
-    initTrafficplan()
-  })
-}
 
-function billBinding(){
-
-  $(".bill").on('click', '.exchanger', function() {
+  $(document).on("click", ".chargeitem", function(){
     var mobile = $.trim($("#mobile").val());
     if (!isMobile(mobile)){
       showDialog("请输入正确的手机号码")
       return
     }
     var $this = $(this)
-    $(".bill .exchanger").removeClass('choose')
-    var choose = $("#chooseMoney .weui_btn.selected")
-    var lessE = choose.data('less')
-
-
-    $this.addClass('choose')
-    var cost = parseFloat($this.data('cost')),
-        discount = 0.00
-    if($("#use-integral").prop("checked")){
-      var exchangeRate = $("#use-integral").data("exchangerate"),
-          totalIntegral = $("#use-integral").data("totalintegral"),
-          discount = parseFloat( parseFloat(totalIntegral) /  parseFloat(exchangeRate) ),
-          cost = parseFloat($this.data('cost')) - discount
-      if(cost < 0.00){
-        discount = parseFloat($this.data('cost'))
-        cost = 0
+    if(!$this.hasClass('chargeitem-selected')){
+      $(".chargeitem-selected").removeClass("chargeitem-selected")
+      $this.addClass("chargeitem-selected")
+      var type = $this.data('type'),
+          _id = $this.data('id')
+      if(window.plans[type]){
+        $.each(window.plans[type], function(i, v){
+          if(v.id === _id){
+            var li_source = $("#li-template").html()
+            if(li_source != undefined && li_source != ''){
+              var li_template = Handlebars.compile(li_source);
+              if(v.trafficplans){
+                var li_html = li_template({plans: v.trafficplans })
+              }else{
+                var li_html = li_template({plans: [v] })
+              }
+              $(".submitbtn").hide();
+              $(".list-block.product-list ul").html(li_html)
+            }
+          }
+        })
       }
+
     }
-    if( parseFloat(lessE) < parseFloat(cost)){
-      if(choose.data('id') == 'remainingTraffic'){
-        showDialog("账户剩余余额不足")
-      }else if(choose.data('id') == 'salary'){
-        showDialog("账户分销奖励不足")
-      }
-      return
-    }
-    phone = $.trim($("#mobile").val())
-    $("#maskflow").html($this.data('name'))
-    $("#maskmobile").html(phone)
-    $("#integral").html(discount.toFixed(2))
-    $("#maskcost").html(cost.toFixed(2))
-    if($("#use-integral").prop("checked") && discount > 0.00 ){
-      $("#integral").parent().show()
-    }else{
-      $("#integral").parent().hide()
-    }
-    $("#mask").show()
   })
-
-  $(".sure").on("click", billConfirm)
 }
 
 function billConfirm(){
@@ -662,9 +540,9 @@ function billConfirm(){
   }
 
   if(isMobile(phone) && flowId !== undefined && flowId !== '' ){
-    // $(".sure").unbind("click")
+    $(".sure").unbind("click")
     wechatBill(phone, flowId, function(){
-      // $(".sure").on("click", billConfirm)
+      $(".sure").on("click", billConfirm)
     })
   }else{
     showDialog("请输入电话和选择正确的套餐")
@@ -739,5 +617,49 @@ function trafficplanDetail(){
           })
       }
   });
+}
+
+function loadBillPlans(source){
+  if(!source) return
+  var template = Handlebars.compile(source)
+
+  loadPlans('/bill-plans', {}).then(function(data){
+    if(!!!window.plans){window.plans={};}
+    window.plans['bill'] = data.trafficPlans
+    var html = template({trafficPlans: data.trafficPlans.eachSlice(3), type: 'bill'})
+    $("#tabchargehuafei").html(html)
+  })
+}
+
+function loadPlans(url, params){
+  showLoadingToast();
+  return new Promise(function (resolve, reject){
+    $.ajax({
+      url: url,
+      dataType: 'JSON',
+      data: params,
+      method: "GET"
+    }).done(function(data){
+      if(data.err == 4){  //服务器维护中
+        var err_source = $("#err-template").html()
+        if(err_source != undefined && err_source != ''){
+          var err_template = Handlebars.compile(err_source);
+          var err_html = err_template({msg: data.msg})
+          $(".no_data").html(err_html)
+          $(".no_data").show()
+          hideLoadingToast();
+        }
+      }else{
+        $(".no_data").hide()
+        resolve(data)
+        hideLoadingToast();
+      }
+    }).fail(function(err){
+      console.log(err)
+      hideLoadingToast();
+      showDialog("服务器错误")
+      reject(err)
+    })
+  })
 }
 

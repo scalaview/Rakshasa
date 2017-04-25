@@ -18,6 +18,36 @@ var payment = new Payment(initConfig);
 var _ = require('lodash')
 
 
+app.get('/bill-plans', requireLogin, function(req, res) {
+  async.waterfall([function(next){
+    models.TrafficPlan.findAll({
+      where: {
+        providerId: models.TrafficGroup.Provider["中国移动"],
+        productType: models.TrafficPlan.PRODUCTTYPE["bill"],
+        display: true
+      }
+    }).then(function(trafficPlan){
+      next(null, trafficPlan)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(trafficPlan, next){
+    models.DConfig.findOne({
+      where: {
+        name: "exchangeRate"
+      }
+    }).then(function(dConfig){
+      next(null, trafficPlan, dConfig)
+    }).catch(function(err){
+      next(err)
+    })
+  }], function(err, trafficPlan, dConfig){
+    res.json({trafficPlans: trafficPlan})
+  })
+})
+
+
+
 app.get('/bill', requireLogin, function(req, res) {
   async.waterfall([function(next){
     models.TrafficPlan.findAll({

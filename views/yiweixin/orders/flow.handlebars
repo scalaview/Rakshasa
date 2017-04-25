@@ -1,416 +1,104 @@
-    <style>
-        #notice p{
-            margin:0 !important;
-        }
-
-        .fdcharge{
-            width:100%;
-            height:2.4rem;
-            line-height:2.4rem;
-            position:relative;
-            margin-top:0.5rem;
-            background-color:#ffffff;
-        }
-        .fdcharge .chargel{
-            width:95%;
-            height:100%;
-            position:absolute;
-            left:0;
-            top:-1px;
-            z-index:2;
-            margin-left: 0.2rem;
-            background-color:transparent !important
-        }
-        .fdcharge .charger{
-            height:100%;
-            position:absolute;
-            right:0;
-            text-align: right;
-            color:#0894ec;
-            z-index:4;
-            margin-right: 0.4rem;
-        }
-        .fdcharge .txtphone{
-            border:0;
-            height:2.3rem;
-            width:90%;
-            line-height:2.3rem;
-            font-size:0.75rem;
-        }
-        .fdcharge .phoneisp{
-            font-size:0.78rem;
-        }
-
-        .content-product{
-            margin:0;
-            background-color:#ffffff; margin-top:0.5rem;
-            padding:0.6rem 0 0.3rem 0;
-        }
-        .content-product .buttons-row{
-            margin-left: 2.2rem;
-            margin-right: 2.2rem;
-        }
-        .content-product .button{
-            line-height: 1.40rem;
-            height: 1.45rem;
-        }
-
-        .chargelist{
-            margin: .7rem !important;
-            padding:0;
-        }
-        .chargelist .row{
-            margin-bottom:0.5rem;
-        }
-        .chargelist .chargeitem{
-            border:1px solid #e9e9e9;
-            border-radius:0.2rem;
-            text-align:center;
-            padding:0.45rem 0;
-        }
-        .chargelist .chargeitem-selected{
-            border:1px solid #0894ec;
-            color:#0894ec;
-        }
-
-        .chargeitem-nodata{
-            text-align: center;
-            padding: 0.45rem 0;
-            border:0 !important;
-        }
-
-        .submitbtn{
-            margin-left:0.7rem;
-            margin-right:0.7rem;
-            margin-top:0.6rem;
-            font-size:0.75rem;
-            line-height:1.9rem !important;
-            height:1.9rem !important;
-
-        }
-        .submitbtn-disable{
-            background-color:#e0e0e8 !important;
-            color:#c3c3c9 !important;
-        }
-
-        .product-list {
-            margin: 0;
-            margin-top: 0.5rem;
-            margin-bottom:2rem;
-        }
-        .product-list .item-content
-        {
-            padding-left: 0.5rem !important;
-        }
-        .product-list .button{
-            border-radius:0.15rem !important;
-            font-size:0.7rem !important;
-        }
-        .product-list .newpprice{
-
-        }
-        .product-list .oldpprice{
-            color:#d0d0d0;
-            font-size:0.6rem;
-            text-decoration:line-through;
-            display:none;
-        }
-        .product-list .premark{
-            font-size:0.6rem;
-            color:#989899;
-        }
-        .product-list .item-title{
-            line-height: 0.8rem;
-        }
-        .product-list .item-inner{
-            padding-top:0.5rem;
-            padding-bottom:0.45rem;
-        }
-        .product-list .button-warning{
-            background-color:#6bc6ff !important
-        }
-
-        .list-block ul:before{
-            background-color:initial !important;
-        }
-        .list-block ul:after{
-            background-color:initial !important;
-        }
-
-        .modal-text{
-            font-size:0.75rem;
-        }
-        .modal-button{
-            font-size:0.8rem;
-        }
-        .bar-tab:before {
-            height: 0;
-        }
-        .bar:after{
-            height:0;
-        }
-        .bar .button{
-            top:0;
-        }
-
-        .slide {
-            position: relative;
-            overflow: hidden;
-            margin:0 !important;
-            height:7.5rem;
-        }
-
-        .slide:after {
-            content: '';
-            display: block;
-            width: 100%;
-            padding-top: 50%;
-        }
-
-        .slide ul {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .slide li {
-            list-style: none;
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-        }
-        /* 解决js阻塞页面显示首屏 */
-        .slide li:first-child {
-            z-index: 1;
-        }
-
-        .slide li img {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height:100%;
-            border: none;
-        }
-
-        .slide .dot {
-            position: absolute;
-            right: 10px;
-            bottom: 10px;
-            z-index: 5;
-            font-size: 0;
-        }
-
-        .slide .dot span {
-            display: inline-block;
-            width: 5px;
-            height: 5px;
-            margin-left: 5px;
-            border: 1px solid #fff;
-            border-radius: 50%;
-        }
-
-        .slide .dot .cur {
-            background-color: #fff;
-        }
-
-        /*工具栏*/
-        .content{
-            bottom:2.2rem !important;
-        }
-
-        .bar-tab{
-            height:2.2rem !important;
-        }
-        .bar-tab .tab-item{
-            height:initial
-        }
-        .bar-tab .tab-item .icon{
-            top:0.1rem !important;
-            height:0.9rem !important;
-            line-height:0.9rem !important;
-            font-size:0.9rem !important;
-        }
-        .bar-tab .tab-item .icon i{
-            font-size:1.0rem !important;
-        }
-        .bar-tab .tab-item .icon~.tab-label{
-            font-size:0.5rem !important;
-            top:0.04rem !important;
-        }
-        .badge {
-            padding: 0 .2rem;
-            font-size: .6rem;
-            line-height: .8rem;
-            color: white;
-            vertical-align: top;
-            background: red;
-        }
-        .row .col-33 {
-            line-height: 1;
-        }
-    </style>
-
 <div class="page-group">
-    <div class="page page-current" >
-        <div class="content">
-            <div class="fdcharge">
-                <div class="chargel">
-                    <input type="tel" class="txtphone" placeholder="请先输入充值手机号码"
-                           name="mobile" id="mobile" maxlength="11" autocomplete="off"/>
-                </div>
-                <div class="charger">
-                    <span class="phoneisp">ywueifhwe</span><i class="iconfont" style="font-size:1.2rem;">&#xe601</i>
-                </div>
+  <div class="page page-current" >
+    <div class="content">
+        <div class="fdcharge">
+            <div class="chargel">
+                <input type="tel" class="txtphone" placeholder="请先输入充值手机号码"
+                       name="mobile" id="mobile" maxlength="11" autocomplete="off"/>
             </div>
-            <style>
-              #chooseMoney span {
-                width: 32%;
-                display: inline-block;
-                font-size: 16px;
-              }
-              .ui-switch {
-                  position: absolute;
-                  right: 15px;
-              }
-            </style>
-             <div class="ui-form-item ui-form-item-switch ui-border-b" style="margin-top: 5px">
-                <label class="ui-txt-info">您有{{ customer.totalIntegral }}积分，使用积分</lable>
-                <label class="ui-switch label-switch">
-                  <input type="checkbox" value="1" id="use-integral" data-exchangerate={{ exchangeRate }} data-totalintegral="{{ customer.totalIntegral  }}">
-                  <div class="checkbox"></div>
-                </label>
-            </div>
-            <div class="row">
-              {{> paymentMethods }}
-            </div>
-            <div class="content-block content-product" >
-                <div class="buttons-row">
-                    <a href="#tabchargeliuliang" class="tab-link active button">充流量</a>
-                    <a href="#tabchargehuafei" class="tab-link button">充话费</a>
-                </div>
-
-                <div class="tabs" style="margin-top: 0.7rem;">
-                    <div id="tabchargeliuliang" class="tab active" datatypeclass=".liuliang">
-
-                    </div>
-                    <div id="tabchargehuafei" class="tab" datatypeclass=".huafei">
-
-                    </div>
-                </div>
-            </div>
-            <a href="#" class="button button-fill submitbtn submitbtn-disable" >立即支付</a>
-            <div class="list-block product-list">
-                <ul>
-                    <!--可供购买的类型-->
-                </ul>
+            <div class="charger">
+                <span class="phoneisp"></span><i class="iconfont" style="font-size:1.2rem;">&#xe601</i>
             </div>
         </div>
-        <nav class="bar bar-tab">
-            <a class="tab-item external active" href='javascript:location.replace("/weixin/recharge/index")'>
-                <span class="icon"><i class="iconfont">&#xe600</i></span>
-                <span class="tab-label">充值中心</span>
-            </a>
-            <a class="tab-item external" href='javascript:location.replace("/weixin/user/floworder")'>
-                <span class="icon"><i class="iconfont">&#xe604</i></span>
-                <span class="tab-label">订单</span>
-            </a>
-            <a class="tab-item external" href='javascript:location.replace("/weixin/user/index")'>
-                <span class="icon"><i class="iconfont">&#xe603</i></span>
-                <span class="tab-label">会员中心</span>
-            </a>
-        </nav>
-        <div class="product_info" style="font-size:0.65rem;display:none">
-          <div class="page page-current">
-            <header class="bar bar-nav" style="padding:0; height:auto; background-color:transparent">
-                <div class="buttons-tab">
-                    <a href="#tab1" id="pimginfo" class="tab-link active button">充值详情</a>
+         <div class="ui-form-item ui-form-item-switch ui-border-b" style="margin-top: 5px">
+            <label class="ui-txt-info">您有{{ customer.totalIntegral }}积分，使用积分</lable>
+            <label class="ui-switch label-switch">
+              <input type="checkbox" value="1" id="use-integral" data-exchangerate={{ exchangeRate }} data-totalintegral="{{ customer.totalIntegral  }}">
+              <div class="checkbox"></div>
+            </label>
+        </div>
+        <div class="row">
+          {{> paymentMethods }}
+        </div>
+        <div class="content-block content-product" >
+            <div class="buttons-row">
+                <a href="#tabchargeliuliang" class="tab-link active button">充流量</a>
+                <a href="#tabchargehuafei" class="tab-link button">充话费</a>
+            </div>
+
+            <div class="tabs" style="margin-top: 0.7rem;">
+                <div id="tabchargeliuliang" class="tab active" datatypeclass=".liuliang">
+
                 </div>
-            </header>
-            <div class="content" style="top:2.0rem;">
-              <div class="tabs">
-                <div id="tab1" class="tab active">
-                  <div class="content-block">
-                     <pre id="productinfo" style="white-space: pre-wrap;word-wrap: break-word;"></pre>
-                  </div>
+                <div id="tabchargehuafei" class="tab" datatypeclass=".huafei">
+
                 </div>
+            </div>
+        </div>
+        <a href="#" class="button button-fill submitbtn submitbtn-disable" >立即支付</a>
+        <div class="llb list-block product-list">
+            <ul>
+                <!--可供购买的类型-->
+            </ul>
+        </div>
+    </div>
+    <nav class="bar bar-tab">
+        <a class="tab-item external active" href='javascript:location.replace("/weixin/recharge/index")'>
+            <span class="icon"><i class="iconfont">&#xe600</i></span>
+            <span class="tab-label">充值中心</span>
+        </a>
+        <a class="tab-item external" href='javascript:location.replace("/weixin/user/floworder")'>
+            <span class="icon"><i class="iconfont">&#xe604</i></span>
+            <span class="tab-label">订单</span>
+        </a>
+        <a class="tab-item external" href='javascript:location.replace("/weixin/user/index")'>
+            <span class="icon"><i class="iconfont">&#xe603</i></span>
+            <span class="tab-label">会员中心</span>
+        </a>
+    </nav>
+    <div class="product_info" style="font-size:0.65rem;display:none">
+      <div class="page page-current">
+        <header class="bar bar-nav" style="padding:0; height:auto; background-color:transparent">
+            <div class="buttons-tab">
+                <a href="#tab1" id="pimginfo" class="tab-link active button">充值详情</a>
+            </div>
+        </header>
+        <div class="content" style="top:2.0rem;">
+          <div class="tabs">
+            <div id="tab1" class="tab active">
+              <div class="content-block">
+                 <pre id="productinfo" style="white-space: pre-wrap;word-wrap: break-word;"></pre>
               </div>
             </div>
           </div>
-          <div class="bar bar-tab" style="z-index:20000; bottom:1rem;text-align:right; padding-right:1rem; height:1.5rem;background-color:transparent; ">
         </div>
+      </div>
+      <div class="bar bar-tab" style="z-index:20000; bottom:1rem;text-align:right; padding-right:1rem; height:1.5rem;background-color:transparent; ">
     </div>
+  </div>
 
 </div>
 
 <div id="actionSheet_wrap">
-    <div class="weui_mask_transition weui_fade_toggle" id="mask-block" style="display: none;"></div>
-    <div class="weui_actionsheet" id="weui_actionsheet">
-      <div class="weui_actionsheet_action">
-        <div class="weui_actionsheet_cell" style="background-color: #FAD7A1; color:#000000;font-size:35px;" id="actionsheet_cancel">关  闭</div>
-      </div>
-      <hr>
-      <div class="weui_actionsheet_menu">
-        <article class="weui_article">
-          <span id="detail-0">广东移动省内流量介绍 <br>1.【充值对象】：限广东移动用户，其他省份用户无法充值； 
-          </span>
-        </article>
-      </div>
+  <div class="weui_mask_transition weui_fade_toggle" id="mask-block" style="display: none;"></div>
+  <div class="weui_actionsheet" id="weui_actionsheet">
+    <div class="weui_actionsheet_action">
+      <div class="weui_actionsheet_cell" id="actionsheet_cancel">关  闭</div>
     </div>
+    <hr>
+    <div class="weui_actionsheet_menu">
+      <article class="weui_article">
+        <span id="detail-0">广东移动省内流量介绍 <br>1.【充值对象】：限广东移动用户，其他省份用户无法充值；
+        </span>
+      </article>
+    </div>
+  </div>
 </div>
 
 {{> alertmodal }}
+{{> extractConfirm }}
 {{> loading }}
 
-<script type="text/javascript">
-$(function(){
-  $(".tab-link.button").click(function(){
-    var $this = $(this)
-    if(!$this.hasClass("active")){
-      $(".tab-link.button.active").removeClass("active")
-      $this.addClass("active")
-      var href = $this.attr("href")
-      if(!$(href).hasClass('active')){
-        $(".tabs .tab.active").removeClass("active")
-        $(href).addClass("active")
-        $(".list-block.product-list ul").empty()
-        $(".chargeitem-selected").removeClass("chargeitem-selected")
-        $(".submitbtn").show();
-      }
-    }
-  })
-
-  $(document).on("click", ".chargeitem", function(){
-    var $this = $(this)
-    if(!$this.hasClass('chargeitem-selected')){
-      $(".chargeitem-selected").removeClass("chargeitem-selected")
-      $this.addClass("chargeitem-selected")
-      var type = $this.data('type'),
-          _id = $this.data('id')
-      if(window.plans[type]){
-        $.each(window.plans[type], function(i, v){
-          if(v.id === _id){
-            var li_source = $("#li-template").html()
-            if(li_source != undefined && li_source != ''){
-              var li_template = Handlebars.compile(li_source);
-              var li_html = li_template({plans: v.trafficplans})
-              $(".submitbtn").hide();
-              $(".list-block.product-list ul").html(li_html)
-              $(document).on('click', '.sure', paymentConfirm)
-            }
-          }
-        })
-      }
-
-    }
-  })
-
-})
-</script>
 <script id="trafficplans-template" type="text/x-handlebars-template">
 <div class="content-block chargelist huafei" datatype="2">
   \{{#each trafficPlans}}
@@ -437,7 +125,7 @@ $(function(){
       </div>
       <div class="item-after">
         <a href="#" class="showActionSheet button button-fill button-warning" data-id="\{{id}}">详情</a>&nbsp;
-        <a href="#" data-provider="\{{providerId}}" class="sure button button-fill" data-ordertips="" data-id="\{{id}}">购买</a>
+        <a href="#" data-type="\{{productType}}" data-name="\{{name}}" data-cost="\{{cost}}" data-provider="\{{providerId}}" class="exchanger button button-fill" data-id="\{{id}}">购买</a>
       </div>
     </div>
   </li>
