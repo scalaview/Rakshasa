@@ -257,7 +257,7 @@ function getTrafficplan(source, catName, groupId){
 }
 function extractConfirm(){
 
-  $(".llb").on('click', '.exchanger', function() {
+  $(document).on('click', '.exchanger', function() {
     var mobile = $.trim($("#mobile").val());
     if (!isMobile(mobile)){
       showDialog("请输入正确的手机号码")
@@ -266,28 +266,7 @@ function extractConfirm(){
 
     var $this = $(this),
         provider = $this.data("provider")
-    if(window.catName){
-      switch(window.catName){
-        case "中国移动":
-          if(provider != '0'){
-            showDialog("请充值移动套餐")
-            return
-          }
-          break;
-        case "中国联通":
-          if(provider != '1'){
-            showDialog("请充值通套餐")
-            return
-          }
-          break;
-        case "中国电信":
-          if(provider != '2'){
-            showDialog("请充值电信套餐")
-            return
-          }
-          break;
-      }
-    }
+    
     $(".llb a").removeClass('choose')
     var choose = $("#chooseMoney .weui_btn.selected")
     var lessE = choose.data('less')
@@ -330,9 +309,10 @@ function extractConfirm(){
 }
 
 function paymentConfirm(){
-  var selectedFlow = $(".llb .exchanger.choose")
+  var $this = $(this),
+        selectedFlow = $(".llb .exchanger.choose")
         phone = $.trim($("#mobile").val()),
-        flowId = selectedFlow.data("value"),
+        flowId = $this.data('id'),
         source   = $("#trafficplans-template").html(),
         choose = $("#chooseMoney .weui_btn.selected")
 
@@ -682,9 +662,9 @@ function billConfirm(){
   }
 
   if(isMobile(phone) && flowId !== undefined && flowId !== '' ){
-    $(".sure").unbind("click")
+    // $(".sure").unbind("click")
     wechatBill(phone, flowId, function(){
-      $(".sure").on("click", billConfirm)
+      // $(".sure").on("click", billConfirm)
     })
   }else{
     showDialog("请输入电话和选择正确的套餐")
@@ -739,8 +719,6 @@ function trafficplanDetail(){
       var mask = $('#mask-block');
       var weuiActionsheet = $('#weui_actionsheet');
       weuiActionsheet.addClass('weui_actionsheet_toggle');
-      $("#actionSheet_wrap .weui_article span").hide()
-      $("#detail-" + providerId).show()
       mask.show()
           .focus()//加focus是为了触发一次页面的重排(reflow or layout thrashing),使mask的transition动画得以正常触发
           .addClass('weui_fade_toggle').one('click', function () {
