@@ -596,12 +596,13 @@ function wechatBill(phone, flowId, opt){
 
 function trafficplanDetail(){
   $(document).on('click', '.showActionSheet', function () {
-      var providerId = $(this).data("provider")
+      var providerId = $(this).data("provider"),
+          _id = $(this).data("id"),
+          type = $(this).data("type")
       var mask = $('#mask-block');
       var weuiActionsheet = $('#weui_actionsheet');
+      showDetail(providerId, type, _id)
       weuiActionsheet.addClass('weui_actionsheet_toggle');
-      $("#actionSheet_wrap .weui_article span").hide()
-      $("#detail-" + providerId).show()
       mask.show()
           .focus()//加focus是为了触发一次页面的重排(reflow or layout thrashing),使mask的transition动画得以正常触发
           .addClass('weui_fade_toggle').one('click', function () {
@@ -622,6 +623,26 @@ function trafficplanDetail(){
           })
       }
   });
+}
+
+function showDetail(providerId, type, _id){
+  $("#actionSheet_wrap .weui_article span").hide()
+  var _plans = []
+  if(type=='traffic'){
+    $.each(window.plans[type], function(i, v){
+      _plans = _plans.concat(v.trafficplans)
+    })
+  }else{
+    _plans = _plans.concat(window.plans[type])
+  }
+  for(var i = 0; i < _plans.length; i++) {
+    if(_plans[i].id === _id && _plans[i].detail && _plans[i].detail !== ""){
+      $("#detail").html(_plans[i].detail)
+      $("#detail").show()
+      return;
+    }
+  }
+  $("#detail-" + providerId).show()
 }
 
 function loadBillPlans(source){

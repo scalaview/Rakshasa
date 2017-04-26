@@ -10,11 +10,19 @@ module.exports = {
         allowNull: true
       }
     );
-    return queryInterface.addColumn(
+    queryInterface.addColumn(
       'TrafficPlans',
       'detail',
       {
         type: Sequelize.TEXT,
+        allowNull: true
+      }
+    );
+    return queryInterface.addColumn(
+      'TrafficPlans',
+      'tips',
+      {
+        type: Sequelize.STRING,
         allowNull: true
       }
     );

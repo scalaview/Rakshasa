@@ -19,7 +19,10 @@ module.exports = function(sequelize, DataTypes) {
     purchasePrice: { type: DataTypes.DECIMAL(10, 2), allowNull: false, defaultValue: 0.0 },
     integral: { type: DataTypes.INTEGER, allowNull: true, defaultValue: 0 },
     productType: { type: DataTypes.STRING, allowNull: true, defaultValue: "traffic" },
-    withOutDiscount: { type: DataTypes.VIRTUAL }
+    withOutDiscount: { type: DataTypes.VIRTUAL },
+    desc: { type: DataTypes.STRING, allowNull: true },
+    tips: { type: DataTypes.STRING, allowNull: true },
+    detail: { type: DataTypes.TEXT, allowNull: true }
   }, {
     classMethods: {
       associate: function(models) {

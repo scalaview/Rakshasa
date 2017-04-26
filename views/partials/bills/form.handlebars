@@ -29,6 +29,12 @@
         <label>积分</label>
         <input class="form-control" placeholder="输入积分" name="integral" type='number' min="0" step='1' value="{{ trafficPlan.integral }}">
       </div>
+
+      <div class="form-group">
+        <label>详情</label>
+        <textarea class="form-control" id="detail" name="detail" rows="3">{{trafficPlan.detail}}</textarea>
+      </div>
+
     </div>
     <div class="col-lg-6">
       <div class="form-group">
@@ -50,6 +56,17 @@
         <label>分组</label>
         {{ selectTag trafficgroupsOptions trafficgroupsCollection trafficPlan.trafficGroupId }}
       </div>
+      
+      <div class="form-group">
+        <label>简短描述</label>
+        <input class="form-control" placeholder="input desc" name="desc" type='text' value="{{ trafficPlan.desc }}">
+      </div>
+
+      <div class="form-group">
+        <label>到账时间描述</label>
+        <input class="form-control" placeholder="input tips" name="tips" type='text' value="{{ trafficPlan.tips }}">
+      </div>
+      
     </div>
   </div>
 
