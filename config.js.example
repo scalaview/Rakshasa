@@ -12,6 +12,9 @@ var config = {
                 "xinhaoba_loginname": "",
                 "xinhaoba_apikey": "",
                 "dazhong_client_id": "",
-                "dazhong_apikey": ""
+                "dazhong_apikey": "",
+                "yt_appid": "",
+                "yt_key": ""
+
               };
 module.exports = config;
