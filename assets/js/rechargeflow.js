@@ -1,6 +1,6 @@
 ﻿var cusBalance = 0;
 var lastSubmitdate = new Date().getTime();
-
+if(!!!window.plans){window.plans={};}
 Handlebars.registerHelper('if-lt', function(a, b) {
   var options = arguments[arguments.length - 1];
   if (a < b) { return options.fn(this); }
@@ -210,10 +210,13 @@ function getTrafficplan(source, catName, groupId){
     params["groupId"] = groupId
   }
   loadPlans('/getTrafficplans', params).then(function(data){
-    if(!!!window.plans){window.plans={};}
-    window.plans['traffic'] = data
-    var html = template({trafficPlans: data.eachSlice(3), type: 'traffic'})
-    $("#tabchargeliuliang").html(html)
+    if(data && data.length > 0){
+      window.plans['traffic'] = data
+      var html = template({trafficPlans: data.eachSlice(3), type: 'traffic'})
+      $("#tabchargeliuliang").html(html)
+    }else{
+      $("#tabchargehuafei").html(emptyPlans())
+    }
   })
 }
 
@@ -624,11 +627,21 @@ function loadBillPlans(source){
   var template = Handlebars.compile(source)
 
   loadPlans('/bill-plans', {}).then(function(data){
-    if(!!!window.plans){window.plans={};}
-    window.plans['bill'] = data.trafficPlans
-    var html = template({trafficPlans: data.trafficPlans.eachSlice(3), type: 'bill'})
-    $("#tabchargehuafei").html(html)
+    if(data.trafficPlans && data.trafficPlans.length > 0){
+      window.plans['bill'] = data.trafficPlans
+      var html = template({trafficPlans: data.trafficPlans.eachSlice(3), type: 'bill'})
+      $("#tabchargehuafei").html(html)
+    }else{
+      $("#tabchargehuafei").html(emptyPlans())
+    }
   })
+}
+
+function emptyPlans() {
+  var source = $("#empty-template").html()
+  if(!source) return "";
+  var template = Handlebars.compile(source)
+  return template()
 }
 
 function loadPlans(url, params){
