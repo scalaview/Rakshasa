@@ -225,5 +225,22 @@ app.post("/gdsjllconfirm", function(req, res){
   })
 })
 
+app.post("/ytconfirm", function(req, res){
+  var form = new formidable.IncomingForm();
+  form.parse(req, function(err, fields, files) {
+    confirmOrder({
+      id: fields.order_sn,
+      state: models.ExtractOrder.STATE.SUCCESS
+    }, fields.errcode !== 4, fields.fail_msg, function(err){
+      if(err){
+        console.log(err)
+        res.json({success: false})
+      }else{
+        res.json({success: true})
+      }
+    })
+  })
+})
+
 
 module.exports = app;
