@@ -718,25 +718,25 @@ font-size:16px;font-style:normal;}
 }
 @media only screen and (min-width: 800px) {
   .detail {
-  height: 1000px !important;
+  height: 600px !important;
   }
   .detail {
-  max-height: 1000px !important;
+  max-height: 600px !important;
   }
 }
 @media only screen and (min-width: 1000px) {
   .detail {
-  height: 1200px !important;
+  height: 800px !important;
   }
   .detail {
-  max-height: 1200px !important;
+  max-height: 800px !important;
   }
 }
 @media only screen and (min-width: 1200px) {
   .detail {
-  height: 1800px !important;
+  height: 800px !important;
   }
   .detail {
-  max-height: 1800px !important;
+  max-height: 800px !important;
   }
 }
