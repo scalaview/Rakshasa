@@ -1,117 +1,136 @@
-<div class="easyui-navpanel">
-  <div class="row">
-    {{> "yiweixin/banners" banners=banners }}
-  </div>
-  <div class="container">
-    <div class="yunying">
-      <div class="line-goodsInfo">
-        <div class="line-content">
-          <p>提示：请选择运营商</p>
-        </div>
-      </div>
-      <ul class="bottonYun">
-        <li data-id='yd' data-provider="中国移动" class="current">
-          <span>
-          <img src="/images/yidogn.png"></span> <b>移动</b>
-        </li>
-        <li data-id='lt' data-provider="中国联通">
-          <span>
-          <img src="/images/liantong.png"></span> <b>联通</b>
-        </li>
-        <li data-id='dx' data-provider="中国电信">
-          <span>
-          <img src="/images/dianxin.png"></span>
-          <b>电信</b>
-        </li>
-      </ul>
-    </div>
-    <div class="leixing">
-      <div class="line-goodsInfo">
-        <div class="line-content">
-          <p>提示：请选择流量类型</p>
-        </div>
-      </div>
-      <ul class="bottonStyle">
-        {{#each CMCCtrafficGroups}}
-          <li data-id='{{id}}' {{#if @first}}class="current"{{/if}}>
-            {{ cmccGroupName name }}
-          </li>
-        {{/each}}
-      </ul>
-    </div>
-    <div class="phoneCon">
-      <input id="mobile" class="number" type="tel" style="margin-bottom: 10px" placeholder="请输入手机号码：" maxlength="11" style="ime-mode:disabled"/>
-      <div class="page cell">
-        <div class="bd">
-          <div class="weui_cells weui_cells_form" style="width: 98%;padding-top: 10px;padding-bottom: 10px;">
-            <div class="weui_cell weui_cell_switch">
-              <div class="weui_cell_hd weui_cell_primary" style="font-size: 35px;">积  分: {{ customer.totalIntegral }}</div>
-              <div class="weui_cell_ft">
-                <input class="weui_switch" type="checkbox" id="use-integral" data-exchangerate={{ exchangeRate }} data-totalintegral="{{ customer.totalIntegral  }}">
-              </div>
+<div class="page-group">
+  <div class="page page-current" >
+    <div class="content">
+        <div class="fdcharge">
+            <div class="chargel">
+                <input type="tel" class="txtphone" placeholder="请先输入充值手机号码"
+                       name="mobile" id="mobile" maxlength="11" autocomplete="off"/>
             </div>
-          </div>
+            <div class="charger">
+                <span class="phoneisp"></span><i class="iconfont" style="font-size:1.2rem;">&#xe601</i>
+            </div>
+        </div>
+         <div class="ui-form-item ui-form-item-switch ui-border-b" style="margin-top: 5px">
+            <label class="ui-txt-info">您有{{ customer.totalIntegral }}积分，使用积分</lable>
+            <label class="ui-switch label-switch">
+              <input type="checkbox" value="1" id="use-integral" data-exchangerate={{ exchangeRate }} data-totalintegral="{{ customer.totalIntegral  }}">
+              <div class="checkbox"></div>
+            </label>
+        </div>
+        <div class="row">
           {{> paymentMethods }}
         </div>
-      </div>
+        <div class="content-block content-product" >
+            <div class="buttons-row">
+                <a href="#tabchargeliuliang" class="tab-link active button">充流量</a>
+                <a href="#tabchargehuafei" class="tab-link button">充话费</a>
+            </div>
 
-      <div class ="tips alltextright">
-        {{!-- <span id="tips" style="font-size:40px;">广东号码国内流量认准《五一惠价》购买，流量有效期5.1至5.31</span> --}}
-      </div>
-      <div class =" tips alltextright">
-        <span id="error_div" style="color:red;font-size:40px;"/>
-      </div>
-      <div class="tips alltextright">
-        <span id="success_div"/>
-      </div>
+            <div class="tabs" style="margin-top: 0.7rem;">
+                <div id="tabchargeliuliang" class="tab active" datatypeclass=".liuliang">
+                  <div class="content-block chargelist huafei" datatype="2">
+                    <div class="row">
+                      <div class="col-33">暂时缺货</div>
+                    </div>
+                  </div>
+                </div>
+                <div id="tabchargehuafei" class="tab" datatypeclass=".huafei">
+                  <div class="content-block chargelist huafei" datatype="2">
+                    <div class="row">
+                      <div class="col-33">暂时缺货</div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
+        <a href="#" class="button button-fill submitbtn submitbtn-disable" >立即支付</a>
+        <div class="llb list-block product-list">
+            <ul>
+                <!--可供购买的类型-->
+            </ul>
+        </div>
     </div>
-    <div class="llb paycontianer">
-    </div>
-    <div class="no_data" style="display: none"></div>
-  </div>
+    <nav class="bar bar-tab">
+        <a class="tab-item external active" href='/extractflow'>
+            <span class="icon"><i class="iconfont">&#xe600</i></span>
+            <span class="tab-label">充值中心</span>
+        </a>
+        <a class="tab-item external" href='/orders'>
+            <span class="icon"><i class="iconfont">&#xe604</i></span>
+            <span class="tab-label">订单</span>
+        </a>
+        <a class="tab-item external" href='/myaccount'>
+            <span class="icon"><i class="iconfont">&#xe603</i></span>
+            <span class="tab-label">会员中心</span>
+        </a>
+    </nav>
 </div>
 
 <div id="actionSheet_wrap">
-    <div class="weui_mask_transition weui_fade_toggle" id="mask-block" style="display: none;"></div>
-    <div class="weui_actionsheet" id="weui_actionsheet">
-      <div class="weui_actionsheet_action">
-        <div class="weui_actionsheet_cell" style="background-color: #FAD7A1; color:#000000;font-size:35px;" id="actionsheet_cancel">关  闭</div>
-      </div>
-      <hr>
-      <div class="weui_actionsheet_menu" style="background-color: #FAD7A1;">
-        <article class="weui_article">
-          <span id="detail-0" style="color:#000000;font-size:35px;display: none;">广东移动省内流量介绍 <br>1.【充值对象】：限广东移动用户，其他省份用户无法充值； <br>2.【有效期限】：自充值成功起算20天（月结不清零，可跨月使用）； <br>3.【流量类型】：4G、3G、2G通用网络流量； <br>4.【使用范围】：省内使用，全天24小时，不分时段（本流量红包是优先使用的,即使在夜间也是优先于您的闲时流量使用）； <br>5.【充值限制】：可无限次充值； <br>6.【注意事项】：流量充值无法进行冲正，请务必填写正确的手机号码，如填写错误损失自行负责； <br>7.【特殊情况】：欠费停机或转套餐未生效的号码、移动4G随心王，无法进行流量充值 <br>8.【到帐时间】：正常1-10分钟到账。 <br>9.【查询方式】：发送cxll到10086查询； <br>10.【其他问题】: 流量到帐一般有短信通知，特殊时段（如夜间22:00-08:00或移动繁忙时段）可能会没有短信通知，不过流量会正常到帐的（流量查询）；您的4G流量一用完移动就会默认关闭您的4G功能，建议在没用完您的4G流量前来充值，若移动关闭了您的4G功能可以让10086客服帮您重新开通。<br>11.最终解释权归本公司所有
-          </span>
-          <span id="detail-1" style="color:#000000;font-size:35px;display: none;">联通全国流量介绍： <br>1.【充值对象】：全国联通用户均可充值； <br>2.【流量类型】：4G、3G、2G通用网络流量； <br>3.【使用范围】：全国通用流量，全天24小时，不分时段； <br>4.【充值限制】：每个套餐每月最多叠加5次，不同套餐可以叠加； <br>5.【注意事项】：流量充值无法进行冲正，请务必填写正确的手机号码，如填写错误损失自行负责； <br>6.【特殊情况】：不能充值流量的用户：欠费用户、无实名用户、停机状态、转网业务、其他情形参照运营商规定； <br>7.【到帐时间】：一般1-10分钟到账，24小时后还查不到流量到帐的或者漏充的，请联系客服处理； <br>8.【查询方式】：发送cxll到10010查询，或者拨打服务热线10010查询(建议客户充前和充后各查1次，作为凭证)； <br>9.【有效期限】：自充值成功起至月末清零； <br>10.最终解释权归本公司所有
-          </span>
-          <span id="detail-2" style="color:#000000;font-size:35px;display: none;">全国电信流量介绍： <br>1.【充值对象】：全国电信用户均可充值； <br>2.【流量类型】：4G、3G、2G通用网络流量； <br>3.【使用范围】：全国通用流量，全天24小时，不分时段； <br>4.【充值限制】：不限制次数； <br>5.【注意事项】：流量充值无法进行冲正，请务必填写正确的手机号码，如填写错误损失自行负责； <br>6.【特殊情况】：不能充值流量的用户：欠费用户、无实名用户、停机状态、转网业务、其他情形参照运营商规定； <br>7.【到帐时间】：一般1-10分钟到账，24小时后还查不到流量到帐的或者漏充的，请联系客服处理； <br>8.【查询方式】：发送cxll到10001查询，或者拨打服务热线10010查询(建议客户充前和充后各查1次，作为凭证)； <br>9.【有效期限】：自充值成功起至月末清零； <br>10.最终解释权归本公司所有</span>
-        </article>
-      </div>
+  <div class="weui_mask_transition weui_fade_toggle" id="mask-block" style="display: none;"></div>
+  <div class="weui_actionsheet" id="weui_actionsheet">
+    <div class="weui_actionsheet_action">
+      <div class="weui_actionsheet_cell">充值详情</div>
     </div>
+    <div class="weui_actionsheet_menu">
+      <article class="weui_article detail" style="overflow: scroll;">
+        <span id="detail" style="display: none;">
+        </span>
+        <span id="detail-0" style="display: none;">广东移动省内流量介绍 <br>充值对象】：仅限广东移动2G/3G/4G手机用户充值；<br>【有效期限】：自生效30天有效期，可跨月，与月结无关；<br>【流量类型】：国内流量！<br>【使用范围】：所充值流量可全国范围内使用；<br>【充值限制】：流量为通过集团流量自由充形式充值，属于集群共享流量，无限叠加；流量王、随心王、飞享套餐和转品牌套餐、4g省内30天有效专用流量的客户不得使用,充了后果自负；<br>【注意事项】：由于用户误填写手机号码后充入别人账号，责任用户自行承担；<br>【特殊情况】：此产品只能充值广东省移动的手机号，其他省份一概不支持；<br>【到帐时间】：早上9点至晚上10点为充值时间，1~6小时左右到账，如遇移动延迟则48小时内<br>【查询方式】：发送CXLL至10086查询；<br>【其他问题】：充值成功一般有短信提醒，若未收到短信可咨询10086查询流量情况（流量查询）；流量无法抵扣超出的流量及话费！<br>【售后处理】：对流量使用或者套餐有限制的某些号码咨询运营商，不接受说充了不能用等问题的售后，这个是您号码问题，不是流量的问题。
+        </span>
+        <span id="detail-1" style="display: none;">联通全国流量介绍： <br>1.【充值对象】：全国联通用户均可充值； <br>2.【流量类型】：4G、3G、2G通用网络流量； <br>3.【使用范围】：全国通用流量，全天24小时，不分时段； <br>4.【充值限制】：每个套餐每月最多叠加5次，不同套餐可以叠加； <br>5.【注意事项】：流量充值无法进行冲正，请务必填写正确的手机号码，如填写错误损失自行负责； <br>6.【特殊情况】：不能充值流量的用户：欠费用户、无实名用户、停机状态、转网业务、其他情形参照运营商规定； <br>7.【到帐时间】：一般1-10分钟到账，24小时后还查不到流量到帐的或者漏充的，请联系客服处理； <br>8.【查询方式】：发送cxll到10010查询，或者拨打服务热线10010查询(建议客户充前和充后各查1次，作为凭证)； <br>9.【有效期限】：自充值成功起至月末清零； <br>10.最终解释权归本公司所有
+        </span>
+        <span id="detail-2" style="display: none;">全国电信流量介绍： <br>1.【充值对象】：全国电信用户均可充值； <br>2.【流量类型】：4G、3G、2G通用网络流量； <br>3.【使用范围】：全国通用流量，全天24小时，不分时段； <br>4.【充值限制】：不限制次数； <br>5.【注意事项】：流量充值无法进行冲正，请务必填写正确的手机号码，如填写错误损失自行负责； <br>6.【特殊情况】：不能充值流量的用户：欠费用户、无实名用户、停机状态、转网业务、其他情形参照运营商规定； <br>7.【到帐时间】：一般1-10分钟到账，24小时后还查不到流量到帐的或者漏充的，请联系客服处理； <br>8.【查询方式】：发送cxll到10001查询，或者拨打服务热线10010查询(建议客户充前和充后各查1次，作为凭证)； <br>9.【有效期限】：自充值成功起至月末清零； <br>10.最终解释权归本公司所有</span>
+      </article>
+    </div>
+    <hr>
+    <div class="weui_actionsheet_action">
+      <div class="weui_actionsheet_cell" id="actionsheet_cancel">关  闭</div>
+    </div>
+  </div>
 </div>
+
 {{> alertmodal }}
 {{> extractConfirm }}
 {{> loading }}
 
 <script id="trafficplans-template" type="text/x-handlebars-template">
-\{{#each trafficgroups}}
-  <ul>
-    \{{#each trafficplans}}
-      <li>
-        <div class="type1">
-          <span>\{{name}}</span>
-          <span></span>
-        </div>
-        <div class="type2">
-          <span class="showActionSheet" data-provider="\{{providerId}}" >详情</span>
-        </div>
-        <div class="type3">
-          <b>\{{cost}}元</b>
-        </div>
-        <div class="type4">
-          <b class="exchanger" data-name="\{{name}}" data-provider="\{{providerId}}" data-value="\{{id}}" data-cost="\{{cost}}">购买</b>
-        </div>
-      </li>
-    \{{/each}}
-  </ul>
+<div class="content-block chargelist huafei" datatype="2">
+  \{{#each trafficPlans}}
+    <div class="row">
+      \{{#each this}}
+        <div class="col-33 chargeitem" data-id="\{{id}}" data-type="\{{../../type}}">\{{name}}</div>
+      \{{/each}}
+    </div>
+  \{{/each}}
+</div>
+</script>
+
+<script id="li-template" type="text/x-handlebars-template">
+\{{#each plans}}
+  <li class="item-content">
+    <div class="item-inner">
+      <div class="item-title" style="white-space: inherit !important;">
+        <span>
+          <span class="newpprice">\{{cost}}元</span><span class="oldpprice">\{{cost}}元</span>
+          <span class="badge"></span>
+        </span>
+        <br>
+        <span class="premark"><span style="color: red">\{{#if desc}}\{{desc}}\{{else}}国内流量，30天有效期\{{/if}}</span>，\{{#if tips}}\{{tips}}\{{else}}1-3小时到账。\{{/if}}</span>
+      </div>
+      <div class="item-after">
+        <a href="#" class="showActionSheet button button-fill button-warning" data-provider="\{{providerId}}" data-type="\{{productType}}" data-id="\{{id}}">详情</a>&nbsp;
+        <a href="#" data-type="\{{productType}}" data-name="\{{name}}" data-cost="\{{cost}}" data-provider="\{{providerId}}" class="exchanger button button-fill" data-id="\{{id}}">购买</a>
+      </div>
+    </div>
+  </li>
 \{{/each}}
+</script>
+
+<script id="empty-template" type="text/x-handlebars-template">
+<div class="content-block chargelist huafei" datatype="2">
+  <div class="row">
+    <div class="col-33">暂时缺货</div>
+  </div>
+</div>
+</script>

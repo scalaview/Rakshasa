@@ -46,36 +46,6 @@ app.get('/bill-plans', requireLogin, function(req, res) {
   })
 })
 
-
-
-app.get('/bill', requireLogin, function(req, res) {
-  async.waterfall([function(next){
-    models.TrafficPlan.findAll({
-      where: {
-        providerId: models.TrafficGroup.Provider["中国移动"],
-        productType: models.TrafficPlan.PRODUCTTYPE["bill"],
-        display: true
-      }
-    }).then(function(trafficPlan){
-      next(null, trafficPlan)
-    }).catch(function(err){
-      next(err)
-    })
-  }, function(trafficPlan, next){
-    models.DConfig.findOne({
-      where: {
-        name: "exchangeRate"
-      }
-    }).then(function(dConfig){
-      next(null, trafficPlan, dConfig)
-    }).catch(function(err){
-      next(err)
-    })
-  }], function(err, trafficPlan, dConfig){
-    res.render('yiweixin/orders/bill', { customer: req.customer, trafficPlan: trafficPlan, exchangeRate: dConfig.value || 1, layout: 'bill' })
-  })
-})
-
 app.post('/wechat-bill', requireLogin, function(req, res) {
     var customer = req.customer,
         useIntegral = req.body.useIntegral == 'true' ? true : false
