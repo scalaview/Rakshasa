@@ -3,10 +3,10 @@ var config = require("../config")
 var crypto = require('crypto')
 
 
-function YouXingRecharge(){
-  this.appid = config.yt_appid
-  this.key = config.yt_key
-
+function YouXingRecharge(appid, key, host){
+  this.appid = appid
+  this.key = key
+  this.host = host
 }
 
 YouXingRecharge.prototype.sign = function(params){
@@ -22,7 +22,7 @@ YouXingRecharge.prototype.sign = function(params){
 }
 
 YouXingRecharge.prototype.createOrder = function(mobile, productId, orderId){
-  var url = "http://www.gzytxxkj.com/api/flow/recharge",
+  var url = "http://"+this.host+"/api/flow/recharge",
       params = {
         appid: this.appid,
         timestamp: (new Date()).getTime(),

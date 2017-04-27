@@ -14,7 +14,10 @@ var config = {
                 "dazhong_client_id": "",
                 "dazhong_apikey": "",
                 "yt_appid": "",
-                "yt_key": ""
-
+                "yt_key": "",
+                "yt_host": "",
+                "sd_appid": "",
+                "sd_key": "",
+                "sd_host": ""
               };
 module.exports = config;
