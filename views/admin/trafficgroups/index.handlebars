@@ -21,6 +21,7 @@
             <thead>
               <tr>
                   <th>名字</th>
+                  <th>运营商</th>
                   <th>显示</th>
                   <th></th>
               </tr>
@@ -29,6 +30,7 @@
               {{#each trafficgroups.rows }}
                 <tr>
                     <td>{{ name }}</td>
+                    <td>{{ provider }}</td>
                     <td>{{ display }}</td>
                     <td>
                     <a href="/admin/trafficgroups/{{id}}/edit" class="list-group-item">

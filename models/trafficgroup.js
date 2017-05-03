@@ -18,6 +18,11 @@ module.exports = function(sequelize, DataTypes) {
       associate: function(models) {
         models.TrafficGroup.hasMany(models.TrafficPlan, { foreignKey: 'trafficGroupId' } );
       }
+    },
+    instanceMethods: {
+      provider: function(){
+        return TrafficGroup.ProviderName[this.providerId]
+      }
     }
   });
 
