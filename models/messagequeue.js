@@ -224,7 +224,7 @@ module.exports = function(sequelize, DataTypes) {
           if(messageTemplate){
             var content = messageTemplate.content.format({ phone: phone, plan: trafficPlan.name })
           }else{
-            var content = "尊敬的{{phone}}用户，您好，您通过[淘优团]微信公众号充值的{{plan}}已经提交，将在两个小时内到账。如未成功到账，请关注[淘优团]公众号查询流量充值进度。".format({ phone: phone, plan: trafficPlan.name })
+            var content = "尊敬的{{phone}}用户，您好，您通过[夕阳流量]微信公众号充值的{{plan}}已经提交，将在两个小时内到账。如未成功到账，请关注[夕阳流量]公众号查询流量充值进度。".format({ phone: phone, plan: trafficPlan.name })
           }
           console.log(phone)
           MessageQueue.build({
