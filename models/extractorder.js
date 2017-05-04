@@ -4,11 +4,6 @@ var request = require("request")
 var async = require("async")
 var helpers = require("../helpers")
 var recharger = require("../recharger")
-var Xinhaoba = recharger.Xinhaoba
-var Dazhong = recharger.Dazhong
-var Huadong = recharger.Huadong
-var Oms = recharger.Oms
-var Gdsjll = recharger.Gdsjll
 var YouXingRecharge = recharger.YouXingRecharge
 var config = require("../config")
 var crypto = require('crypto')
@@ -149,17 +144,7 @@ module.exports = function(sequelize, DataTypes) {
       },
       autoRecharge: function(trafficPlan){
         var typeJson = trafficPlan.typeJson()
-        if(trafficPlan.type == typeJson['新号吧']){
-          return new Xinhaoba(this.id, this.phone, this.bid, this.value)
-        }else if(trafficPlan.type == typeJson['大众']){
-          return new Dazhong(this.phone, this.bid, this.id)
-        }else if(trafficPlan.type == typeJson['华动']){
-          return new Huadong(this.id, this.phone, this.bid)
-        }else if(trafficPlan.type == typeJson['大众通信']){
-          return new Oms().createOrder(this.phone, this.bid)
-        }else if(trafficPlan.type == typeJson['gdsjll']){
-          return new Gdsjll().createOrder(this.phone, this.bid)
-        }else if(trafficPlan.type == typeJson['云尚流量']){
+        if(trafficPlan.type == typeJson['云尚流量']){
           return new YouXingRecharge(config.yt_appid, config.yt_key, config.yt_host).createOrder(this.phone, this.bid, this.id)
         }else if(trafficPlan.type == typeJson['速达']){
           return new YouXingRecharge(config.sd_appid, config.sd_key, config.sd_host).createOrder(this.phone, this.bid, this.id)
