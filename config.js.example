@@ -18,6 +18,7 @@ var config = {
                 "yt_host": "",
                 "sd_appid": "",
                 "sd_key": "",
-                "sd_host": ""
+                "sd_host": "",
+                "port": 3002
               };
 module.exports = config;
