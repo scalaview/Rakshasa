@@ -45,7 +45,8 @@ YouXingRecharge.prototype.syncProducts = function(products, type){
           display: false,
           type: models.TrafficPlan.TYPE[type],
           bid: product.pid,
-          purchasePrice: product.purchase_price
+          purchasePrice: product.purchase_price,
+          desc: product.desc
         }
       }).spread(function(trafficPlan){
         next(null, trafficPlan)
