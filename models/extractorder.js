@@ -144,7 +144,7 @@ module.exports = function(sequelize, DataTypes) {
       },
       autoRecharge: function(trafficPlan){
         var typeJson = trafficPlan.typeJson()
-        if(trafficPlan.type == typeJson['云尚流量']){
+        if(trafficPlan.type == typeJson['YT平台']){
           return new YouXingRecharge(config.yt_appid, config.yt_key, config.yt_host).createOrder(this.phone, this.bid, this.id)
         }else if(trafficPlan.type == typeJson['速达']){
           return new YouXingRecharge(config.sd_appid, config.sd_key, config.sd_host).createOrder(this.phone, this.bid, this.id)
