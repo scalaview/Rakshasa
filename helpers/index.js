@@ -924,42 +924,10 @@ function autoCharge(extractOrder, trafficPlan, next){
         })
         return
       }
-      if(trafficPlan.type == models.TrafficPlan.TYPE['新号吧']){
-        if(data.code == 1){
+      if(trafficPlan.type == models.TrafficPlan.TYPE['YT平台']){
+        if(data.error === 0 ){
           extractOrder.updateAttributes({
-            taskid: data.sysorderid,
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.Message))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['大众']){
-        if(data.errcode == 200){
-          extractOrder.updateAttributes({
-            taskid: data.data.order_id,
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.errmsg))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['华动']){
-        if(data.code == 1 || data.code == 2){
-          extractOrder.updateAttributes({
-            taskid: data.chargeNum,
+            taskid: data.p_order_sn,
             state: models.ExtractOrder.STATE.SUCCESS
           }).then(function(extractOrder){
             next(null, trafficPlan, extractOrder)
@@ -972,39 +940,7 @@ function autoCharge(extractOrder, trafficPlan, next){
           })
           next(new Error(data.msg))
         }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['大众通信']){
-        if(data.ack == "success" && (data.shipping_status == 1 || data.shipping_status == 2 || data.shipping_status == 3 || data.shipping_status == 4 || data.shipping_status == 6)){
-          extractOrder.updateAttributes({
-            taskid: data.order_number,
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.message || data.shipping_status_desc))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['gdsjll']){
-        if(data.errcode === 0 ){
-          extractOrder.updateAttributes({
-            taskid: data.order_id,
-            state: models.ExtractOrder.STATE.SUCCESS
-          }).then(function(extractOrder){
-            next(null, trafficPlan, extractOrder)
-          }).catch(function(err) {
-            next(err)
-          })
-        }else{
-          extractOrder.updateAttributes({
-            state: models.ExtractOrder.STATE.FAIL
-          })
-          next(new Error(data.message || data.shipping_status_desc))
-        }
-      }else if(trafficPlan.type == models.TrafficPlan.TYPE['云尚流量']){
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['速达']){
         if(data.error === 0 ){
           extractOrder.updateAttributes({
             taskid: data.p_order_sn,
