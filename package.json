@@ -4,9 +4,8 @@
   "description": "yiliuliang",
   "main": "index.js",
   "scripts": {
-    "postinstall": "bower install",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm install ; bower install ; node_modules/sequelize-cli/bin/sequelize init  --env production ; node_modules/sequelize-cli/bin/sequelize db:migrate --env production ; ./node_modules/.bin/connect-assets -i assets public/bower_components public/javascript public/stylesheets -o public/assets ; rm public/assets/*; NODE_ENV=production node app.js;",
+    "start": "npm install ; node_modules/sequelize-cli/bin/sequelize init  --env production ; node_modules/sequelize-cli/bin/sequelize db:migrate --env production ; ./node_modules/.bin/connect-assets -i assets public/bower_components public/javascript public/stylesheets -o public/assets ; rm public/assets/*; NODE_ENV=production node app.js;",
     "dev": "npm install ; bower install ; NODE_ENV=development supervisor app.js"
   },
   "repository": {
