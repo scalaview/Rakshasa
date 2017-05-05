@@ -99,7 +99,7 @@
   \{{#each trafficPlans}}
     <div class="row">
       \{{#each this}}
-        <div class="col-33 chargeitem" data-id="\{{id}}" data-type="\{{../../type}}">\{{name}}</div>
+        <div class="col-33 chargeitem" onclick="chargeItem(this)" data-id="\{{id}}" data-type="\{{../../type}}">\{{name}}</div>
       \{{/each}}
     </div>
   \{{/each}}

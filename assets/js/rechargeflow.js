@@ -497,38 +497,39 @@ function bindTrafficplan(){
     }
   })
 
-  $(document).on("click", ".chargeitem", function(){
-    var mobile = $.trim($("#mobile").val());
-    if (!isMobile(mobile)){
-      showDialog("请输入正确的手机号码")
-      return
-    }
-    var $this = $(this)
-    if(!$this.hasClass('chargeitem-selected')){
-      $(".chargeitem-selected").removeClass("chargeitem-selected")
-      $this.addClass("chargeitem-selected")
-      var type = $this.data('type'),
-          _id = $this.data('id')
-      if(window.plans[type]){
-        $.each(window.plans[type], function(i, v){
-          if(v.id === _id){
-            var li_source = $("#li-template").html()
-            if(li_source != undefined && li_source != ''){
-              var li_template = Handlebars.compile(li_source);
-              if(v.trafficplans){
-                var li_html = li_template({plans: v.trafficplans })
-              }else{
-                var li_html = li_template({plans: [v] })
-              }
-              $(".submitbtn").hide();
-              $(".list-block.product-list ul").html(li_html)
-            }
-          }
-        })
-      }
+}
 
+function chargeItem(e){
+  var mobile = $.trim($("#mobile").val());
+  if (!isMobile(mobile)){
+    showDialog("请输入正确的手机号码")
+    return
+  }
+  var $this = $(e)
+  if(!$this.hasClass('chargeitem-selected')){
+    $(".chargeitem-selected").removeClass("chargeitem-selected")
+    $this.addClass("chargeitem-selected")
+    var type = $this.data('type'),
+        _id = $this.data('id')
+    if(window.plans[type]){
+      $.each(window.plans[type], function(i, v){
+        if(v.id === _id){
+          var li_source = $("#li-template").html()
+          if(li_source != undefined && li_source != ''){
+            var li_template = Handlebars.compile(li_source);
+            if(v.trafficplans){
+              var li_html = li_template({plans: v.trafficplans })
+            }else{
+              var li_html = li_template({plans: [v] })
+            }
+            $(".submitbtn").hide();
+            $(".list-block.product-list ul").html(li_html)
+          }
+        }
+      })
     }
-  })
+
+  }
 }
 
 function billConfirm(){
