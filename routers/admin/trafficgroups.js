@@ -9,7 +9,9 @@ admin.get("/trafficgroups", function(req, res) {
   models.TrafficGroup.findAndCountAll({
     order: [
       "providerId", "sortNum"
-    ]
+    ],
+    limit: req.query.perPage || 15,
+    offset: helpers.offset(req.query.page, req.query.perPage || 15)
   }).then(function(trafficgroups) {
     if(trafficgroups){
       result = helpers.setPagination(trafficgroups, req)
