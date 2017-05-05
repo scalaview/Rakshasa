@@ -226,24 +226,24 @@ app.post("/gdsjllconfirm", function(req, res){
 })
 
 app.post("/ytconfirm", function(req, res){
-  var form = new formidable.IncomingForm();
-  form.parse(req, function(err, fields, files) {
-    confirmOrder({
-      id: fields.order_sn,
-      state: models.ExtractOrder.STATE.SUCCESS
-    }, fields.errcode !== 4, fields.fail_msg, function(err){
-      if(err){
-        console.log(err)
-        res.json({success: false})
-      }else{
-        res.json({success: true})
-      }
-    })
+  var fields = req.body
+  console.log(req.body)
+  confirmOrder({
+    id: fields.order_sn,
+    state: models.ExtractOrder.STATE.SUCCESS
+  }, fields.errcode !== 4, fields.fail_msg, function(err){
+    if(err){
+      console.log(err)
+      res.json({success: false})
+    }else{
+      res.json({success: true})
+    }
   })
 })
 
 app.post("/sdconfirm", function(req, res){
   var form = new formidable.IncomingForm();
+  console.log(req.body)
   form.parse(req, function(err, fields, files) {
     confirmOrder({
       id: fields.order_sn,
