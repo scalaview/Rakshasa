@@ -133,7 +133,7 @@ module.exports = function(sequelize, DataTypes) {
   }
 
   TrafficPlan.TYPE = {
-    "云尚流量": 1,
+    "YT平台": 1,
     "速达": 2
   }
 
