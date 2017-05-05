@@ -7,6 +7,7 @@ var async = require("async")
 var OAuth = require('wechat-oauth');
 var config = require("../../config")
 var client = new OAuth(config.appId, config.appSecret);
+var request = require("request")
 
 app.get('/', function(req, res) {
   res.redirect("/extractflow")
@@ -130,6 +131,14 @@ app.get('/getcode', function(req, res) {
       })
     }
   })
+})
+
+app.get('/getcarrier', helpers.requireLogin, function(req, res) {
+  if(!req.query.phone){
+    res.json({ msg: '请输入手机号码', code: 0 })
+    return
+  }
+  request('http://cx.shouji.360.cn/phonearea.php?number=' + req.query.phone).pipe(res)
 })
 
 

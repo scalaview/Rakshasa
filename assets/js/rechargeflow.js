@@ -48,7 +48,6 @@ $(document).ready(function () {
     var source   = $("#trafficplans-template").html();
     if(source !== undefined && source !== ''){
       window.catName = result.catName
-      $(".phoneisp").html(result.carrier)
       getTrafficplan(source, result.catName)
       loadBillPlans(source)
       submitIsEnable(true);
@@ -127,6 +126,7 @@ function mobileBlur(successCallback){
           return;
       }
       getCarrier(mobile, successCallback);
+      get360Carrier(mobile)
   });
 }
 
@@ -183,6 +183,40 @@ function getCarrier(phone, successCallback){
     if(result.catName){
       $("#phone-detail").html(result.catName + ' ' + result.carrier).data("provider", result.carrier).show()
       successCallback(result)
+    }else{
+      showDialog("请输入正确的手机号码");
+    }
+  }).fail(function(err) {
+    hideLoadingToast();
+    showDialog("服务器错误")
+  })
+}
+
+function get360Carrier(phone, successCallback){
+  showLoadingToast();
+  $.ajax({
+    url: '/getcarrier',
+    method: 'GET',
+    dataType: 'JSON',
+    data: {
+      phone: phone,
+    }
+  }).done(function(result){
+    hideLoadingToast();
+
+    // {
+    //   "code": 0,
+    //   "data": {
+    //     "province": "广东",
+    //     "city": "广州",
+    //     "sp": "移动"
+    //   }
+    // }
+    if(!result.code){
+      if(successCallback){
+        successCallback(result.data)
+      }
+      $(".phoneisp").html(result.data.province + result.data.city + result.data.sp)
     }else{
       showDialog("请输入正确的手机号码");
     }
@@ -533,9 +567,9 @@ function chargeItem(e){
 }
 
 function billConfirm(){
-  var selectedFlow = $(".bill .exchanger.choose")
+  var selectedFlow = $(".llb .exchanger.choose")
         phone = $.trim($("#mobile").val()),
-        flowId = selectedFlow.data("value"),
+        flowId = selectedFlow.data("id"),
         source   = $("#trafficplans-template").html(),
         choose = $("#chooseMoney .weui_btn.selected")
 
@@ -587,6 +621,9 @@ function wechatBill(phone, flowId, opt){
           });
         }else{
           showDialog(payargs.msg)
+          doDelay(function(){
+            window.location.reload()
+          },2)
         }
       }).fail(function(err) {
         hideLoadingToast()
@@ -638,7 +675,7 @@ function showDetail(providerId, type, _id){
   }
   for(var i = 0; i < _plans.length; i++) {
     if(_plans[i].id === _id && _plans[i].detail && _plans[i].detail !== ""){
-      $("#detail").html(_plans[i].detail)
+      $("#detail").html(_plans[i].detail.replace(/(\r\n|\n|\r)/gm, '<br>'))
       $("#detail").show()
       return;
     }
