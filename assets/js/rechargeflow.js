@@ -48,7 +48,7 @@ $(document).ready(function () {
     var source   = $("#trafficplans-template").html();
     if(source !== undefined && source !== ''){
       window.catName = result.catName
-      $(".phoneisp").html(result.catName)
+      $(".phoneisp").html(result.carrier)
       getTrafficplan(source, result.catName)
       loadBillPlans(source)
       submitIsEnable(true);
