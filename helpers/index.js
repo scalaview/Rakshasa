@@ -8,6 +8,8 @@ var models  = require('../models')
 var async = require("async")
 var WechatAPI = require('wechat-api');
 var Payment = require('wechat-pay').Payment;
+var Canvas = require('canvas');
+var request = require("request")
 
 var initConfig = {
   partnerKey: config.partnerKey,
@@ -1219,6 +1221,38 @@ function showLevelName(levels, levelId){
   }
 }
 
+function text2Png(text){
+  var Image = Canvas.Image,
+      per = 30,
+      size = text.length * per + 10,
+      canvas = new Canvas(size, 100),
+      ctx = canvas.getContext('2d');
+      ctx.font = '30px Impact';
+  var x = 5,
+      y = 100 / 2
+  ctx.fillStyle = '#76a1f8';
+  ctx.fillText(text, x, y);
+  ctx.stroke();
+  return new Promise(function(res, rej){
+    var filename = (Math.round((new Date().valueOf() * Math.random()))) +'.png'
+    var tmp_file = process.env.PWD + "/public/uploads/tmp/" + filename
+    var file = fs.createWriteStream(tmp_file)
+    var te = ctx.measureText(text);
+    try{
+      canvas.createPNGStream().pipe(file)
+      file.on('finish', function() {
+        res({
+          file_path: tmp_file,
+          pngFile: file,
+          te: te
+        })
+      });
+    }catch(err){
+      rej(err)
+    }
+  })
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -1285,3 +1319,4 @@ exports.is_admin = is_admin;
 exports.apiProvider = apiProvider;
 exports.showLevelName = showLevelName;
 exports.models = models
+exports.text2Png = text2Png

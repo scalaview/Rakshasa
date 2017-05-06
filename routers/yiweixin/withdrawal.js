@@ -8,7 +8,7 @@ var _ = require('lodash')
 var WechatAPI = require('wechat-api');
 var requireLogin = helpers.requireLogin
 var images = require("images");
-
+var text2Png = helpers.text2Png
 var api = helpers.API
 
 var request = require("request")
@@ -88,30 +88,7 @@ app.get('/myticket/:id', function(req, res) {
         }
       });
     }
-  }, function(url, customer, next) {
-    var filename = customer.id + (Math.round((new Date().valueOf() * Math.random()))) +'.png'
-    var tmp_file = process.env.PWD + "/public/uploads/tmp/" + filename
-    var save_file_path =  process.env.PWD + "/public/uploads/tickets/" + filename
-    console.log(tmp_file)
-    var file = fs.createWriteStream(tmp_file)
-
-    request(url).pipe(file)
-    file.on('finish', function() {
-      try {
-        images(process.env.PWD + "/public/images/myticket-bg.JPG").draw(images(tmp_file).size(200), 220, 320).save(save_file_path, {quality : 30 });
-        fs.unlink(tmp_file, function(err) {
-            if (err){
-              next(err)
-            }else{
-              next(null, filename, customer)
-            }
-        });
-      }catch(err) {
-        next(err)
-      }
-    });
-
-  }, function(myticket, customer, next) {
+  }, generateMyticket, function(myticket, customer, next) {
     customer.updateAttributes({
       myticket: myticket
     }).then(function(customer){
@@ -129,6 +106,85 @@ app.get('/myticket/:id', function(req, res) {
   })
 })
 
+function generateMyticket(url, customer, pass){
+  var filename = customer.id + (Math.round((new Date().valueOf() * Math.random()))) +'.png'
+  var headimgname = customer.id + (Math.round((new Date().valueOf() * Math.random()))) +'.png'
+  var tmp_file = process.env.PWD + "/public/uploads/tmp/" + filename
+  var headimg_tmp_file = process.env.PWD + "/public/uploads/tmp/" + headimgname
+  var save_file_path =  process.env.PWD + "/public/uploads/tickets/" + filename
+  var file = fs.createWriteStream(tmp_file)
+  var headimgfile = fs.createWriteStream(headimg_tmp_file)
+
+  async.waterfall([function(next){
+    request(url).pipe(file)
+    file.on('finish', function() {
+      next(null, file)
+    })
+  }, function(file, next){
+    if(customer.headimgurl){
+      request(customer.headimgurl).pipe(headimgfile)
+      headimgfile.on('finish', function() {
+        next(null, file, headimgfile)
+      })
+    }else{
+      next(new Error("无法获取用户头像"))
+    }
+  },function(file, headimgfile, next){
+    try {
+      text2Png("我是" + customer.username).then(function(data){
+        var te = data.te,
+            file_path = data.file_path,
+            pngFile = data.pngFile
+        next(null, tmp_file, file_path, headimg_tmp_file)
+      }).catch(function(err){
+        next(err)
+      })
+    }catch(err) {
+      next(err)
+    }
+  }, function(tmp_file, file_path, headimg_tmp_file, next){
+    try {
+      text2Png("我为夕阳流量代言").then(function(data){
+        var te = data.te,
+            file2_path = data.file_path,
+            pngFile = data.pngFile
+        images(process.env.PWD + "/public/images/myticket-bg.JPG")
+          .draw(images(tmp_file).size(200), 220, 350)
+          .draw(images(file_path).size(te.width, 100), 120, 240)
+          .draw(images(file2_path).size(200), 120, 300)
+          .draw(images(headimg_tmp_file).size(180), 130, 80)
+          .save(save_file_path, {quality : 30 });
+        next(null, tmp_file, file_path, headimg_tmp_file, file2_path)
+      }).catch(function(err){
+        next(err)
+      })
+    }catch(err) {
+      next(err)
+    }
+  } , function(tmp_file, file_path, headimg_tmp_file, file2_path, next){
+    async.each([tmp_file, file_path, headimg_tmp_file, file2_path], function(path, pnext){
+      fs.unlink(path, function(err) {
+          if (err){
+            pnext(err)
+          }else{
+            pnext(null)
+          }
+      });
+    }, function(err){
+      if(err){
+        next(err)
+      }else{
+        next(null, filename, customer)
+      }
+    })
+  }], function(err){
+    if(err){
+      pass(err)
+    }else{
+      pass(null, filename, customer)
+    }
+  })
+}
 
 app.get('/myslaves', requireLogin, function(req, res){
   var customer = req.customer,
