@@ -144,7 +144,7 @@ function generateMyticket(url, customer, pass){
     }
   }, function(des_path, next){
     try {
-      text2Png("我是倾国倾城墨鱼妹妹" + customer.username).then(function(data){
+      text2Png("我是" + customer.username).then(function(data){
         var te = data.te,
             iam_path = data.file_path,
             pngFile = data.pngFile
