@@ -124,25 +124,57 @@ Gdsjll.prototype.syncProducts = function(){
   this.getProducts().then(function(data){
     if(data.errcode === 0){
        async.each(data.list, function(product, next){
-        models.TrafficPlan.findOrCreate({
-          where: {
-            bid: product.id,
-            type: models.TrafficPlan.TYPE["gdsjll"]
-          },
-          defaults: {
-            providerId: getProviderId(product.operator),
-            value: product.flow,
-            name: product.title,
-            cost: parseFloat(product.price) + 3.00,
-            display: false,
-            type: models.TrafficPlan.TYPE["gdsjll"],
-            bid: product.id,
-            purchasePrice: product.price
+        async.waterfall([function(pass){
+          models.TrafficPlan.findOrCreate({
+            where: {
+              bid: product.id,
+              type: models.TrafficPlan.TYPE["gdsjll"]
+            },
+            defaults: {
+              providerId: getProviderId(product.operator),
+              value: product.flow,
+              name: product.title,
+              cost: parseFloat(product.price) + 3.00,
+              display: false,
+              type: models.TrafficPlan.TYPE["gdsjll"],
+              bid: product.id,
+              purchasePrice: product.price
+            }
+          }).spread(function(trafficPlan){
+            pass(null, trafficPlan)
+          }).catch(function(err){
+            pass(err)
+          })
+        }, function(trafficPlan, pass){
+          models.TrafficGroup.findOrCreate({
+            where: {
+              name: trafficPlan.name,
+              providerId: trafficPlan.providerId
+            },
+            defaults: {
+              name: trafficPlan.name,
+              providerId: trafficPlan.providerId,
+              display: false
+            }
+          }).spread(function(trafficGroup){
+            pass(null, trafficPlan, trafficGroup)
+          }).catch(function(err){
+            pass(err)
+          })
+        },function(trafficPlan, trafficGroup, pass){
+          trafficPlan.updateAttributes({
+            trafficGroupId: trafficGroup.id
+          }).then(function(trafficPlan){
+            pass(null, trafficPlan, trafficGroup)
+          }).catch(function(err){
+            pass(err)
+          })
+        }], function(err, trafficPlan, trafficGroup){
+          if(err){
+            next(err)
+          }else{
+            next(null)
           }
-        }).then(function(trafficPlan){
-          next(null)
-        }).catch(function(err){
-          next(err)
         })
       }, function(err){
         if(err){
