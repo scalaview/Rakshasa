@@ -129,40 +129,40 @@ function generateMyticket(url, customer, pass){
     }else{
       next(new Error("无法获取用户头像"))
     }
-  },function(file, headimgfile, next){
-    try {
-      text2Png("我是" + customer.username).then(function(data){
-        var te = data.te,
-            file_path = data.file_path,
-            pngFile = data.pngFile
-        next(null, tmp_file, file_path, headimg_tmp_file)
-      }).catch(function(err){
-        next(err)
-      })
-    }catch(err) {
-      next(err)
-    }
-  }, function(tmp_file, file_path, headimg_tmp_file, next){
+  }, function(file, headimgfile, next){
     try {
       text2Png("我为夕阳流量代言").then(function(data){
         var te = data.te,
-            file2_path = data.file_path,
+            des_path = data.file_path,
             pngFile = data.pngFile
-        images(process.env.PWD + "/public/images/myticket-bg.JPG")
-          .draw(images(tmp_file).size(200), 220, 350)
-          .draw(images(file_path).size(te.width, 100), 120, 240)
-          .draw(images(file2_path).size(200), 120, 300)
-          .draw(images(headimg_tmp_file).size(180), 130, 80)
-          .save(save_file_path, {quality : 30 });
-        next(null, tmp_file, file_path, headimg_tmp_file, file2_path)
+        next(null, des_path)
       }).catch(function(err){
         next(err)
       })
     }catch(err) {
       next(err)
     }
-  } , function(tmp_file, file_path, headimg_tmp_file, file2_path, next){
-    async.each([tmp_file, file_path, headimg_tmp_file, file2_path], function(path, pnext){
+  }, function(des_path, next){
+    try {
+      text2Png("我是倾国倾城墨鱼妹妹" + customer.username).then(function(data){
+        var te = data.te,
+            iam_path = data.file_path,
+            pngFile = data.pngFile
+        images(process.env.PWD + "/public/images/myticket-bg.JPG")
+          .draw(images(tmp_file).size(200), 220, 350)
+          .draw(images(iam_path).size(te.width, 100), 120, 250)
+          .draw(images(des_path).size(200), 120, 300)
+          .draw(images(headimg_tmp_file).size(180), 130, 80)
+          .save(save_file_path, {quality : 30 });
+        next(null, [tmp_file, iam_path, des_path, headimg_tmp_file])
+      }).catch(function(err){
+        next(err)
+      })
+    }catch(err) {
+      next(err)
+    }
+  } , function(removeFiles, next){
+    async.each(removeFiles, function(path, pnext){
       fs.unlink(path, function(err) {
           if (err){
             pnext(err)
