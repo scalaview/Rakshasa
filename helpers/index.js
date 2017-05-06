@@ -10,7 +10,7 @@ var WechatAPI = require('wechat-api');
 var Payment = require('wechat-pay').Payment;
 var Canvas = require('canvas');
 var request = require("request")
-Canvas.registerFont(process.env.PWD + '/public/fonts/ComicSansMS.ttf', {family: 'Comic Sans'});
+Canvas.registerFont(process.env.PWD + '/public/fonts/微软雅黑.ttf', {family: 'Comic Sans'});
 
 var initConfig = {
   partnerKey: config.partnerKey,
