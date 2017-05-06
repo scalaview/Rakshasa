@@ -10,6 +10,7 @@ var WechatAPI = require('wechat-api');
 var Payment = require('wechat-pay').Payment;
 var Canvas = require('canvas');
 var request = require("request")
+Canvas.registerFont(process.env.PWD + '/public/fonts/ComicSansMS.ttf', {family: 'Comic Sans'});
 
 var initConfig = {
   partnerKey: config.partnerKey,
@@ -1222,12 +1223,13 @@ function showLevelName(levels, levelId){
 }
 
 function text2Png(text){
+
   var Image = Canvas.Image,
       per = 30,
       size = text.length * per + 10,
       canvas = new Canvas(size, 100),
       ctx = canvas.getContext('2d');
-      ctx.font = '30px Impact';
+      ctx.font = '30px "Comic Sans"';
   var x = 5,
       y = 100 / 2
   ctx.fillStyle = '#76a1f8';
