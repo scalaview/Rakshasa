@@ -959,6 +959,22 @@ function autoCharge(extractOrder, trafficPlan, next){
           })
           next(new Error(data.msg))
         }
+      }else if(trafficPlan.type == models.TrafficPlan.TYPE['gdsjll']){
+        if(data.errcode === 0 ){
+          extractOrder.updateAttributes({
+            taskid: data.order_id,
+            state: models.ExtractOrder.STATE.SUCCESS
+          }).then(function(extractOrder){
+            next(null, trafficPlan, extractOrder)
+          }).catch(function(err) {
+            next(err)
+          })
+        }else{
+          extractOrder.updateAttributes({
+            state: models.ExtractOrder.STATE.FAIL
+          })
+          next(new Error(data.message || data.shipping_status_desc))
+        }
       }else{
         extractOrder.updateAttributes({
           state: models.ExtractOrder.STATE.FAIL

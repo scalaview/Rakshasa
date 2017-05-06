@@ -5,6 +5,7 @@ var async = require("async")
 var helpers = require("../helpers")
 var recharger = require("../recharger")
 var YouXingRecharge = recharger.YouXingRecharge
+var Gdsjll = recharger.Gdsjll
 var config = require("../config")
 var crypto = require('crypto')
 
@@ -148,6 +149,8 @@ module.exports = function(sequelize, DataTypes) {
           return new YouXingRecharge(config.yt_appid, config.yt_key, config.yt_host).createOrder(this.phone, this.bid, this.id)
         }else if(trafficPlan.type == typeJson['速达']){
           return new YouXingRecharge(config.sd_appid, config.sd_key, config.sd_host).createOrder(this.phone, this.bid, this.id)
+        }else if(trafficPlan.type == typeJson['gdsjll']){
+          return new Gdsjll().createOrder(this.phone, this.bid)
         }else{
           function Empty(){
             var that = this
