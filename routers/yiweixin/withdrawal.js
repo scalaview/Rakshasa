@@ -97,15 +97,18 @@ app.get('/myticket/:id', function(req, res) {
 
     request(url).pipe(file)
     file.on('finish', function() {
-      images(process.env.PWD + "/public/images/myticket-bg.JPG").draw(images(tmp_file).size(220), 120, 177).save(save_file_path, {quality : 30 });
-
-      fs.unlink(tmp_file, function(err) {
-          if (err){
-            next(err)
-          }else{
-            next(null, filename, customer)
-          }
-      });
+      try {
+        images(process.env.PWD + "/public/images/myticket-bg.JPG").draw(images(tmp_file).size(200), 220, 320).save(save_file_path, {quality : 30 });
+        fs.unlink(tmp_file, function(err) {
+            if (err){
+              next(err)
+            }else{
+              next(null, filename, customer)
+            }
+        });
+      }catch(err) {
+        next(err)
+      }
     });
 
   }, function(myticket, customer, next) {
