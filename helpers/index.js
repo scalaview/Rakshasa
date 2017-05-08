@@ -1248,7 +1248,7 @@ function text2Png(text){
       ctx.font = '30px "Comic Sans"';
   var x = 5,
       y = 100 / 2
-  ctx.fillStyle = '#76a1f8';
+  ctx.fillStyle = '#d72c34';
   ctx.fillText(text, x, y);
   ctx.stroke();
   return new Promise(function(res, rej){

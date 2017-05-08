@@ -149,10 +149,10 @@ function generateMyticket(url, customer, pass){
             iam_path = data.file_path,
             pngFile = data.pngFile
         images(process.env.PWD + "/public/images/myticket-bg.JPG")
-          .draw(images(tmp_file).size(200), 220, 350)
-          .draw(images(iam_path).size(te.width, 100), 120, 250)
-          .draw(images(des_path).size(200), 120, 300)
-          .draw(images(headimg_tmp_file).size(180), 130, 80)
+          .draw(images(headimg_tmp_file).size(100), 50, 20)
+          .draw(images(iam_path).size(te.width, 100), 50, 100)
+          .draw(images(des_path).size(200), 50, 150)
+          .draw(images(tmp_file).size(180), 130, 370)
           .save(save_file_path, {quality : 30 });
         next(null, [tmp_file, iam_path, des_path, headimg_tmp_file])
       }).catch(function(err){
