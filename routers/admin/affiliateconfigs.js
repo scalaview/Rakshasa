@@ -67,15 +67,11 @@ admin.get('/affiliateconfigs', function(req, res) {
       if(err){
         pass(err)
       }else{
-        pass(null, res)
+        pass(null, result)
       }
     })
   }, function(result, next){
-    models.AffiliateConfig.findAll({
-      where:{
-        trafficPlanId: "is not null"
-      }
-    }).then(function(aConfigs){
+    models.AffiliateConfig.findAll().then(function(aConfigs){
       next(null, result, aConfigs)
     }).catch(function(err){
       next(err)
