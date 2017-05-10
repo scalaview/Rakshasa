@@ -27,7 +27,6 @@
                   <th>话费（元）</th>
                   <th>是否显示</th>
                   <th>提供商</th>
-                  <th>分组</th>
                   <th></th>
               </tr>
             </thead>
@@ -47,9 +46,6 @@
                     </td>
                     <td data-id="{{id}}" class="col-lg-2">
                       {{ selectTag ../providerOptions ../providerCollection providerId }}
-                    </td>
-                    <td data-id="{{id}}" class="col-lg-2">
-                      {{ selectTag ../trafficgroupsOptions ../trafficgroupsCollection trafficGroupId }}
                     </td>
                     <td>
                       <a href="/admin/bills/{{id}}/edit" class="list-group-item">

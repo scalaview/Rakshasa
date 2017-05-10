@@ -49,14 +49,18 @@
         </div>
       </div>
       <div class="form-group">
+        <label>type</label>
+        {{ selectTag typeOptions typeCollection trafficPlan.type }}
+      </div>
+      <div class="form-group">
+        <label>bid</label>
+        <input class="form-control" placeholder="input bid" name="bid" type='text' value="{{ trafficPlan.bid }}">
+      </div>
+      <div class="form-group">
         <label>进货价</label>
         <input class="form-control" placeholder="input purchase price" name="purchasePrice" type='text' value="{{ trafficPlan.purchasePrice }}">
       </div>
-      <div class="form-group">
-        <label>分组</label>
-        {{ selectTag trafficgroupsOptions trafficgroupsCollection trafficPlan.trafficGroupId }}
-      </div>
-      
+
       <div class="form-group">
         <label>简短描述</label>
         <input class="form-control" placeholder="input desc" name="desc" type='text' value="{{ trafficPlan.desc }}">
@@ -66,7 +70,7 @@
         <label>到账时间描述</label>
         <input class="form-control" placeholder="input tips" name="tips" type='text' value="{{ trafficPlan.tips }}">
       </div>
-      
+
     </div>
   </div>
 

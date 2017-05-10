@@ -7,6 +7,8 @@ var requireLogin = helpers.requireLogin
 var config = require("../../config")
 var fs        = require('fs');
 var Payment = require('wechat-pay').Payment;
+var autoCharge = helpers.autoCharge
+
 var initConfig = {
   partnerKey: config.partnerKey,
   appId: config.appId,
