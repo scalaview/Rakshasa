@@ -1271,6 +1271,49 @@ function text2Png(text){
   })
 }
 
+function sendOrderNotification(extractOrder, customer, pass){
+  pass(null, extractOrder, customer)
+
+  async.waterfall([function(next){
+    extractOrder.getExchanger().then(function(trafficPlan){
+      next(null, trafficPlan)
+    }).catch(function(err){
+      next(err)
+    })
+  }, function(trafficPlan, next){
+    models.MessageTemplate.findOrCreate({
+      where: {
+        name: "sendOrderNotice"
+      },
+      defaults: {
+        content: "您好，您的{{orderName}}订单已经提交充值。30分钟内到账，最长延迟24小时到账。<a href='http://{{hostname}}/orders'>订单详细信息</a>"
+      }
+    }).spread(function(template) {
+      var content = template.content.format({
+          orderName: trafficPlan.name,
+          hostname: config.hostname
+        })
+      next(null, trafficPlan, content)
+    }).catch(function(err) {
+      next(err)
+    })
+  }, function(trafficPlan, content, next){
+    API.sendText(customer.wechat, content, function(err, result) {
+      if(err){
+        next(err)
+      }else{
+        next(null, result)
+      }
+    });
+  }], function(err, result){
+    if(err){
+      console.log(err)
+    }else{
+      console.log(result)
+    }
+  })
+}
+
 exports.applylimit = applylimit;
 exports.fileUpload = fileUpload;
 exports.fileUploadSync = fileUploadSync;
@@ -1338,3 +1381,4 @@ exports.apiProvider = apiProvider;
 exports.showLevelName = showLevelName;
 exports.models = models
 exports.text2Png = text2Png
+exports.sendOrderNotification = sendOrderNotification

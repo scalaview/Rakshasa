@@ -246,6 +246,21 @@ app.post('/wechat-bill', requireLogin, function(req, res) {
             extractOrder.updateAttributes({
               state: models.ExtractOrder.STATE.PAID
             }).then(function(extractOrder){
+              autoCharge(extractOrder, trafficPlan, function(err){
+                if(err){
+                  console.log(err)
+                  // refund
+                  customer.refundTraffic(models, extractOrder, err.message, function(customer, extractOrder, flowHistory){
+                    if(extractOrder.totalIntegral){
+                      customer.refundIntegral(models, extractOrder, err.message)
+                    }
+                  }, function(err){
+                    console.log(err)
+                  })
+                }else{
+                  console.log("充值成功")
+                }
+              })
             })
           }, function(err){
             console.log(err)
@@ -299,12 +314,26 @@ app.use('/billconfirm', middleware(initConfig).getNotify().done(function(message
     //do history
     customer.reduceTraffic(models, extractOrder, function(){
       next(null, extractOrder, customer)
-      customer.reduceIntegral(models, extractOrder)
+      if(extractOrder.totalIntegral){
+        customer.reduceIntegral(models, extractOrder)
+      }
+      var originExtractOrder = extractOrder
+      autoCharge(extractOrder, trafficPlan, function(err, trafficPlan, extractOrder){
+        if(err){
+          console.log(err)
+          // refund
+          if(originExtractOrder.totalIntegral){
+            customer.refundIntegral(models, originExtractOrder, err.message)
+          }
+        }else{
+          console.log("充值成功")
+        }
+      })
     }, function(err){
       next(err)
     }, extractOrder.chargeType)
 
-  }, helpers.autoAffiliate], function(err, extractOrder, customer){
+  }, helpers.autoAffiliate, helpers.sendOrderNotification], function(err, extractOrder, customer){
     if(err){
       res.reply(err)
     }else{
