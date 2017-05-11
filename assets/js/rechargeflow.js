@@ -551,11 +551,7 @@ function chargeItem(e){
           var li_source = $("#li-template").html()
           if(li_source != undefined && li_source != ''){
             var li_template = Handlebars.compile(li_source);
-            if(v.trafficplans){
-              var li_html = li_template({plans: v.trafficplans })
-            }else{
-              var li_html = li_template({plans: [v] })
-            }
+            var li_html = li_template({plans: v.trafficplans })
             $(".submitbtn").hide();
             $(".list-block.product-list ul").html(li_html)
           }
@@ -689,8 +685,23 @@ function loadBillPlans(source){
 
   loadPlans('/bill-plans', {}).then(function(data){
     if(data.trafficPlans && data.trafficPlans.length > 0){
-      window.plans['bill'] = data.trafficPlans
-      var html = template({trafficPlans: data.trafficPlans.eachSlice(3), type: 'bill'})
+      var _plans = {},
+          plans = []
+      $.each(data.trafficPlans, function(i, e){
+        if(!_plans[e.name]){
+          _plans[e.name] = []
+        }
+        _plans[e.name].push(e)
+      })
+      Object.keys(_plans).map(function(key, index) {
+         plans.push({
+          id: index,
+          name: key,
+          trafficplans: _plans[key]
+         })
+      });
+      window.plans['bill'] = plans
+      var html = template({trafficPlans: plans.eachSlice(3), type: 'bill'})
       $("#tabchargehuafei").html(html)
     }else{
       $("#tabchargehuafei").html(emptyPlans())
