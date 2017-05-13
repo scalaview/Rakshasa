@@ -4,7 +4,7 @@
     <div class="info">
        <h5>{{ customer.username }}</h5>
        <p><small>关注时间： {{ strftime customer.subscribeTime "YYYY-MM-DD" }}</small></p>
-       <p><small>推荐人： {{#if parent.username }} {{ parent.username }} {{else}} 夕阳流量 {{/if}} 会员编号{{customer.id}}</small></p>
+       <p><small>推荐人： {{#if parent.username }} {{ parent.username }} {{else}} 云尚流量 {{/if}} 会员编号{{customer.id}}</small></p>
        {{#if customer.isAffiliate }}<p><small style='color:red'>恭喜你已经成为供应商</small></p>{{/if}}
     </div>
  </div>

@@ -131,7 +131,7 @@ function generateMyticket(url, customer, pass){
     }
   }, function(file, headimgfile, next){
     try {
-      text2Png("我为夕阳流量代言").then(function(data){
+      text2Png("我为云尚流量代言").then(function(data){
         var te = data.te,
             des_path = data.file_path,
             pngFile = data.pngFile
