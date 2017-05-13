@@ -45,6 +45,9 @@ module.exports = function(sequelize, DataTypes) {
           var params = {
               productType: TrafficPlan.PRODUCTTYPE["traffic"]
             }
+          if(providerId != undefined){
+            params['providerId'] = providerId
+          }
           if(groupId){
             params['trafficGroupId'] = groupId
           }
