@@ -231,7 +231,7 @@ app.post("/ytconfirm", function(req, res){
   confirmOrder({
     id: fields.order_sn,
     state: models.ExtractOrder.STATE.SUCCESS
-  }, fields.errcode !== 4, fields.fail_msg, function(err){
+  }, fields.errcode != 4, fields.fail_msg, function(err){
     if(err){
       console.log(err)
       res.json({success: false})
@@ -247,7 +247,7 @@ app.post("/sdconfirm", function(req, res){
   confirmOrder({
     id: fields.order_sn,
     state: models.ExtractOrder.STATE.SUCCESS
-  }, fields.errcode !== 4, fields.fail_msg, function(err){
+  }, fields.errcode != 4, fields.fail_msg, function(err){
     if(err){
       console.log(err)
       res.json({success: false})
