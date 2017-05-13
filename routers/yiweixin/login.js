@@ -8,6 +8,7 @@ var OAuth = require('wechat-oauth');
 var config = require("../../config")
 var client = new OAuth(config.appId, config.appSecret);
 var request = require("request")
+var moment = require('moment');
 
 app.get('/', function(req, res) {
   res.redirect("/extractflow")
@@ -44,60 +45,84 @@ app.get('/register', function(req, res) {
         wechat: openid
       }
     }).then(function (customer) {
-      if(customer){
-        req.session.customer_id = customer.id
-        if(req.query.to){
-          var backTo = new Buffer(req.query.to, "base64").toString()
-          res.redirect(backTo)
+      if(customer && customer.subscribeTime){
+        var expiredDate = moment(customer.subscribeTime).add(30, 'day');
+        if(expiredDate.isAfter()){
+          req.session.customer_id = customer.id
+          if(req.query.to){
+            var backTo = new Buffer(req.query.to, "base64").toString()
+            res.redirect(backTo)
+          }else{
+            res.redirect('/myaccount')
+          }
+          return
         }else{
-          res.redirect('/myaccount')
+          next(null, accessToken, openid, customer)
         }
-        return
       }else{
-        next(null, accessToken, openid)
+        next(null, accessToken, openid, null)
       }
     })
 
-  }, function(accessToken, openid, next) {
+  }, function(accessToken, openid, customer, next) {
     client.getUser(openid, function (err, result) {
       if(err){
         next(err)
       }
       var userInfo = result;
-      next(null, accessToken, openid, userInfo)
+      next(null, customer, accessToken, openid, userInfo)
     });
-  }, function(accessToken, openid, userInfo, next) {
-    models.Customer.create({
-      password: '1234567',
-      username: userInfo.nickname,
-      wechat: openid,
-      sex: userInfo.sex + '',
-      city: userInfo.city,
-      province: userInfo.province,
-      country: userInfo.country,
-      headimgurl: userInfo.headimgurl,
-      subscribeTime: new Date(),
-      isSubscribe: true
-    }).then(function(customer){
-      if(customer){
-        customer.updateAttributes({
-          lastLoginAt: new Date()
-        }).then(function(customer){
-        })
-        req.session.customer_id = customer.id
-        if(req.query.to){
-          var backTo = new Buffer(req.query.to, "base64").toString()
-          res.redirect(backTo)
-        }else{
-          res.redirect('/myaccount')
-        }
-        return
+  }, function(_customer, accessToken, openid, userInfo, next) {
+    if(_customer){
+      _customer.updateAttributes({
+        username: userInfo.nickname,
+        sex: userInfo.sex + '',
+        city: userInfo.city,
+        province: userInfo.province,
+        country: userInfo.country,
+        headimgurl: userInfo.headimgurl,
+        subscribeTime: new Date(),
+        isSubscribe: true
+      }).then(function(customer){
+        next(null, customer)
+      }).catch(function(err){
+        next(err)
+      })
+    }else{
+      models.Customer.create({
+        password: '1234567',
+        username: userInfo.nickname,
+        wechat: openid,
+        sex: userInfo.sex + '',
+        city: userInfo.city,
+        province: userInfo.province,
+        country: userInfo.country,
+        headimgurl: userInfo.headimgurl,
+        subscribeTime: new Date(),
+        isSubscribe: true
+      }).then(function(customer){
+        next(null, customer)
+      }).catch(function(err){
+        next(err)
+      })
+    }
+  }, function(customer, next){
+    if(customer){
+      customer.updateAttributes({
+        lastLoginAt: new Date()
+      }).then(function(customer){
+      })
+      req.session.customer_id = customer.id
+      if(req.query.to){
+        var backTo = new Buffer(req.query.to, "base64").toString()
+        res.redirect(backTo)
       }else{
-        next({errors: "create fail"})
+        res.redirect('/myaccount')
       }
-    }).catch(function(err){
-      next(err)
-    })
+      return
+    }else{
+      next({errors: "create fail"})
+    }
   }], function(err) {
     if(err){
       console.log(err)
