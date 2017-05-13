@@ -1,7 +1,7 @@
 <header id="myCarousel">
-  <ul class="bxslider">
+  <ul class="bxslider" style="margin: 0px;">
     {{#each banners}}
-      <li><img style="width: 900px;" src="{{ image }}"/></li>
+      <li><img class="image-response" src="{{ image }}"/></li>
     {{/each}}
   </ul>
 </header>
@@ -11,3 +11,9 @@ $(document).ready(function(){
   $('.bxslider').bxSlider();
 });
 </script>
+
+<style type="text/css">
+.bx-wrapper {
+    margin: 0px;
+}
+</style>
