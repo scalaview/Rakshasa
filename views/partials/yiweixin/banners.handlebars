@@ -1,7 +1,11 @@
 <header id="myCarousel">
   <ul class="bxslider" style="margin: 0px;">
     {{#each banners}}
-      <li><img class="image-response" src="{{ image }}"/></li>
+      <li>
+        <a href="{{#if url }}{{ url }}{{else}}#{{/if}}">
+          <img class="image-response" src="{{ image }}"/>
+        </a>
+      </li>
     {{/each}}
   </ul>
 </header>
