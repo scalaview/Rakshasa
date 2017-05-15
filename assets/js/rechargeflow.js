@@ -662,13 +662,9 @@ function trafficplanDetail(){
 function showDetail(providerId, type, _id){
   $("#actionSheet_wrap .weui_article span").hide()
   var _plans = []
-  if(type=='traffic'){
-    $.each(window.plans[type], function(i, v){
-      _plans = _plans.concat(v.trafficplans)
-    })
-  }else{
-    _plans = _plans.concat(window.plans[type])
-  }
+  $.each(window.plans[type], function(i, v){
+    _plans = _plans.concat(v.trafficplans)
+  })
   for(var i = 0; i < _plans.length; i++) {
     if(_plans[i].id === _id && _plans[i].detail && _plans[i].detail !== ""){
       $("#detail").html(_plans[i].detail.replace(/(\r\n|\n|\r)/gm, '<br>'))
